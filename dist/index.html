@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos · Bar fizibilite</title>
+<meta name="description" content="Galapagos Cocktailbar, Chemnitz: 6 modüllü fizibilite ve karar uygulaması. Veriler sadece bu tarayıcıda kalır.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--or:#f08a3c;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1100px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 4px max(16px,env(safe-area-inset-left,0px))}
+h1{font:600 28px/1.15 var(--disp);margin:0;color:var(--sand)}
+.sub{margin:2px 0 0;color:var(--mute);font-size:14px}
+main{max-width:1100px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+h2{font:600 20px/1.2 var(--disp);margin:0 0 8px;color:var(--sand)}
+.note{color:var(--mute);font-size:14px;margin:6px 0 0}
+a{color:var(--sand)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.btn.pri{background:var(--or);border-color:var(--or);color:#160c04;font-weight:700}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+textarea{width:100%;min-height:120px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:10px;margin-top:8px}
+.lb{display:block;font-size:14px;color:var(--mute);margin-top:10px}
+/* karar */
+.dec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.light{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;font:600 24px var(--disp);color:#0f1411;background:var(--line)}
+.light.g{background:var(--ok)}.light.y{background:var(--y)}.light.r{background:var(--r)}
+.dec b.v{font:600 20px var(--disp);display:block}
+.kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{background:var(--p2);border-radius:10px;padding:8px 10px}
+.kv span{display:block;color:var(--mute);font-size:12px}
+.kv b{font-size:16px;font-variant-numeric:tabular-nums}
+/* modüller */
+.mods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.mod{display:flex;flex-direction:column;gap:4px;background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;text-decoration:none;color:var(--ink);min-height:132px}
+.mod:hover{border-color:var(--sand)}
+.mod .no{font:600 13px var(--txt);color:var(--or)}
+.mod b{font:600 18px var(--disp);color:var(--ink)}
+.mod p{margin:0;color:var(--mute);font-size:14px}
+.mod .st{margin-top:auto;font-size:13px;color:var(--mute)}
+.mod .st.w{color:var(--y)}
+.mod .st.ok{color:var(--ok)}
+/* listeler */
+.pl{list-style:none;margin:10px 0 0;padding:0}
+.pl li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:9px 0;border-top:1px solid var(--line);align-items:start}
+.pl li:first-child{border-top:0}
+.pl li input{width:22px;height:22px;accent-color:var(--or);margin:2px 0 0}
+.pl b{display:block;font-weight:600}
+.pl small{display:block;color:var(--mute);font-size:13px}
+.pl .bad{color:var(--r)}
+.pl .warn{color:var(--y)}
+.pl .ok{color:var(--ok)}
+.pl i{font-style:normal;width:22px;text-align:center}
+.pl .rep{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink);margin-top:6px;min-height:36px}
+.pl .rep input{width:20px;height:20px;margin:0}
+.warnbox{border-color:rgba(235,185,77,.5);background:rgba(235,185,77,.08)}
+.steps{margin:6px 0 0;padding-left:20px}
+.steps li{margin:4px 0}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.two>.card{margin-top:12px}
+.foot{color:var(--mute);font-size:13px;margin:22px 0 0;text-align:center}
+iframe.gx-runner{position:fixed;left:-10000px;top:0;width:390px;height:800px;border:0;visibility:hidden}
+@media (max-width:860px){.mods{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.kv{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.mods{grid-template-columns:1fr}.mod{min-height:0}}
+</style>
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<style>
+/* Galapagos · kabuk stilleri (modül CSS'ine dokunmaz; sadece gx- sınıfları) */
+.gx-side{position:fixed;top:0;bottom:0;left:0;width:248px;z-index:60;background:#121a15;border-right:1px solid #304036;display:flex;flex-direction:column;transform:translateX(-105%);transition:transform .22s ease;padding:max(12px,env(safe-area-inset-top,0px)) 0 max(12px,env(safe-area-inset-bottom,0px)) env(safe-area-inset-left,0px);overflow-y:auto;color:#f1e8d7;font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.gx-open .gx-side{transform:none}
+.gx-ov{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s}
+.gx-open .gx-ov{opacity:1;pointer-events:auto}
+.gx-brand{display:flex;gap:10px;align-items:center;padding:6px 16px 14px;border-bottom:1px solid #304036}
+.gx-logo{width:38px;height:38px;border-radius:9px;background:#0f1411;border:1px solid #304036;color:#f08a3c;display:grid;place-items:center;font:700 24px 'Fraunces',Georgia,serif}
+.gx-brand b{display:block;font:600 18px 'Fraunces',Georgia,serif;color:#dcc69b}
+.gx-brand small{display:block;color:#aab4a5;font-size:12px}
+.gx-nav{display:flex;flex-direction:column;padding:8px 8px;gap:2px}
+.gx-nav a{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 10px;border-radius:9px;color:#d8d2c4;text-decoration:none;font-size:15px;position:relative}
+.gx-nav a:hover{background:#1f2922}
+.gx-nav a.on{background:#1f2922;color:#f1e8d7;box-shadow:inset 3px 0 0 #f08a3c}
+.gx-nav a svg,.gx-burger svg,.gx-tabmenu svg,.gx-ban svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.gx-nav a span{flex:1;min-width:0}
+.gx-nav a em{font-style:normal;color:#aab4a5;font-size:12px;margin-right:6px}
+.gx-dot{width:9px;height:9px;border-radius:50%;background:#ebb94d;flex:none}
+.gx-sfoot{margin-top:auto;padding:12px 16px 4px;border-top:1px solid #304036;font-size:14px}
+.gx-sfoot a{color:#dcc69b}
+.gx-sfoot small{display:block;color:#aab4a5;font-size:12px;margin-top:4px}
+header.top.gx-hdr{position:relative;padding-left:max(64px,calc(env(safe-area-inset-left,0px) + 52px))!important}
+.gx-burger{position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:14px;width:44px;height:44px;border-radius:10px;border:1px solid #304036;background:#171f1a;color:#f1e8d7;display:grid;place-items:center;cursor:pointer;padding:0}
+.gx-burger:focus-visible,.gx-nav a:focus-visible,.gx-ban button:focus-visible{outline:2px solid #f08a3c;outline-offset:2px}
+nav.tabs .gx-tabmenu{color:#f08a3c}
+nav.tabs.gx-n6 a{font-size:11.5px}
+nav.tabs.gx-n6 a svg{width:20px;height:20px}
+.gx-ban{max-width:1240px;margin:8px auto 0;box-sizing:border-box;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(235,185,77,.10);border:1px solid rgba(235,185,77,.45);border-radius:12px;padding:10px 12px;color:#f1e8d7;font-size:14px}
+.gx-ban[hidden]{display:none}
+.gx-ban>svg{color:#ebb94d}
+.gx-ban>div:not(.gx-bb){flex:1;min-width:160px}
+.gx-ban b{display:block;font-weight:600}
+.gx-ban small{display:block;color:#aab4a5;font-size:12.5px}
+.gx-bb{display:flex;gap:8px}
+.gx-ban button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #304036;background:#1f2922;color:#f1e8d7;font:500 14px inherit;cursor:pointer}
+.gx-ban .gx-take{background:#ebb94d;border-color:#ebb94d;color:#1a1608;font-weight:700}
+.gx-toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);z-index:70;background:#1f2922;border:1px solid #304036;color:#f1e8d7;border-radius:12px;padding:8px 8px 8px 14px;display:flex;gap:10px;align-items:center;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100% - 24px);font-size:14px}
+.gx-toast.on{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+.gx-toast button{min-height:40px;padding:0 14px;border-radius:9px;border:0;background:#f08a3c;color:#140c05;font-weight:700;cursor:pointer}
+@media (min-width:1024px){
+  .gx-side{transform:none;z-index:20}
+  .gx-ov,.gx-burger{display:none}
+  body.gx{padding-left:248px}
+  body.gx nav.tabs{left:248px}
+  body.gx nav.tabs .gx-tabmenu{display:none}
+  header.top.gx-hdr{padding-left:max(16px,env(safe-area-inset-left,0px))!important}
+  .gx-toast{left:calc(50% + 124px)}
+}
+@media (min-width:1024px){body.gx nav.tabs.gx-n5{grid-template-columns:repeat(4,minmax(0,1fr))!important}body.gx nav.tabs.gx-n6{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+@media print{.gx-side,.gx-ov,.gx-burger,.gx-ban,.gx-toast,.gx-tabmenu{display:none!important}body.gx{padding-left:0!important}header.top.gx-hdr{padding-left:0!important}}
+
+</style>
+<script>
+/* Galapagos · ortak çekirdek
+   - parseNum / fmtIn: 6 modülün tek sayı kuralı
+   - GX: modüller arası veri köprüsü (localStorage anahtarı galapagos_bus_v1)
+   Modüllerin kendi kayıt anahtarları (galapagos_m1_v1 … galapagos_m6_v1) ve JSON şemaları değişmez. */
+
+/* ---------- Güvenli sayı ----------
+   dec=true  → nokta ONDALIK (7.5 → 7,5); "1.234,56" ve "1.234.567" yine doğru okunur
+   dec=false → büyük tutar: "1.250" → 1250 (binlik), "1.250,50" → 1250,5
+   Hangi alanın büyük tutar olduğu modülün kendi BIG/DEC listesindedir. */
+function parseNum(x,dec){
+  if(typeof x==='number')return Number.isFinite(x)?x:NaN;
+  if(x==null)return NaN;
+  const m=String(x).replace(/[\s  '’]/g,'').replace(/\u2212/g,'-').match(/-?\d[\d.,]*/);
+  if(!m)return NaN;
+  let s=m[0].replace(/[.,]+$/,'');const neg=s[0]==='-';if(neg)s=s.slice(1);
+  const d=s.lastIndexOf('.'),c=s.lastIndexOf(',');
+  if(d>-1&&c>-1){const dc=d>c?'.':',';s=s.split(dc==='.'?',':'.').join('');const i=s.lastIndexOf(dc);s=s.slice(0,i).split(dc).join('')+'.'+s.slice(i+1)}
+  else if(c>-1)s=(s.split(',').length>2)?s.split(',').join(''):s.replace(',','.');
+  else if(d>-1){if(s.split('.').length>2)s=s.split('.').join('');else if(!dec&&/^[1-9]\d{0,2}\.\d{3}$/.test(s))s=s.replace('.','')}
+  const n=parseFloat(s);return Number.isFinite(n)?(neg?-n:n):NaN;
+}
+const fmtIn=n=>n!==''&&n!=null&&Number.isFinite(+n)?String(+(+n).toFixed(4)).replace('.',','):'';
+
+/* ---------- Veri köprüsü ---------- */
+const GX=(()=>{
+  const BUS='galapagos_bus_v1',APP='galapagos_app_v1';
+  const MODS=[
+    {id:'m1',file:'m1-mekan.html',key:'galapagos_m1_v1',sc:'galapagos.mekan',n:'Mekân & Kapasite',s:'Mekân'},
+    {id:'m2',file:'m2-personel.html',key:'galapagos_m2_v1',sc:'galapagos.personel',n:'Personel & Vardiya',s:'Personel'},
+    {id:'m3',file:'m3-ciro.html',key:'galapagos_m3_v1',sc:'galapagos.ciro',n:'Ciro & Hedef',s:'Ciro'},
+    {id:'m4',file:'m4-kurulum.html',key:'galapagos_m4_v1',sc:'galapagos.kurulum',n:'Kurulum & Nakit',s:'Kurulum'},
+    {id:'m5',file:'m5-vergi.html',key:'galapagos_m5_v1',sc:'galapagos.vergi',n:'Vergi & Şirket',s:'Vergi'},
+    {id:'m6',file:'m6-karar.html',key:'galapagos_m6_v1',sc:'galapagos.karar',n:'Master Karar Panosu',s:'Karar'}];
+  const UP={m2:['m1'],m3:['m1','m2','m4'],m4:['m1','m3'],m5:['m3','m4'],m6:['m1','m2','m3','m4','m5']};
+  const byId=id=>MODS.find(m=>m.id===id);
+  const meta=document.querySelector('meta[name="gx-module"]');
+  const ME=meta?meta.content:'home';
+  const AUTO=/[?&]gx=auto\b/.test(location.search);
+  let ad=null,ready=false,tm=null,loadedAt=0;
+
+  const read=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}};
+  const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+  function bus(){const b=read(BUS)||{};b.pub=b.pub||{};b.seen=b.seen||{};return b}
+  const app=()=>Object.assign({lastBackup:0},read(APP)||{});
+  const setApp=o=>write(APP,Object.assign(app(),o));
+
+  function stable(v){
+    if(Array.isArray(v))return '['+v.map(stable).join(',')+']';
+    if(v&&typeof v==='object')return '{'+Object.keys(v).filter(k=>k!=='exported_at').sort().map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';
+    return JSON.stringify(v);
+  }
+  function hash(o){const s=stable(o);let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'.'+s.length}
+
+  /* Metin içindeki { … } bloklarını sırayla çıkarır (birden çok JSON, etrafında yazı olsa bile) */
+  function extractObjects(t){
+    const out=[];let depth=0,start=-1,inS=false,esc=false;t=String(t||'');
+    for(let i=0;i<t.length;i++){const ch=t[i];
+      if(inS){if(esc)esc=false;else if(ch==='\\')esc=true;else if(ch==='"')inS=false;continue}
+      if(ch==='"'){if(depth>0)inS=true;continue}
+      if(ch==='{'){if(depth===0)start=i;depth++}
+      else if(ch==='}'&&depth>0){depth--;if(depth===0&&start>-1){try{out.push(JSON.parse(t.slice(start,i+1)))}catch(e){}start=-1}}}
+    if(!out.length){try{const j=JSON.parse(t);(Array.isArray(j)?j:[j]).forEach(x=>x&&typeof x==='object'&&out.push(x))}catch(e){}}
+    return out;
+  }
+  /* Şema → {mod, kind:'export'|'backup'|'app'} */
+  function classify(j){
+    if(!j||typeof j!=='object'||typeof j.schema!=='string')return null;
+    if(j.schema==='galapagos.app.backup.v1')return {kind:'app'};
+    const m=MODS.find(m=>j.schema===m.sc+'.v1'||j.schema===m.sc+'.backup.v1');
+    if(!m)return null;
+    return {mod:m.id,kind:j.schema.endsWith('.backup.v1')?'backup':'export'};
+  }
+
+  function publish(id,obj,force){
+    if(!obj)return false;const b=bus(),h=hash(obj);
+    if(!force&&b.pub[id]&&b.pub[id].hash===h)return false;
+    b.pub[id]={at:Date.now(),hash:h,data:obj};
+    // modül kendi yayınını görmüş sayılır
+    return write(BUS,b);
+  }
+  function stale(id){const b=bus();return (UP[id]||[]).filter(u=>b.pub[u]&&((b.seen[id]||{})[u]!==b.pub[u].hash))}
+  function markSeen(id,ups){const b=bus();b.seen[id]=b.seen[id]||{};(ups||UP[id]||[]).forEach(u=>{if(b.pub[u])b.seen[id][u]=b.pub[u].hash});write(BUS,b)}
+  function upText(ups){const b=bus();return ups.filter(u=>b.pub[u]).map(u=>JSON.stringify(b.pub[u].data,null,1)).join('\n\n')}
+
+  /* ---------- modül tarafı ---------- */
+  function expFromTxt(){const el=document.querySelector('#exTxt');if(!el||!el.value)return null;try{return JSON.parse(el.value)}catch(e){return null}}
+  function flush(force){
+    if(!ad||ME==='home')return false;
+    let o=null;try{o=ad.exp?ad.exp():expFromTxt()}catch(e){o=null}
+    return publish(ME,o,force);
+  }
+  function dirty(){if(!ready)return;clearTimeout(tm);tm=setTimeout(()=>{flush();window.dispatchEvent(new Event('gx:bus'))},600)}
+  function register(id,cfg){
+    ad=cfg||{};
+    const go=()=>{
+      loadedAt=Date.now();
+      // ilk açılış: henüz yayın yoksa yayınla (yapıştırılmış bir çıktının üstüne açılışta yazmaz)
+      setTimeout(()=>{if(!bus().pub[ME])flush();ready=true;if(ad.onReady)try{ad.onReady()}catch(e){}window.dispatchEvent(new Event('gx:bus'))},350);
+    };
+    if(document.readyState==='complete')go();else window.addEventListener('load',go);
+  }
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function setVal(sel,v){const el=document.querySelector(sel);if(!el)return false;el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}));return true}
+  function txt(sel){const el=document.querySelector(sel);return el?el.textContent.trim():''}
+  /* Önizle ve al: modülün kendi içe aktarma akışını açar (uygulama kullanıcıda) */
+  function pullUI(ups){
+    ups=ups||stale(ME);if(!ups.length||!ad||!ad.ta)return false;
+    if(ad.tab&&location.hash!=='#'+ad.tab)location.hash=ad.tab;
+    setVal(ad.ta,upText(ups));
+    const b=document.querySelector(ad.btn);if(b)b.click();
+    markSeen(ME,ups);
+    setTimeout(()=>{const el=document.querySelector(ad.msg)||document.querySelector(ad.ta);if(el)el.scrollIntoView({block:'center',behavior:'smooth'})},120);
+    return true;
+  }
+  /* Otomatik al (ana sayfadaki zincir güncellemesi ve M6): önizlemeyi kendisi onaylar */
+  async function autoImport(ups){
+    ups=(ups||UP[ME]||[]).filter(u=>bus().pub[u]);
+    if(!ups.length)return {ok:false,msg:'Önceki modül verisi yok'};
+    if(ad.auto){const r=ad.auto(upText(ups));markSeen(ME,ups);await sleep(250);flush();return {ok:true,msg:r||'alındı',ups}}
+    setVal(ad.ta,upText(ups));const b=document.querySelector(ad.btn);if(b)b.click();await sleep(250);
+    let msg=txt(ad.msg);
+    if(ad.apply){const a=document.querySelector(ad.apply);if(a){a.click();await sleep(250);msg=txt(ad.msg)||msg}}
+    markSeen(ME,ups);flush();
+    return {ok:true,msg:msg||'alındı',ups};
+  }
+  async function restore(text){
+    const el=document.querySelector('#bkTxt'),b=document.querySelector('#bkIn');
+    if(!el||!b)return {ok:false,msg:'Bu modülde geri yükleme alanı yok'};
+    el.value=text;b.click();await sleep(300);flush(true);
+    return {ok:true,msg:txt('#bkMsg')||'geri yüklendi'};
+  }
+
+  /* ---------- toplu yedek ---------- */
+  function appBackup(){
+    const keys={};
+    for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^galapagos_/.test(k)||k===APP)continue;
+      let v=read(k);
+      if(k==='galapagos_m1_v1'&&v&&v.settings){v=JSON.parse(JSON.stringify(v));delete v.settings.geminiKey}
+      keys[k]=v}
+    return {schema:'galapagos.app.backup.v1',exported_at:new Date().toISOString(),app:'Galapagos',keys};
+  }
+  function snapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^galapagos_/.test(k)&&k!==APP)o[k]=localStorage.getItem(k)}return o}
+  function restoreSnapshot(o){
+    const cur=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^galapagos_/.test(k)&&k!==APP)cur.push(k)}
+    cur.forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>localStorage.setItem(k,v));
+  }
+  function applyAppBackup(j){
+    const gk=(read('galapagos_m1_v1')||{}).settings?.geminiKey;
+    Object.entries(j.keys||{}).forEach(([k,v])=>{if(!/^galapagos_/.test(k)||k===APP||v==null)return;
+      if(k==='galapagos_m1_v1'&&gk&&v.settings&&!v.settings.geminiKey)v.settings.geminiKey=gk;
+      write(k,v)});
+  }
+
+  return {MODS,UP,byId,ME,AUTO,bus,app,setApp,hash,extractObjects,classify,publish,stale,markSeen,upText,
+    register,dirty,flush,pullUI,autoImport,restore,appBackup,snapshot,restoreSnapshot,applyAppBackup,read,write,
+    get adapter(){return ad},get ready(){return ready},sleep};
+})();
+window.GX=GX;
+
+</script>
+<script>
+/* Galapagos · kabuk: yan menü, "Önizle ve al" şeridi, service worker */
+(()=>{
+  const G=window.GX;if(!G||G.AUTO||window.top!==window)return; // gizli çerçevede (zincir güncellemesi) arayüz yok
+  const ME=G.ME,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const tf=t=>{const d=new Date(t);return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})};
+  const ICON={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    m1:'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>',m2:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.5a3 3 0 0 1 0 6M21 20c0-2.6-1.6-4.8-4-5.6"/>',
+    m3:'<path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/>',m4:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',
+    m5:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',m6:'<path d="M12 3v18M5 8h14M7 8l-3 7h6zM17 8l-3 7h6z"/>'};
+  const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]||''}</svg>`;
+  const items=[{id:'home',file:'index.html',n:'Ana sayfa',s:'Ana sayfa'}].concat(G.MODS);
+
+  function dot(id){if(id==='home')return '';const st=G.stale(id);return st.length?`<i class="gx-dot" title="Önceki modülde değişiklik var"></i>`:''}
+  function sideHTML(){
+    return `<div class="gx-brand"><span class="gx-logo">G</span><div><b>Galapagos</b><small>Bar fizibilite</small></div></div>
+    <nav class="gx-nav" aria-label="Modüller">${items.map((m,i)=>`<a href="${m.file}" class="${m.id===ME?'on':''}"${m.id===ME?' aria-current="page"':''}>${svg(m.id)}<span>${i?`<em>${i}</em>`:''}${esc(m.n)}</span>${dot(m.id)}</a>`).join('')}</nav>
+    <div class="gx-sfoot"><a href="index.html#yedek">Tüm verileri yedekle</a><small>Veriler sadece bu tarayıcıda kalır.</small></div>`;
+  }
+  function build(){
+    document.body.classList.add('gx');
+    const side=document.createElement('aside');side.className='gx-side';side.id='gxSide';side.innerHTML=sideHTML();
+    const ov=document.createElement('div');ov.className='gx-ov';ov.addEventListener('click',close);
+    document.body.prepend(ov);document.body.prepend(side);
+    // ☰ başlıkta
+    const hdr=document.querySelector('header.top');
+    if(hdr){const b=document.createElement('button');b.type='button';b.className='gx-burger';b.setAttribute('aria-label','Menüyü aç');b.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';b.addEventListener('click',open);hdr.prepend(b);hdr.classList.add('gx-hdr')}
+    // alt sekme çubuğunun başına "Menü"
+    const nav=document.querySelector('nav.tabs');
+    if(nav){const a=document.createElement('a');a.href='#';a.className='gx-tabmenu';a.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Modüller';a.addEventListener('click',e=>{e.preventDefault();open()});nav.prepend(a);
+      const n=nav.querySelectorAll('a').length;nav.style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;nav.classList.add('gx-n'+n)}
+    // şerit
+    if(ME!=='home'&&ME!=='m1'){const ban=document.createElement('div');ban.className='gx-ban';ban.id='gxBan';ban.hidden=true;
+      if(hdr)hdr.after(ban);else document.body.prepend(ban)}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  }
+  function open(){document.body.classList.add('gx-open');const f=document.querySelector('.gx-nav a');if(f)f.focus()}
+  function close(){document.body.classList.remove('gx-open')}
+  function refresh(){
+    const side=document.getElementById('gxSide');if(side){const nav=side.querySelector('.gx-nav');const t=document.createElement('div');t.innerHTML=sideHTML();nav.replaceWith(t.querySelector('.gx-nav'))}
+    const ban=document.getElementById('gxBan');if(!ban)return;
+    if(ME==='m6'){ban.hidden=true;return}
+    const st=G.stale(ME),b=G.bus();
+    if(!st.length||!G.adapter||!G.adapter.ta){ban.hidden=true;return}
+    ban.hidden=false;
+    ban.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg><div><b>${st.map(u=>`Modül ${u.slice(1)}`).join(' + ')} değişti</b><small>${st.map(u=>`${G.byId(u).s}: ${tf(b.pub[u].at)}`).join(' · ')}</small></div><div class="gx-bb"><button type="button" class="gx-take">Önizle ve al</button><button type="button" class="gx-skip">Yoksay</button></div>`;
+    ban.querySelector('.gx-take').onclick=()=>{G.pullUI(st);refresh()};
+    ban.querySelector('.gx-skip').onclick=()=>{G.markSeen(ME,st);refresh()};
+  }
+  function start(){build();refresh();
+    window.addEventListener('gx:bus',refresh);
+    window.addEventListener('storage',e=>{if(!e.key||/^galapagos_bus/.test(e.key)){refresh();if(ME==='m6'&&G.adapter&&G.adapter.pull)G.adapter.pull()}});
+    sw();
+  }
+  /* ---------- service worker (sadece http/https) ---------- */
+  function toast(html,btn,fn){let t=document.getElementById('gxToast');if(!t){t=document.createElement('div');t.id='gxToast';t.className='gx-toast';document.body.append(t)}
+    t.innerHTML=`<span>${html}</span>${btn?`<button type="button">${btn}</button>`:''}`;t.classList.add('on');if(btn)t.querySelector('button').onclick=fn;}
+  function sw(){
+    if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      const ask=w=>toast('Yeni sürüm hazır.','Yenile',()=>w.postMessage('skip'));
+      if(reg.waiting&&navigator.serviceWorker.controller)ask(reg.waiting);
+      reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)ask(w)})});
+      setInterval(()=>reg.update().catch(()=>{}),60*60*1000);
+    }).catch(()=>{});
+    let done=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(done)return;done=true;location.reload()});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  window.GXShell={refresh,toast,open,close};
+})();
+
+</script>
+</head>
+<body>
+<header class="top"><h1>Galapagos</h1><p class="sub">Cocktailbar, Chemnitz · 6 modüllü fizibilite ve karar</p></header>
+<main>
+  <section class="card" id="decCard" aria-live="polite"></section>
+  <div id="bkWarn"></div>
+  <div class="mods" id="mods"></div>
+
+  <section class="card" id="zincir">
+    <h2>Tüm zinciri sırayla güncelle</h2>
+    <p class="note">Sırayla: Modül 1 → 2 → 3 → 4 → 3 → 4 → 5 → 6. Her modül bir önceki modülün son verisini kendi içe aktarma kuralıyla alır (Modül 3 ile 4 birbirini beslediği için ikişer tur). Önce tüm kayıtların kopyası alınır; sonuç beğenmezsen tek dokunuşla geri dönersin.</p>
+    <div class="btns"><button class="btn pri" type="button" id="chainGo">Zinciri güncelle</button><button class="btn" type="button" id="chainUndo" hidden>Geri al</button></div>
+    <ul class="pl" id="chainOut"></ul>
+  </section>
+
+  <div class="two">
+    <section class="card" id="aktar">
+      <h2>Toplu içe aktar</h2>
+      <p class="note">Modüllerin yedeklerini ve çıktılarını (birden fazla JSON, aralarında yazı olsa bile) buraya yapıştır ya da dosyaları seç. Önce önizleme gelir; uyguladıktan sonra geri alabilirsin.</p>
+      <label class="lb" for="impTxt">JSON yapıştır</label>
+      <textarea id="impTxt" spellcheck="false" placeholder='{"schema":"galapagos.ciro.backup.v1", …}'></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="impPrev">Önizle</button><label class="btn" for="impFile">Dosyalardan seç</label><input type="file" id="impFile" accept=".json,application/json,text/plain" multiple hidden></div>
+      <ul class="pl" id="impList"></ul>
+      <div class="btns" id="impAct" hidden><button class="btn pri" type="button" id="impApply">Seçilenleri uygula</button><button class="btn" type="button" id="impCancel">Vazgeç</button></div>
+      <p class="note" id="impMsg" aria-live="polite"></p>
+      <div class="btns" id="impUndoBox" hidden><button class="btn" type="button" id="impUndo">Geri al</button></div>
+    </section>
+
+    <section class="card" id="yedek">
+      <h2>Tüm verileri yedekle</h2>
+      <p class="note">Altı modülün kayıtları tek dosyada. Gemini API anahtarı yedeğe yazılmaz. Geri yüklemek için dosyayı soldaki "Toplu içe aktar"a ver.</p>
+      <p class="note" id="bkLast"></p>
+      <div class="btns"><button class="btn pri" type="button" id="bkDl">İndir (.json)</button><button class="btn" type="button" id="bkCopy">Kopyala</button></div>
+      <textarea id="bkTxt" readonly spellcheck="false" hidden aria-label="Yedek JSON"></textarea>
+      <p class="note" id="bkMsg" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <div class="two">
+    <section class="card" id="kur">
+      <h2>Telefona kur</h2>
+      <div class="btns"><button class="btn pri" type="button" id="instBtn" hidden>Ana ekrana ekle</button></div>
+      <p class="note"><b>iPhone (Safari):</b></p>
+      <ol class="steps note"><li>Bu sayfayı <b>Safari</b>'de aç (Chrome'da kısayol uygulama gibi açılmaz).</li><li>Alttaki Paylaş düğmesi → "Ana Ekrana Ekle".</li><li>Ad "Galapagos" kalsın → Ekle.</li></ol>
+      <p class="note"><b>Android (Chrome):</b> yukarıdaki düğme görünüyorsa ona dokun; yoksa ⋮ menü → "Ana ekrana ekle" / "Uygulamayı yükle".</p>
+      <p class="note" id="perst"></p>
+      <p class="note">Kısayoldan açılan modda iPhone yazdırmaya izin vermeyebilir: Modül 6 PDF'i için sayfayı Safari'de aç.</p>
+    </section>
+    <section class="card" id="tasi">
+      <h2>Eski dosyalardan taşıma</h2>
+      <ol class="steps note">
+        <li>Eski Modül 1–6 sayfalarının her birinde yedek bölümünde "Yedek oluştur" → "Kopyala".</li>
+        <li>Altısını art arda soldaki "Toplu içe aktar" alanına yapıştır → Önizle → Uygula.</li>
+        <li>Ardından "Zinciri güncelle" ile modülleri birbirine bağla.</li>
+      </ol>
+      <p class="note">Veriler cihaza bağlıdır: telefondaki kayıt laptopa kendiliğinden geçmez. Taşımak için "Tüm verileri yedekle" dosyasını diğer cihazda içe aktar.</p>
+    </section>
+  </div>
+  <p class="foot">Veriler sadece bu tarayıcıda (localStorage) kalır · Planlama aracıdır, vergi veya hukuk danışmanlığı değildir · <span id="ver"></span></p>
+</main>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const eur=n=>Number.isFinite(+n)&&n!==null?new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}).format(Math.round(n)).replace('-','−')+' €':'–';
+const tf=t=>{if(!t)return '–';const d=new Date(t);return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})};
+const DESC={m1:'Dükkânın alanı, koltuk ve kapasite, kira, rakipler (OSM).',m2:'Kadro şablonları, haftalık vardiya, yasal işveren maliyeti.',m3:'Menü marjı, gerekli ciro, RevPASH, senaryolar.',m4:'Yatırım, KfW/SAB, açılışa kadar nakit akışı, saha rehberi.',m5:'Şirket türü kıyası, vergi takvimi, Rücklage, GoBD & operasyon.',m6:'Skor, veto, koşullu puan, pazarlık, banka/StB belgesi.'};
+const VL={g:'YEŞİL · Devam',y:'SARI · Pazarlık',r:'KIRMIZI · Uzak dur'};
+
+function render(){
+  const b=GX.bus(),m6=b.pub.m6;
+  const dc=$('#decCard');
+  if(m6&&m6.data){const d=m6.data,stl=GX.stale('m6');
+    dc.innerHTML=`<div class="dec"><div class="light ${d.verdict}" aria-hidden="true">${d.score??'–'}</div><div><b class="v">${VL[d.verdict]||'–'}</b><span class="note" style="margin:0">${esc(d.venue||'')} · skor ${d.score}/100 · ${tf(m6.at)}</span>${d.veto&&d.veto.length?`<p class="note" style="color:var(--r);margin:4px 0 0">Veto: ${d.veto.map(esc).join(' · ')}</p>`:''}</div></div>
+    <div class="kv"><div><span>Açılış kasası</span><b>${eur(d.open)}</b></div><div><span>En dip</span><b>${eur(d.tief)}</b></div><div><span>DSCR 3. yıl</span><b>${d.dscr3!=null?String(d.dscr3).replace('.',','):'–'}</b></div><div><span>Birikim / ay</span><b>${eur(d.save)}</b></div></div>
+    <p class="note">${stl.length?`<span style="color:var(--y)">Modül ${stl.map(x=>x.slice(1)).join(', ')} panodan sonra değişti → panoyu aç ya da zinciri güncelle.</span> `:''}${(d.loaded||[]).length<5?`Örnek değerle çalışan modüller var (${['m1','m2','m3','m4','m5'].filter(x=>!(d.loaded||[]).includes(x)).map(x=>x.slice(1)).join(', ')}).`:''}</p>
+    <div class="btns"><a class="btn pri" href="m6-karar.html">Karar panosunu aç</a><a class="btn" href="m6-karar.html#ozet">Banka / StB belgesi</a></div>`;
+  }else dc.innerHTML=`<h2>Karar ışığı</h2><p class="note">Henüz hesaplanmadı. Modül 1'den başla ya da eski yedeklerini aşağıdan içe aktar; sonra "Zinciri güncelle".</p><div class="btns"><a class="btn pri" href="m1-mekan.html">Modül 1'i aç</a></div>`;
+  $('#mods').innerHTML=GX.MODS.map((m,i)=>{const p=b.pub[m.id],stl=GX.stale(m.id),has=!!GX.read(m.key);
+    const st=stl.length?`<span class="st w">● Modül ${stl.map(x=>x.slice(1)).join(' + ')} değişti → aç ve al</span>`:p?`<span class="st ok">Güncel · ${tf(p.at)}</span>`:has?`<span class="st">Kayıt var · henüz yayınlanmadı</span>`:`<span class="st">Henüz açılmadı</span>`;
+    return `<a class="mod" href="${m.file}"><span class="no">Modül ${i+1}</span><b>${esc(m.n)}</b><p>${DESC[m.id]}</p>${st}</a>`}).join('');
+  const a=GX.app(),days=a.lastBackup?Math.floor((Date.now()-a.lastBackup)/864e5):null,anyData=GX.MODS.some(m=>GX.read(m.key));
+  $('#bkLast').textContent=a.lastBackup?`Son tam yedek: ${tf(a.lastBackup)} (${days} gün önce)`:'Henüz tam yedek alınmadı.';
+  $('#bkWarn').innerHTML=anyData&&(days==null||days>=7)?`<section class="card warnbox"><b>Haftalık yedek zamanı.</b><p class="note">Tarayıcı verisi silinirse (özellikle iPhone uzun süre açılmayan siteleri temizleyebilir) planlarını kaybedersin. <a href="#yedek">Şimdi yedekle</a></p></section>`:'';
+}
+
+/* ---------- gizli çerçevede modül çalıştır ---------- */
+async function inFrame(id,fn){
+  const m=GX.byId(id),f=document.createElement('iframe');f.className='gx-runner';f.setAttribute('aria-hidden','true');f.tabIndex=-1;
+  f.src=m.file+'?gx=auto';document.body.append(f);
+  try{
+    await new Promise((res,rej)=>{f.onload=res;setTimeout(()=>rej(new Error('zaman aşımı')),25000)});
+    const W=f.contentWindow;let t=0;while(!(W.GX&&W.GX.ready)&&t<80){await GX.sleep(100);t++}
+    if(!W.GX||!W.GX.ready)throw new Error('modül açılamadı');
+    const r=fn?await fn(W.GX,W):{ok:true,msg:'açıldı'};await GX.sleep(120);return r;
+  }finally{f.remove()}
+}
+
+/* ---------- zincir ---------- */
+let chainSnap=null;
+$('#chainGo').onclick=async()=>{
+  const btn=$('#chainGo'),out=$('#chainOut');btn.disabled=true;$('#chainUndo').hidden=true;chainSnap=GX.snapshot();
+  const S=[['m1',null,'kayıt yayınlanır'],['m2',['m1']],['m3',['m1','m2','m4']],['m4',['m1','m3']],['m3',['m4']],['m4',['m1','m3']],['m5',['m3','m4']],['m6',null,'tüm modüller']];
+  out.innerHTML='';
+  for(const [id,ups,lab] of S){
+    const li=document.createElement('li');li.innerHTML=`<i>…</i><div><b>Modül ${id.slice(1)} · ${esc(GX.byId(id).n)}</b><small>${ups?'alıyor: Modül '+ups.map(u=>u.slice(1)).join(' + '):lab}</small></div>`;out.append(li);
+    try{
+      const r=await inFrame(id,async g=>{
+        if(id==='m1')return {ok:true,msg:GX.bus().pub.m1?'yayında':'yayın yok'};
+        if(id==='m6'){const s=g.stale('m6');if(s.length)await g.autoImport(s);const d=(g.bus().pub.m6||{}).data;return {ok:!!d,msg:d?`${VL[d.verdict]||'–'} · skor ${d.score}/100`:'özet yok'}}
+        const have=ups.filter(u=>g.bus().pub[u]);if(!have.length)return {ok:false,msg:'önceki modül verisi yok, atlandı'};
+        return await g.autoImport(have)});
+      li.querySelector('i').textContent=r.ok?'✓':'–';li.querySelector('i').className=r.ok?'ok':'warn';
+      li.querySelector('small').textContent+=' → '+(r.msg||'').replace(/\s+/g,' ').slice(0,160);
+    }catch(e){li.querySelector('i').textContent='✕';li.querySelector('i').className='bad';li.querySelector('small').textContent+=' → hata: '+e.message}
+  }
+  btn.disabled=false;$('#chainUndo').hidden=false;render();window.GXShell&&GXShell.refresh();
+};
+$('#chainUndo').onclick=()=>{if(!chainSnap)return;GX.restoreSnapshot(chainSnap);chainSnap=null;$('#chainUndo').hidden=true;$('#chainOut').innerHTML='<li><i class="ok">↺</i><div><b>Zincirden önceki kayıtlara dönüldü.</b></div></li>';render();window.GXShell&&GXShell.refresh()};
+
+/* ---------- toplu içe aktar ---------- */
+let pend=[],impSnap=null;
+const KIND={app:'Tam uygulama yedeği',backup:'Yedek (kayıt)',export:'Çıktı'};
+function describe(j,c){
+  if(c.kind==='app'){const k=Object.keys(j.keys||{});return `${k.length} anahtar (${k.map(x=>x.replace('galapagos_','')).join(', ')}): tüm kayıtların üzerine yazılır`}
+  const m=GX.byId(c.mod),n=`Modül ${c.mod.slice(1)} · ${m.n}`;
+  if(c.kind==='backup'){const ex=c.mod==='m1'?` · ${(j.venues||[]).length} mekân`:'';return `${n}: modülün kendi kaydı bu yedekle değişir${ex}`}
+  if(c.mod==='m6')return `${n}: özet, içe aktarılacak bir şey yok`;
+  return `${n}${j.venue_name?' · '+esc(j.venue_name):''}: sonraki modüllere "Önizle ve al" olarak gider; Modül ${c.mod.slice(1)}'in kaydı değişmez`;
+}
+function preview(objs){
+  const seen={};pend=objs.map((j,i)=>{const c=GX.classify(j);return {j,c,i}});
+  // aynı modülün aynı türünden sonuncusu geçerli
+  pend.forEach(p=>{if(!p.c)return;const k=p.c.kind+(p.c.mod||'');p.dup=!!seen[k];if(seen[k])seen[k].old=true;seen[k]=p});
+  $('#impList').innerHTML=pend.map((p,i)=>{
+    if(!p.c)return `<li><i class="bad">✕</i><div><b>Tanınmadı</b><small>${esc((p.j.schema||Object.keys(p.j).slice(0,4).join(', ')).toString().slice(0,80))} · Galapagos yedeği veya modül çıktısı değil</small></div></li>`;
+    const off=p.old||(p.c.kind==='export'&&p.c.mod==='m6');
+    return `<li><input type="checkbox" data-i="${i}" ${off?'':'checked'} aria-label="Uygula"><div><b>${KIND[p.c.kind]}${p.j.exported_at?` · ${tf(p.j.exported_at)}`:''}</b><small>${describe(p.j,p.c)}${p.old?' · <span class="warn">aynı türden daha yeni bir JSON da var</span>':''}</small>${p.c.kind==='backup'&&p.c.mod==='m1'?`<label class="rep"><input type="checkbox" data-rep="${i}" checked> Sadece yedekteki mekânlar kalsın (kapalıysa mevcut mekânlara eklenir)</label>`:''}</div></li>`}).join('')||'<li><i class="bad">✕</i><div><b>JSON bulunamadı</b><small>{ … } metninin tamamını yapıştır.</small></div></li>';
+  $('#impAct').hidden=!pend.some(p=>p.c);$('#impMsg').textContent='';
+}
+$('#impPrev').onclick=()=>preview(GX.extractObjects($('#impTxt').value));
+$('#impFile').onchange=async e=>{const fs=[...e.target.files];const t=(await Promise.all(fs.map(f=>f.text()))).join('\n\n');$('#impTxt').value=t;preview(GX.extractObjects(t));e.target.value=''};
+$('#impCancel').onclick=()=>{pend=[];$('#impList').innerHTML='';$('#impAct').hidden=true};
+$('#impApply').onclick=async()=>{
+  const rep=new Set($$('#impList input[data-rep]:checked').map(x=>+x.dataset.rep));
+  const sel=$$('#impList input[data-i]:checked').map(x=>pend[+x.dataset.i]).filter(p=>p&&p.c);if(!sel.length)return;
+  const btn=$('#impApply');btn.disabled=true;impSnap=GX.snapshot();const res=[];
+  const ord=p=>(p.c.kind==='app'?0:p.c.kind==='backup'?1:2)*10+(p.c.mod?+p.c.mod.slice(1):0);
+  sel.sort((a,b)=>ord(a)-ord(b));
+  for(const p of sel){
+    try{
+      if(p.c.kind==='app'){GX.applyAppBackup(p.j);res.push('Tam yedek yüklendi')}
+      else if(p.c.kind==='backup'){const r=await inFrame(p.c.mod,g=>g.restore(JSON.stringify(p.j)));let x=r.msg;
+        if(p.c.mod==='m1'&&rep.has(p.i))x+=onlyBackupVenues(p.j);res.push(`M${p.c.mod.slice(1)}: ${x}`)}
+      else if(p.c.mod!=='m6'){GX.publish(p.c.mod,p.j,true);res.push(`M${p.c.mod.slice(1)} çıktısı köprüye eklendi`)}
+    }catch(e){res.push(`M${(p.c.mod||'?').slice(1)}: hata ${e.message}`)}
+  }
+  btn.disabled=false;$('#impAct').hidden=true;$('#impList').innerHTML='';$('#impTxt').value='';
+  $('#impMsg').innerHTML=esc(res.join(' · '))+'<br>Modülleri birbirine bağlamak için şimdi "Zinciri güncelle".';$('#impUndoBox').hidden=false;
+  render();window.GXShell&&GXShell.refresh();
+};
+$('#impUndo').onclick=()=>{if(!impSnap)return;GX.restoreSnapshot(impSnap);impSnap=null;$('#impUndoBox').hidden=true;$('#impMsg').textContent='İçe aktarmadan önceki kayıtlara dönüldü.';render();window.GXShell&&GXShell.refresh()};
+
+function onlyBackupVenues(j){
+  const ids=new Set((j.venues||[]).map(v=>v.id)),s=GX.read('galapagos_m1_v1');
+  if(!s||!Array.isArray(s.venues)||!ids.size)return '';
+  const before=s.venues.length;s.venues=s.venues.filter(v=>ids.has(v.id));
+  if(!s.venues.length)return '';
+  if(!s.venues.some(v=>v.id===s.active))s.active=s.venues[0].id;
+  GX.write('galapagos_m1_v1',s);const b=GX.bus();delete b.pub.m1;GX.write('galapagos_bus_v1',b);
+  return before>s.venues.length?` (diğer ${before-s.venues.length} mekân kaldırıldı)`:'';
+}
+/* ---------- tam yedek ---------- */
+function bkText(){return JSON.stringify(GX.appBackup(),null,1)}
+function stamp(){GX.setApp({lastBackup:Date.now()});render()}
+$('#bkDl').onclick=()=>{const t=bkText(),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download=`galapagos-yedek-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);$('#bkMsg').textContent='Yedek indirildi. Dosyayı bulut klasörüne ya da e-postana koy.';stamp()};
+$('#bkCopy').onclick=async()=>{const t=bkText(),ta=$('#bkTxt');ta.hidden=false;ta.value=t;
+  try{await navigator.clipboard.writeText(t);$('#bkMsg').textContent='Yedek panoya kopyalandı.'}catch(e){ta.select();$('#bkMsg').textContent='Kopyalama engellendi: metni kutudan seçip kopyala.'}stamp()};
+
+/* ---------- kurulum & kalıcı depolama ---------- */
+let bip=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();bip=e;$('#instBtn').hidden=false});
+$('#instBtn').onclick=async()=>{if(!bip)return;bip.prompt();try{await bip.userChoice}catch(e){}bip=null;$('#instBtn').hidden=true};
+(async()=>{const el=$('#perst');if(!navigator.storage||!navigator.storage.persisted){el.textContent='';return}
+  let p=await navigator.storage.persisted();if(!p&&navigator.storage.persist){try{p=await navigator.storage.persist()}catch(e){}}
+  el.innerHTML=p?'<span style="color:var(--ok)">Kalıcı depolama açık:</span> tarayıcı verilerini kendiliğinden silmez.':'Kalıcı depolama verilmedi: haftalık yedek önemli. (Kısayolu ana ekrana ekleyince çoğu tarayıcı izin verir.)'})();
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(standalone)$('#kur').querySelector('h2').textContent='Uygulama kurulu';
+
+window.addEventListener('storage',e=>{if(!e.key||/^galapagos_/.test(e.key))render()});
+window.addEventListener('pageshow',render);
+fetch('sw.js',{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/VERSION='([^']+)'/);if(m)$('#ver').textContent='Sürüm '+m[1].replace('gx-','')}).catch(()=>{});
+if(location.protocol==='file:'){['#zincir','#aktar'].forEach(s=>{const n=document.createElement('p');n.className='note';n.style.color='var(--y)';n.textContent='Dosyadan (file://) açıldı: bu bölüm tarayıcı kısıtı yüzünden çalışmayabilir. GitHub Pages adresini kullan; tek modüller burada da çalışır.';$(s).querySelector('h2').after(n)})}
+render();
+</script>
+</body>
+</html>

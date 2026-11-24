@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos Karar Panosu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool with a bar handbook's warmth, the closing page of Modül 1–5
+   IDEA the bar's go/no-go sheet on the manager's clipboard: one light, the reasons beside it, the levers below
+   PICTURE a large score dial in the verdict colour with the veto list next to it; five module rows like an X-ray strip
+   COLOUR deep smoke-green night ground, beige ink, olive lead; green/amber/coral as the only signal colours; print is white
+   TYPE Fraunces 600 display + DM Sans text
+   LAYOUT phone: sticky KPI strip, verdict, X-ray, cross-checks, bank card; tabs for what-if, data hub, archive/print, guide */
+
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sm:#80a493;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 4px}
+h1{font:600 clamp(28px,5vw,40px)/1.05 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2,h3{font:600 20px/1.2 var(--disp);margin:0 0 8px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0}
+main{max-width:1240px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.view{display:none}
+.view.on{display:block}
+.kpis{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0 8px;border-bottom:1px solid var(--line);margin-top:6px}
+.kpi b{display:block;font:600 clamp(18px,5.2vw,30px)/1.1 var(--disp);white-space:nowrap}
+.kpi span{display:block;font-size:13px;line-height:1.2;color:var(--mute)}
+.kpi.y b{color:var(--y)}
+.kpi.r b{color:var(--r)}
+.kpi.g b{color:var(--ok)}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:78px}}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.lead{font:600 clamp(20px,4vw,27px)/1.2 var(--disp);margin:4px 0 8px;text-wrap:balance}
+.lead em{font-style:normal;color:var(--sand)}
+.lead em.r{color:var(--r)}
+.fig{position:relative;height:300px;margin-top:6px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.fig text{font:13px var(--txt);fill:var(--mute);paint-order:stroke;stroke:var(--p);stroke-width:4px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute);margin-top:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;flex:none}
+.vs{display:flex;align-items:flex-end;gap:2px;height:44px;margin-top:6px}
+.vs i{flex:1;background:var(--sm);border-radius:2px 2px 0 0;opacity:.8}
+.su{margin-top:8px}
+.su .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.sb{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--line)}
+.sb i{display:block;height:100%}
+.sl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:4px 14px;font-size:14px;margin-top:8px}
+.sl span{display:flex;justify-content:space-between;gap:8px}
+.sl b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.al{list-style:none;margin:0;padding:0}
+.al li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.al li:first-child{border-top:0}
+.al li::before{content:'';width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mute)}
+.al li.r::before{background:var(--r)}
+.al li.y::before{background:var(--y)}
+.al li.i::before{background:var(--sm)}
+.al li.ok::before{background:var(--ok)}
+details.sec{background:var(--p);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 19px/1.2 var(--disp);min-height:54px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'+';font:400 22px var(--txt);color:var(--mute);flex:none}
+details.sec[open]>summary::after{content:'–'}
+.sv{font:500 14px var(--txt);color:var(--sand);white-space:nowrap;margin-left:auto}
+.in{padding:0 14px 14px}
+.fld{padding:10px 0;border-top:1px solid var(--line)}
+.fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fh label{font-size:15px}
+.nu{display:flex;align-items:center;gap:6px;flex:none}
+.nu em{font-style:normal;color:var(--mute);font-size:14px;min-width:2.4em;white-space:nowrap}
+input.num{width:6.6em;font:500 16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:right;min-height:44px;font-variant-numeric:tabular-nums}
+input[type=text],input[type=month],textarea,select{width:100%;font:16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input[type=month]{width:auto;min-width:10em}
+textarea{min-height:90px;resize:vertical}
+textarea.code{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:150px}
+label.lb{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ol);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:4px 0 0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--ol) var(--f,50%),var(--line) var(--f,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--sand);border:3px solid var(--bg);margin-top:-11px;box-shadow:0 0 0 1px var(--ol)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--ol)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--sand);border:3px solid var(--bg)}
+.hint{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-height:54px}
+.sw{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.sw:checked{background:var(--ol)}
+.sw:checked::after{transform:translateX(22px)}
+.out{margin-top:8px;background:var(--p2);border-radius:10px;padding:4px 12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-top:1px dashed var(--line);font-size:15px}
+.row:first-child{border-top:0}
+.row b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.row.big b{font:600 20px var(--disp);color:var(--sand)}
+.row b.y{color:var(--y)}
+.row b.r{color:var(--r)}
+.row b.g{color:var(--ok)}
+.btn{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--ol);color:#141a10;border-color:var(--ol)}
+.btn.dan{color:var(--r)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.seg button{min-height:44px;padding:0 14px;background:var(--p2);color:var(--mute);border:0;border-left:1px solid var(--line);font:500 15px var(--txt);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--ol);color:#141a10}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th,.t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t th:first-child,.t td:first-child{text-align:left;color:var(--mute);position:sticky;left:0;background:var(--p)}
+.t thead th{font:600 15px var(--disp);color:var(--ink)}
+.t td.r{color:var(--r)}
+.t td.y{color:var(--y)}
+.t td.g{color:var(--ok)}
+.it{border-left:4px solid var(--ol)}
+.it .top{display:flex;gap:8px;align-items:center}
+.it .top input[type=text]{flex:1}
+.ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:0 10px}
+.ig label{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+.ig input.num{width:100%}
+.rp{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.5em,1fr));gap:8px}
+.rp label{display:flex;flex-direction:column;font-size:14px;color:var(--mute);gap:4px}
+.rp input.num{width:100%}
+.guide{max-width:760px}
+.guide h3{margin-top:18px}
+.guide dt{font-weight:700;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.src{font-size:14px;color:var(--sand);margin:4px 0}
+.banner{background:#3a2a14;color:var(--sand);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--p);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--mute);text-decoration:none;font-size:13px;min-height:58px}
+nav.tabs a.on{color:var(--sand)}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:15px;display:none;gap:12px;align-items:center;z-index:20;max-width:calc(100% - 32px)}
+#toast button{background:transparent;border:0;color:#3d5a2a;font:700 15px var(--txt);cursor:pointer;min-height:36px}
+@media(max-width:600px){.t{font-size:13px}.t th,.t td{padding:6px 5px}.fig{height:260px}}
+@media(prefers-reduced-motion:reduce){.sw::after{transition:none}}
+
+nav.tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+nav.tabs a{font-size:12px}
+.verd{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.dial{width:150px;height:150px;position:relative}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.dial .c b{font:600 44px/1 var(--disp)}
+.dial .c span{display:block;font-size:13px;color:var(--mute)}
+.vw{font:600 clamp(26px,6vw,38px)/1.05 var(--disp);margin:0 0 6px}
+.vw.g{color:var(--ok)}.vw.y{color:var(--y)}.vw.r{color:var(--r)}
+.vlist{list-style:none;margin:0;padding:0;font-size:14px}
+.vlist li{padding:3px 0}
+.vlist li.r{color:var(--r)}.vlist li.y{color:var(--y)}
+@media(max-width:520px){.verd{grid-template-columns:1fr;justify-items:start}.dial{width:130px;height:130px}}
+.xr{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.xr:first-child{border-top:0}
+.xr .lt{width:12px;height:12px;border-radius:50%}
+.xr b{font:600 16px var(--disp)}
+.xr small{display:block;color:var(--mute);font-size:13px}
+.xr .sc{font:600 18px var(--disp);white-space:nowrap}
+.xr .bar{grid-column:2/4;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.xr .bar i{display:block;height:100%}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--mute);margin-left:6px;vertical-align:1px}
+.tag.on{border-color:var(--ol);color:var(--ol)}
+.lv .fh small{display:block;color:var(--mute);font-size:13px}
+.minc{font-size:13px;margin:2px 0 0}
+.minc.g{color:var(--ok)}.minc.n{color:var(--mute)}
+.mini-v{display:flex;align-items:center;gap:10px;font:600 18px var(--disp)}
+.mini-v i{width:14px;height:14px;border-radius:50%}
+.hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.hub .card{margin:0}
+.sc-list{display:grid;gap:8px}
+.sc-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.sc-item input{width:22px;height:22px;accent-color:var(--ol);flex:none}
+.sc-item .nm{flex:1;min-width:0}
+.sc-item .nm small{display:block;color:var(--mute);font-size:13px}
+.notes textarea{min-height:96px;font-size:15px}
+/* print sheet */
+#sheet{background:#fff;color:#111;border-radius:6px;padding:18px 20px;font:12px/1.4 var(--txt);margin-top:12px}
+#sheet h1{font:600 20px/1.1 var(--disp);margin:0;color:#111}
+#sheet h2{font:600 13px/1.2 var(--disp);margin:10px 0 4px;color:#111;border-bottom:1px solid #ccc;padding-bottom:2px}
+#sheet .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+#sheet .pill{display:inline-block;padding:4px 12px;border-radius:14px;font:700 13px var(--txt);color:#fff;white-space:nowrap}
+#sheet .m6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+#sheet .m6 div{border:1px solid #ddd;border-radius:6px;padding:6px 8px}
+#sheet .m6 b{display:block;font:600 16px var(--disp);color:#111}
+#sheet .m6 span{font-size:11px;color:#555}
+#sheet .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+#sheet table{border-collapse:collapse;width:100%;font-size:11px}
+#sheet td,#sheet th{border-bottom:1px solid #e3e3e3;padding:3px 4px;text-align:right;white-space:nowrap;color:#111}
+#sheet td:first-child,#sheet th:first-child{text-align:left;white-space:normal}
+#sheet p,#sheet li{margin:2px 0;font-size:11.5px;color:#111}
+#sheet ol,#sheet ul{margin:0;padding-left:16px}
+#sheet .q{font-weight:700}
+#sheet .foot{font-size:10px;color:#666;margin-top:8px}
+@media(max-width:600px){#sheet .m6{grid-template-columns:repeat(2,minmax(0,1fr))}#sheet .two{grid-template-columns:1fr}}
+.cr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.cr:first-child{border-top:0}
+.cr.na{opacity:.55}
+.cr.all{border-top:2px solid var(--line)}
+.cr .cs input{width:22px;height:22px;accent-color:var(--ol);margin:0}
+.cr .cl b{display:block;font-size:15px;font-weight:500}
+.cr .cl small{display:block;color:var(--mute);font-size:13px}
+.cr .cv{text-align:right;white-space:nowrap}
+.cr .cv b{font:600 20px var(--disp)}
+.cr .cv small{display:block;font-size:12px;color:var(--mute)}
+.vd{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.ng{padding:10px 0;border-top:1px solid var(--line)}
+.ng:first-child{border-top:0}
+.ng .nh{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.ng .nh b{font-size:15px}
+.tagS{font-size:12px;padding:2px 8px;border-radius:10px;background:var(--p2);color:var(--mute);white-space:nowrap}
+.tagS.g{color:var(--ok)}.tagS.y{color:var(--y)}.tagS.r{color:var(--r)}
+.ng .nr{display:flex;flex-direction:column;gap:2px;margin-top:4px;font-size:14px}
+.ng .nr .g{color:var(--ok)}.ng .nr .y{color:var(--y)}.ng .nr .r{color:var(--r)}
+details.sub{margin-top:10px;border-top:1px solid var(--line)}
+details.sub>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--sand);font-size:15px}
+details.sub h4{font:600 15px var(--disp);color:var(--sand);margin:12px 0 2px}
+.docf input[type=text]{width:100%}
+#sheet .page{background:#fff;padding:2px 0 8px;margin-bottom:18px;border-bottom:2px dashed #bbb}
+#sheet .page:last-child{border-bottom:0;margin-bottom:0}
+#sheet .hdr{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:6px}
+#sheet .hdr p{margin:1px 0;font-size:11px;color:#333}
+#sheet .hdr .st{font-weight:700;color:#111;font-size:12px}
+#sheet .hdr .hr{text-align:right}
+#sheet .ph2{display:flex;justify-content:space-between;font-size:10px;color:#666;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:6px}
+#sheet .vline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0}
+#sheet .small{font-size:10.5px;color:#333}
+#sheet .m6{grid-template-columns:repeat(4,minmax(0,1fr))}
+#sheet table.wide td{white-space:normal}
+#sheet table.neg td{white-space:normal;vertical-align:top;text-align:left}
+#sheet table.neg td small{color:#555;font-size:9.5px}
+#sheet .dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+#sheet .chain{font-weight:700;font-size:11px}
+#sheet .mbs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+#sheet .mb{border:1px solid #ddd;border-radius:6px;padding:5px 7px}
+#sheet .mb b{font-size:11.5px}
+#sheet .mb .src{float:right;font-size:9.5px;color:#888}
+#sheet .mb .src.on{color:#2e8b3e}
+#sheet .mb p{font-size:10.5px;margin:2px 0}
+#sheet .mb .nx{color:#555;font-style:italic}
+#sheet .stand{font-size:9.5px;color:#a87400;border:1px solid #a87400;border-radius:6px;padding:0 4px;font-weight:500}
+@media screen and (max-width:600px){#sheet td,#sheet th{white-space:normal;word-break:break-word}#sheet table{width:100%}#sheetWrap{overflow-x:auto}#cross li,.out .row{overflow-wrap:anywhere}}
+@media(max-width:600px){#sheet .m6{grid-template-columns:repeat(2,minmax(0,1fr))}#sheet .mbs{grid-template-columns:1fr}#sheet .hdr{flex-direction:column}#sheet .hdr .hr{text-align:left}}
+@page{size:A4 portrait;margin:11mm}
+@media print{
+  body{background:#fff!important;padding:0!important;color:#111}
+  header.top,nav.tabs,#toast,.kpis,.noprint{display:none!important}
+  main{max-width:none;padding:0}
+  .view{display:none!important}
+  #v-ozet{display:block!important}
+  #v-ozet>*:not(#sheetWrap){display:none!important}
+  #sheet{border-radius:0;padding:0;margin:0;font-size:11px}
+  #sheet .m6{grid-template-columns:repeat(4,1fr)}
+  #sheet .two{grid-template-columns:1fr 1fr}
+  #sheet .mbs{grid-template-columns:1fr 1fr}
+  #sheet .hdr{flex-direction:row}#sheet .hdr .hr{text-align:right}
+  #sheet .page{border:0;margin:0;padding:0;break-after:page;page-break-after:always}
+  #sheet p,#sheet li{font-size:10.5px}
+  #sheet td,#sheet th{font-size:10px;padding:2px 4px}
+  #sheet h2{margin:7px 0 3px}
+  #sheet table.neg td small{font-size:9px}
+  #sheet .page:last-child{break-after:auto;page-break-after:auto}
+}
+</style>
+<meta name="gx-module" content="m6">
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="shared/shell.css">
+<script src="shared/core.js"></script>
+<script src="shared/shell.js" defer></script>
+</head>
+<body>
+<header class="top"><h1>Master Karar Panosu</h1><p class="sub">Galapagos · Modül 6 · tutulur mu, pazarlık mı, uzak mı?</p></header>
+<main>
+  <section class="view" id="v-karar">
+    <div id="storeWarn"></div>
+    <div class="kpis" aria-live="polite">
+      <div class="kpi" id="k1"><b>–</b><span>Proje skoru</span></div>
+      <div class="kpi" id="k2"><b>–</b><span>DSCR (3. yıl)</span></div>
+      <div class="kpi" id="k3"><b>–</b><span>Açılış kasası</span></div>
+      <div class="kpi" id="k4"><b>–</b><span>Birikim / ay</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <div class="verd">
+            <div class="dial" id="dial"></div>
+            <div><p class="vw" id="vw"></p><p class="note" id="vsub" style="margin:0 0 8px"></p><ul class="vlist" id="veto"></ul></div>
+          </div>
+          <div class="fh" style="flex-wrap:wrap;margin-top:12px"><span class="note" style="margin:0">Karar cirosu</span><div class="seg" role="group" aria-label="Karar cirosu"><button type="button" data-rs="plan">Modül 3 plan</button><button type="button" data-rs="target">Hedef</button><button type="button" data-rs="m1">Modül 1/2</button></div></div>
+          <p class="note" id="rsNote"></p>
+        </div>
+        <div class="card"><h2>5 modül röntgeni</h2><div id="xray"></div></div>
+        <div class="card"><h2>Modüller arası kontrol</h2><ul class="al" id="cross"></ul></div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Banka / KfW hazırlığı</h3><div class="out" id="o_bank"></div><p class="note">DSCR = (EBT + AfA + faiz − vergi − yaşam maaşı − sağlık sigortası) ÷ yıllık taksit. Karar 3. yıla (tam taksit) göre.</p></div>
+        <div class="card"><h3>Fırsat maliyeti</h3><div class="out" id="o_opp"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-whatif">
+    <div class="grid">
+      <div>
+        <div class="card" style="margin-top:12px">
+          <div class="fh"><h2 style="margin:0">Ne değişirse yeşil olur?</h2><button class="btn" type="button" id="wiReset">Sıfırla</button></div>
+          <div class="mini-v" id="wiV" style="margin-top:8px"></div>
+          <p class="note">Basitleştirilmiş motor: içe alınan verilerden aylık 3. yıl tablosunu yeniden kurar. Her kaldıracın altında, tek başına yeşile dönmek için gereken en küçük değişiklik yazar.</p>
+          <div id="levers"></div>
+        </div>
+        <div class="card"><h2>Şu şart olsaydı · koşullu puan</h2><p class="note">Bugünkü kaldıraçların üstüne her koşul tek başına ve işaretlenenler birlikte hesaplanır. Bu bir hedef listesidir, bugünkü durum değil.</p><div id="condBox"></div><details class="sub"><summary>Varsayımları düzenle</summary><div id="condParams"></div></details></div>
+        <div class="card"><h2>Pazarlık limitleri</h2><p class="note">Kira sözleşmesi ve finansmanda hedef / kabul edilebilir / uzak dur değerleri; sayılar senin rakamlarından hesaplanır.</p><div id="negBox"></div></div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Simülasyon sonucu</h3><div class="out" id="o_wi"></div></div>
+        <div class="card"><h3>Bu ayarı kaydet</h3><label class="lb" for="scName" style="margin-top:0">Senaryo adı</label><input type="text" id="scName" placeholder="Zentrum + SAB kredili"><div class="btns"><button class="btn pri" type="button" id="scSave">Arşive kaydet</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-veri">
+    <div class="card" style="margin-top:12px">
+      <h2>Veri merkezi</h2>
+      <p class="note">Modül 1–5'in JSON çıktılarını buraya yapıştır: tek tek veya hepsini art arda. Uygulama hangi modül olduğunu kendisi tanır. Yüklenmeyen modüller için örnek değerler kullanılır.</p>
+      <textarea class="code" id="impTxt" spellcheck="false" aria-label="JSON yapıştır"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="impIn">İçe al</button><label class="btn" for="impFile">Dosyalardan al</label><input type="file" id="impFile" accept=".json,application/json" multiple hidden></div>
+      <p class="note" id="impMsg"></p>
+    </div>
+    <div class="hub" id="hub"></div>
+    <div class="card" style="margin-top:12px">
+      <h2>Ayarlar</h2>
+      <div id="setForm"></div>
+    </div>
+    <div class="card">
+      <h2>Yedekle</h2>
+      <div class="btns"><button class="btn" type="button" id="bkOut">Yedek oluştur</button><button class="btn" type="button" id="bkCopy">Kopyala</button><button class="btn" type="button" id="bkDl">İndir (.json)</button></div>
+      <label class="lb" for="bkTxt">Modül 6 yedek JSON (veriler + senaryolar + notlar)</label>
+      <textarea class="code" id="bkTxt" spellcheck="false"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="bkIn">Metinden geri yükle</button><label class="btn" for="bkFile">Dosyadan geri yükle</label><input type="file" id="bkFile" accept=".json,application/json" hidden><button class="btn dan" type="button" id="wipe">Varsayılana sıfırla</button></div>
+      <p class="note" id="bkMsg"></p>
+    </div>
+  </section>
+
+  <section class="view" id="v-ozet">
+    <div class="grid noprint">
+      <div>
+        <div class="card" style="margin-top:12px"><h2>Senaryo arşivi</h2><p class="note">Yan yana kıyaslamak için en fazla 3 senaryo işaretle.</p><div class="sc-list" id="scList"></div></div>
+        <div class="card"><h2>Kıyas</h2><div class="scroll"><table class="t" id="scTbl"></table></div></div>
+      </div>
+      <div class="side">
+        <div class="card docf">
+          <h3 style="margin:0 0 6px">Belge: banka / Steuerberater</h3>
+          <div class="fh" style="flex-wrap:wrap;gap:8px"><div class="seg" role="group" aria-label="Belge türü"><button type="button" data-var="bank">Banka · 3 sayfa</button><button type="button" data-var="stb">Steuerberater · 2 sayfa</button></div><div class="seg" role="group" aria-label="Dil"><button type="button" data-lang="de">DE</button><button type="button" data-lang="tr">TR</button></div></div>
+          <label class="lb" for="h_name">Ad soyad</label><input id="h_name" type="text" data-k="doc.hdr.name" data-t="s" autocomplete="name">
+          <label class="lb" for="h_phone">Telefon</label><input id="h_phone" type="text" data-k="doc.hdr.phone" data-t="s" inputmode="tel" autocomplete="tel">
+          <label class="lb" for="h_email">E-posta</label><input id="h_email" type="text" data-k="doc.hdr.email" data-t="s" inputmode="email" autocomplete="email">
+          <label class="lb" for="h_proj">Vorhaben</label><input id="h_proj" type="text" data-k="doc.hdr.project" data-t="s">
+          <p class="note">Bu bilgiler sadece bu tarayıcıda kalır; ev adresi istenmez.</p>
+          <div class="btns"><button class="btn pri" type="button" id="printBtn2">Yazdır / PDF</button><button class="btn" type="button" id="docCopy">Düz metin kopyala</button></div>
+          <details class="sub"><summary>Düz metin (kopyalama engellenirse buradan seç)</summary><textarea class="code" id="docTxt" readonly rows="10"></textarea></details>
+        </div>
+        <div class="card notes">
+          <div class="fh" style="flex-wrap:wrap"><h3 style="margin:0">Banka cevapları &amp; risk planı</h3><div class="seg" role="group" aria-label="Dil"><button type="button" data-lang="tr">TR</button><button type="button" data-lang="de">DE</button></div></div>
+          <p class="note">Rakamlarından otomatik önerilir; düzenlediğin metin bu dilde saklanır.</p>
+          <div id="notesForm"></div>
+          <div class="btns"><button class="btn" type="button" id="autoFill">Otomatik öneriyi yükle</button><button class="btn pri" type="button" id="printBtn">Yazdır / PDF</button></div>
+          <p class="note" id="printMsg"></p>
+        </div>
+      </div>
+    </div>
+    <div id="sheetWrap"><div id="sheet"></div></div>
+  </section>
+
+  <section class="view" id="v-rehber">
+    <div class="card guide" style="margin-top:12px">
+      <h2>Nasıl kullanılır &amp; ne işe yarar?</h2>
+      <p>Bu pano beş modülün sonucunu tek bir karara bağlar: bu dükkân ve bu finans planıyla imza atılır mı (yeşil), önce pazarlık veya revizyon mu gerekir (sarı), yoksa uzak mı durulmalı (kırmızı)? Ayrıca bankanın (Sparkasse/KfW) bakacağı rakamları ve en sert sorularına hazır cevapları üretir.</p>
+      <h3>Dört adımda</h3>
+      <ol>
+        <li><b>Veri merkezi:</b> Modül 1–5'in JSON çıktılarını yapıştır. Yeşil etiket = yüklendi, gri = örnek değer.</li>
+        <li><b>Karar:</b> skor, ışık ve veto maddelerine bak. Modüller arası kontrolde çelişki varsa önce onları düzelt.</li>
+        <li><b>Ne değişirse:</b> kaldıraçlarla oyna; her birinin altında yeşil için gereken en küçük değişiklik yazar. Beğendiğin ayarı senaryo olarak kaydet.</li>
+        <li><b>Arşiv &amp; özet:</b> senaryoları yan yana kıyasla; Almanca veya Türkçe tek sayfa özeti yazdır ve bankaya götür.</li>
+      </ol>
+      <h3>Skor nasıl hesaplanıyor?</h3>
+      <dl>
+        <dt>Ağırlıklar (100 puan)</dt><dd>Mekân 15 · Personel 10 · Ciro/Hedef 25 · Nakit 25 · Vergi/Banka 25. Her başlık önce 0–100 puan alır, sonra ağırlığıyla toplanır.</dd>
+        <dt>Mekân</dt><dd>Modül 1 uygunluk puanı (%50), kira/ciro oranı (%30: %8 ve altı tam, %14'te sıfır), koltuk sayısı (%20: 40'a kadar tam, 50 üstü sıfır). Modül 1'deki her kırmızı alarm 10 puan düşürür.</dd>
+        <dt>Personel</dt><dd>Personel + senin maaşın ÷ ciro (%70: %25 ve altı tam, %35'te sıfır) ve senin haftalık saatin (%30: 40 saate kadar tam, 55'te sıfır).</dd>
+        <dt>Ciro/Hedef</dt><dd>Güvenlik marjı (%50: %35 ve üstü tam), birikimin hedefe oranı (%30), plan doluluğunun kapasiteye oranı (%20: %70'e kadar tam, %100'de sıfır).</dd>
+        <dt>Nakit</dt><dd>Açılış kasası ve en dip noktanın düşüğü ÷ 3 aylık sabit gider (%60) ve özsermaye oranı (%40: %25 ve üstü tam, %10'da sıfır).</dd>
+        <dt>Vergi/Banka</dt><dd>3. yıl DSCR (%50: 1,5 ve üstü tam, 1,0'da sıfır), prime cost (%25: %55 ve altı tam, %65'te sıfır), Rücklage hesabının eksiye düşmemesi (%25).</dd>
+        <dt>Karar</dt><dd>Yeşil ≥75 · Sarı 55–74 · Kırmızı &lt;55. Veto maddelerinden biri varsa skor ne olursa olsun kırmızı. Otomatik sarı maddelerden biri varsa en fazla sarı.</dd>
+        <dt>Veto (otomatik kırmızı)</dt><dd>Açılışta kasa &lt;0 · 3. yıl DSCR &lt;1,0 · hedef veya plan kapasitenin %100'ünü aşıyor · WC yok ve Nutzungsänderung gerekiyor · kira/ciro &gt;%12.</dd>
+        <dt>Otomatik sarı</dt><dd>Rücklage hesabı eksiye iniyor · özsermaye &lt;%15 · haftalık sahip saati &gt;50 · eline geçen (yaşam maaşı + birikim) bugünkü net maaşının altında.</dd>
+      </dl>
+      <h3>Banka neye bakar?</h3>
+      <dl>
+        <dt>Kapitaldienstfähigkeit ve DSCR</dt><dd>Borç servis karşılama oranı: yılda kredi taksitlerini kaç kez karşılayabildiğin. Şahıs şirketinde banka önce senin yaşam masrafını, sağlık sigortanı ve vergini düşer. Ödemesiz yıllar yanıltıcıdır; banka tam taksitli yıla bakar. 1,3 ve üstü rahat, 1,1–1,3 sınırda, 1,0 altı karşılamıyor.</dd>
+        <dt>Güvenlik marjı (Margin of Safety)</dt><dd>Ciro, yaşam başa başı noktasının ne kadar üstünde: (plan ciro − yaşam başa başı) ÷ plan ciro. Ciro bu oranda düşse bile yaşam masrafın ve kredi çıkar.</dd>
+        <dt>Özsermaye oranı</dt><dd>Kendi paran ÷ toplam finansman. Gastronomide bankalar genelde %15–30 bekler.</dd>
+        <dt>Açılış nakit tamponu ve runway</dt><dd>Açılış günü kasada kalan para ve 3 aylık sabit gidere oranı. Ciro yavaş yükselirken seni ayakta tutan şey bu.</dd>
+        <dt>Prime cost ve kira/ciro</dt><dd>Mal + personel (sen dahil) ÷ ciro: %55 altı sağlıklı, %60 üstü tehlikeli. Kira ÷ ciro: %10'a kadar sağlıklı, %12 üstü kötü bir ayda zarar.</dd>
+      </dl>
+      <h3>Şu şart olsaydı &amp; pazarlık</h3>
+      <p>"Ne değişirse" sekmesinde altı koşul tek başına ve birlikte hesaplanır: mekân gastronomiye hazır, kira hedef orana indi (varsayılan %8), rezervin bir kısmı harcandı, kademeli açılış (ertelenen kalemler açılış kasasına döner, ilk aylarda temkinli ciro), ek kirasız ay, Kaution yerine kefalet. Etkisi olmayan koşul "zaten sağlanıyor" olarak soluk görünür. Tüm tutarlar "Varsayımları düzenle" içinden değişir.</p>
+      <p>Pazarlık limitleri her kalem için hedef, kabul edilebilir ve uzak dur değerlerini gösterir. Kaltmiete için "yeşil için en fazla" değeri, Ablöse için bugünkü nakitle finanse edilebilecek tavan ve KfW Bereitstellungsprovision'ın aylık maliyeti senin rakamlarından hesaplanır.</p>
+      <h3>Banka ve Steuerberater belgesi</h3>
+      <p>Arşiv &amp; Özet sekmesinde türü seç: <b>Banka</b> (3 sayfa: karar ve finansman, önlemler ve koşullar, modül özeti) veya <b>Steuerberater</b> (2 sayfa: vergi ve rezerv, modül özeti). Varsayılan dil Almanca; TR tek dokunuş. Ad, telefon, e-posta ve Vorhaben başlığa yazılır, sadece bu tarayıcıda kalır. Koşullu puanlar "bugünkü durum değil" başlığıyla ayrı durur; banka kırmızıyı da görür, yanında önlemini de.</p>
+      <p>"Düz metin kopyala" belgenin metnini e-postaya yapıştırılabilir hale getirir.</p>
+      <h3>Yazdırma</h3>
+      <p>Arşiv &amp; Özet sekmesinde dili seç, metinleri düzenle, "Yazdır / PDF" de. Yayınlanan Claude sayfasında yazdırma engelli olabilir; HTML dosyasını tarayıcıda açıp Yazdır → "PDF olarak kaydet" kullan. Özet A4 dikey, beyaz zemin.</p>
+      <h3>Sınırlar</h3>
+      <p>Pano, modüllerin çıktılarından basitleştirilmiş bir 3. yıl tablosu kurar; ayrıntı için ilgili modüle dön. Bu bir planlama aracıdır, banka kararı veya vergi danışmanlığı değildir.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sekmeler">
+  <a href="#karar" data-tab="karar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Karar</a>
+  <a href="#whatif" data-tab="whatif"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Ne değişirse</a>
+  <a href="#veri" data-tab="veri"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Veri</a>
+  <a href="#ozet" data-tab="ozet"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h6"/></svg>Arşiv &amp; Özet</a>
+  <a href="#rehber" data-tab="rehber"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg>Rehber</a>
+</nav>
+<div id="toast" role="status"><span id="toastT"></span><button type="button" id="toastU" hidden>Geri al</button></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const SKEY='galapagos_m6_v1';
+let canStore=true;
+const W=52/12;
+const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>(Number.isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>(n<0?'−':'')+nf(Math.abs(Math.round(n)))+' €';
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split('.');const l=ks.pop();ks.reduce((a,k)=>a[k],o)[l]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const lin=(x,x0,y0,x1,y1)=>{const t=(x-x0)/(x1-x0);return Math.max(Math.min(y0,y1),Math.min(Math.max(y0,y1),y0+(y1-y0)*t))};
+const uid=()=>Math.random().toString(36).slice(2,10);
+const DEF={"m1": {"schema": "galapagos.mekan.v1", "module": "mekan_kapasite", "exported_at": "2026-11-23T23:38:21.640Z", "venue_name": "Zentrum Dükkan B", "address": "Innere Klosterstraße, Chemnitz", "district": "Zentrum", "net_gastraum": 64.4, "total_seats": 46, "bar_stools": 8, "table_count": 16, "terrace_seats": 16, "warmmiete": 2178, "extra": {"brut_m2": 115, "event_capacity": 80, "permit_limit": 50, "tables": {"two": 13, "four": 3, "six": 0}, "warmmiete_netto": 1830, "kaltmiete": 1450, "nebenkosten": 380, "ust_19": true, "expected_revenue": 29000, "open_days_per_month": 17, "rent_to_revenue_pct": 6.3, "bar_aisle_cm": 115, "dead_seat_pct": 6.5, "startup_cash": {"kaution": 6533, "abloese": 15000, "makler": 0, "first_rent": 2178, "total": 23711}, "terrace": {"season_months": 5, "usage_pct": 60, "equivalent_seats": 4, "sondernutzung_year": 0, "frozen_stand": false}, "suitability_score": 98, "alarms": [{"level": "r", "text": "Event kapasitesi 80 kişi, izinli 50 kişiyi aşıyor. Kapıda sayım şart; aşım ceza ve sigorta riski."}, {"level": "y", "text": "Oturma 46 kişi, 40–50 uyarı bandında. Tek WC ile Bauamt'a önceden danış."}, {"level": "y", "text": "Kaltmiete 12,61 €/m², pazarlık bölgesinde."}, {"level": "i", "text": "Kira KDV'li: aylık +348 €. Vorsteuer olarak geri alınır ama önce sen ödersin."}, {"level": "i", "text": "Teras Sondernutzung ücreti girilmedi. Chemnitz Tiefbauamt'tan güncel tarifeyi sor."}, {"level": "i", "text": "Misafir alanı 75 m² altında: Saksonya'da tek odalı Raucherkneipe istisnası mümkün (konseptin sigarasız)."}], "lat": null, "lon": null, "competition_radius_m": 500, "direct_competitors": null, "traffic_generators": null, "nearest_cocktail_bar_m": null, "nearest_cocktail_bar": null, "nearest_bar_pub_m": null, "nearest_bar_pub": null, "competition_source": null}}, "m2": {"schema": "galapagos.personel.v1", "module": "personel_vardiya", "exported_at": "2026-11-23T23:38:22.860Z", "target_year": 2028, "venue_name": "Zentrum Dükkan B", "monthly_fixed_staff_cost": 2481, "monthly_variable_staff_cost": 1843, "monthly_staff_cost": 4324, "unternehmerlohn": 3000, "monthly_staff_cost_incl_owner": 7324, "monthly_hours_staff": 146.3, "monthly_hours_owner": 157.1, "monthly_hours_total": 303.3, "personalkosten_pct": 14.9, "personalkosten_pct_incl_owner": 25.3, "expected_revenue": 29000, "prime_cost_prep_pct": 46.3, "from_module1": {"total_seats": 46, "bar_stools": 8, "terrace_seats": 16, "warmmiete": 2178, "summer_mode": false}, "assumptions": {"min_wage": 15.04, "minijob_limit": 652, "employer_rate_pct": 24.32, "minijob_rate_pct": 35.67, "werkstudent_rate_pct": 12.97, "buffer_pct": 12, "sfn_on": true, "weeks_per_month": 4.333, "staff_template": "A"}}, "m3": {"schema": "galapagos.ciro.v1", "module": "ciro_revpash_hedef", "exported_at": "2026-11-23T23:38:36.111Z", "venue_name": "Zentrum Dükkan B", "target_savings": 5000, "plan": {"net_revenue": 35428, "gross_revenue": 41695, "wareneinsatz": 8175, "rohertrag": 27253, "prime_cost_pct": 46.3, "staff_cost": 5234, "fixed_costs": 9751, "variable_costs": 8575, "ebt": 17102, "tax": 5644, "loan_principal": 0, "cash_savings": 7668, "card_fees": 400, "rent_net": 1830, "other_fixed": 1880, "interest": 336, "afa": 471, "unternehmerlohn": 3000, "own_health_insurance": 1261, "guests_per_month": 1433, "guests_per_night": 110.2, "revpac_net": 24.72, "revpash": 7.11, "seat_turnover": 2.4}, "target": {"net_revenue": 29573, "gross_revenue": 34804, "wareneinsatz": 6824, "rohertrag": 22749, "prime_cost_pct": 49.4, "staff_cost": 4779, "fixed_costs": 9296, "variable_costs": 7158, "ebt": 13120, "tax": 4329, "loan_principal": 0, "cash_savings": 5000, "required_monthly_net_revenue": 29573, "guests_per_night": 92, "cocktails_per_night": 169, "capacity_use_pct": 57.9, "extra_staff_cost": 455}, "break_even": {"ebt_zero": {"monthly_net_revenue": 11664, "nightly_net_revenue": 897, "nightly_guests": 36.3}, "life_costs": {"monthly_net_revenue": 19127, "nightly_net_revenue": 1471, "nightly_guests": 59.5}}, "scenarios": {"bad": {"net_revenue": 22500, "gross_revenue": 26450, "wareneinsatz": 5305, "rohertrag": 17195, "prime_cost_pct": 56.1, "staff_cost": 4324, "fixed_costs": 8841, "variable_costs": 5559, "ebt": 8100, "tax": 2673, "loan_principal": 0, "cash_savings": 1637}, "base": {"net_revenue": 35428, "gross_revenue": 41695, "wareneinsatz": 8175, "rohertrag": 27253, "prime_cost_pct": 46.3, "staff_cost": 5234, "fixed_costs": 9751, "variable_costs": 8575, "ebt": 17102, "tax": 5644, "loan_principal": 0, "cash_savings": 7668}, "good": {"net_revenue": 51167, "gross_revenue": 60274, "wareneinsatz": 11778, "rohertrag": 39389, "prime_cost_pct": 39.1, "staff_cost": 5234, "fixed_costs": 9751, "variable_costs": 12356, "ebt": 29060, "tax": 9590, "loan_principal": 0, "cash_savings": 15680}}, "loan": {"amount": 62000, "rate_pct": 7, "years": 7, "monthly_payment": 336, "interest_y1_avg": 336, "principal_y1_avg": 0}, "assumptions": {"vat_drinks": 19, "vat_food": 7, "kombi_split": "15/85", "drinks_per_visit": 2.4, "food_attach_pct": 30, "cogs_rate_incl_loss_pct": 23.1, "card_share_pct": 80, "card_fee_pct": 1.2, "tax_mode": "simple", "tax_rate_pct": 33, "seats": 46, "terrace_seats": 16, "season_index": [70, 75, 90, 95, 110, 110, 110, 110, 105, 100, 100, 125]}}, "m4": {"schema": "galapagos.kurulum.v1", "module": "kurulum_nakit", "exported_at": "2026-11-23T23:38:37.756Z", "lease_month": "2029-03", "opening_month": "2029-06", "build_months": 3, "total_investment_net": 69780, "capex_items_net": 56800, "aufgeld": 1350, "reserve": 11630, "capex_vat": 10384, "leasing_monthly": 89, "total_financing": 82000, "equity": 20000, "equity_ratio_pct": 24.4, "loans": [{"type": "KfW ERP-Gründerkredit StartGeld", "amount": 62000, "rate_pct": 6.5, "years": 10, "free_years": 2}], "kaution": {"amount": 6533, "mode": "cash", "aval_pct": 2.5}, "cash_at_opening": -39251, "tiefpunkt": {"amount": -39251, "month": "2029-05"}, "tiefpunkt_bad": {"amount": -46733, "month": "2029-05"}, "runway_months_zero_revenue": 0, "monthly_burn_zero_revenue": 12630, "safety_line_3m_fixed": 27099, "vorsteuer": {"peak": 12180, "delay_months": 2}, "afa": {"yearly": 5650, "monthly": 471, "first_year_immediate": 9500, "basis": {"bau": 27000, "equip_short": 4000, "equip_long": 10850, "pos": 1800, "gwg": 4500, "expense": 5000, "stock": 5000}, "years": {"bau": 10, "eq5": 5, "eq7": 7, "pos": 3}}, "module3_block": {"schema": "galapagos.m3.loan_afa.v1", "loan_amount": 62000, "months12": [{"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}, {"int": 335.83, "pr": 0}], "monthly_afa": 470.83, "equipment_basis": 43650, "note": "İlk 12 işletme ayının gerçek faiz/anapara dağılımı (ödemesiz dönem dahil)."}}, "m5": {"schema": "galapagos.vergi.v1", "module": "vergi_sirket", "exported_at": "2026-11-23T23:38:43.512Z", "selected_company_type": "ez", "first_tax_year": 2029, "profit_base": "target", "effective_tax_rate_pct_y3": 33.2, "steuer_ruecklage_monthly": [{"year": 2029, "ust": 3066, "income_trade_tax": 1842, "gkv": 206, "total": 5113}, {"year": 2030, "ust": 3142, "income_trade_tax": 3950, "gkv": 538, "total": 7630}, {"year": 2031, "ust": 3697, "income_trade_tax": 4797, "gkv": 404, "total": 8898}], "biggest_single_payment": {"amount": 63087, "month": "2032-04", "items": [{"label": "Gelir/Kurumlar 2030 farkı (Bescheid)", "amount": 17983, "surprise": true}, {"label": "Gelir/Kurumlar 2031 geriye dönük peşin", "amount": 17983, "surprise": true}, {"label": "Gewerbesteuer 2030 farkı (Bescheid)", "amount": 13388, "surprise": true}, {"label": "Gewerbesteuer 2031 geriye dönük peşin", "amount": 13734, "surprise": true}]}, "reserve_account_min": 0, "health_insurance": {"mode": "gkv", "yearly": [{"year": 2029, "premium": 7952}, {"year": 2030, "premium": 15136}, {"year": 2031, "premium": 15136}]}, "years": [{"year": 2029, "type": "ez", "ebt": 48861, "taxes_total": 11719, "income_tax": 7892, "trade_tax": 3827, "corporate_tax": 0, "dividend_tax": 0, "insurance": 7952, "pension": 2700, "net_to_owner": 26490, "net_to_owner_monthly": 2207, "retained_in_company": 0, "full_distribution_equivalent": 26490}, {"year": 2030, "type": "ez", "ebt": 133824, "taxes_total": 43090, "income_tax": 25875, "trade_tax": 17215, "corporate_tax": 0, "dividend_tax": 0, "insurance": 15136, "pension": 3600, "net_to_owner": 71999, "net_to_owner_monthly": 6000, "retained_in_company": 0, "full_distribution_equivalent": 71999}, {"year": 2031, "type": "ez", "ebt": 157440, "taxes_total": 52328, "income_tax": 31790, "trade_tax": 20538, "corporate_tax": 0, "dividend_tax": 0, "insurance": 15136, "pension": 3600, "net_to_owner": 83877, "net_to_owner_monthly": 6990, "retained_in_company": 0, "full_distribution_equivalent": 83877}], "comparison_3y": {"ez": {"net_to_owner": 182365, "retained": 0, "taxes": 107136, "full_distribution_equivalent": 182365}, "ug": {"net_to_owner": 107863, "retained": 86862, "taxes": 91615, "full_distribution_equivalent": 171816}, "gmbh": {"net_to_owner": 116986, "retained": 74616, "taxes": 93827, "full_distribution_equivalent": 171921}, "einzel_then_gmbh": {"net_to_owner": 149796, "retained": 37572, "taxes": 98634, "full_distribution_equivalent": 177458}}, "gmbh_break_even_profit": null, "assumptions": {"spouse_income": 48000, "joint": true, "church": false, "gf_salary": 48000, "distribution_pct": 50, "hebesatz": 450, "fragebogen_estimate": 40000, "bescheid_lag_months": 15, "safety_pct": 10, "ust_burden_pct": 12.5, "dauerfrist": true, "kst_rates": [{"year": 2029, "rate": 13}, {"year": 2030, "rate": 12}, {"year": 2031, "rate": 11}]}}};
+const MODS=[['m1','Modül 1 · Mekân & Kapasite','galapagos.mekan.v1'],['m2','Modül 2 · Personel & Vardiya','galapagos.personel.v1'],['m3','Modül 3 · Ciro & Hedef','galapagos.ciro.v1'],['m4','Modül 4 · Kurulum & Nakit','galapagos.kurulum.v1'],['m5','Modül 5 · Vergi & Şirket','galapagos.vergi.v1']];
+
+const EX={
+  m1:j=>{const x=j.extra||{},al=x.alarms||[];return {name:j.venue_name||'',seats:+j.total_seats||0,stools:+j.bar_stools||0,terrace:+j.terrace_seats||0,warmB:+j.warmmiete||0,warmN:+(x.warmmiete_netto??j.warmmiete)||0,rev:+x.expected_revenue||0,rr:+x.rent_to_revenue_pct||0,suit:+(x.suitability_score??70),event:+x.event_capacity||0,permit:+x.permit_limit||0,red:al.filter(a=>a.level==='r').length,wcNo:al.some(a=>/WC yok/.test(a.text)),nutz:al.some(a=>/Nutzungsänderung gerekiyor/.test(a.text))}},
+  m2:j=>({staff:+j.monthly_staff_cost||0,ul:+j.unternehmerlohn||0,ownerH:(+j.monthly_hours_owner||0)/W,staffH:+j.monthly_hours_staff||1,pkI:+j.personalkosten_pct_incl_owner||0,year:+j.target_year||0,rev:+j.expected_revenue||0}),
+  m3:j=>{const P=j.plan||{},T=j.target||{},A=j.assumptions||{},S=j.scenarios||{},B=j.break_even||{},sv=x=>({R:+(x?.net_revenue)||0,save:+(x?.cash_savings)||0});return {rPlan:+P.net_revenue||0,savePlan:+P.cash_savings||0,staff:+P.staff_cost||0,rent:+P.rent_net||0,other:+P.other_fixed||0,card:+P.card_fees||0,ul:+P.unternehmerlohn||0,kv:+P.own_health_insurance||0,gpnPlan:+P.guests_per_night||1,revpac:+P.revpac_net||1,afa:+P.afa||0,rTarget:+(T.required_monthly_net_revenue||T.net_revenue)||0,gpnT:+T.guests_per_night||0,ckT:+T.cocktails_per_night||0,capT:+T.capacity_use_pct||0,beLife:+(B.life_costs?.monthly_net_revenue)||0,beLifeG:+(B.life_costs?.nightly_guests)||0,loanAmt:+(j.loan?.amount)||0,loanRate:+(j.loan?.rate_pct)||0,loanYears:+(j.loan?.years)||0,cogs:+A.cogs_rate_incl_loss_pct||23,tax:+A.tax_rate_pct||33,target:+j.target_savings||5000,sc:{bad:sv(S.bad),base:sv(S.base),good:sv(S.good)}}},
+  m4:j=>{const L=(j.loans||[])[0]||{};return {open:+j.cash_at_opening||0,tief:+(j.tiefpunkt?.amount)||0,tiefM:j.tiefpunkt?.month||'',openM:j.opening_month||'',invest:+j.total_investment_net||0,reserve:+j.reserve||0,vat:+j.capex_vat||0,kaution:+(j.kaution?.amount)||0,kmode:j.kaution?.mode||'cash',equity:+j.equity||0,fin:+j.total_financing||0,kfw:{amt:+L.amount||0,rate:+L.rate_pct||0,years:+L.years||10,free:+L.free_years||0},sab:((j.loans||[])[1])?{amt:+j.loans[1].amount,rate:+j.loans[1].rate_pct,years:+j.loans[1].years,free:+j.loans[1].free_years}:null,afaY:+(j.afa?.yearly)||0,burn:+j.monthly_burn_zero_revenue||0}},
+  m5:j=>{const y=j.health_insurance?.yearly||[],b=j.biggest_single_payment||{};return {type:j.selected_company_type||'ez',eff:+j.effective_tax_rate_pct_y3||33,rl:(j.steuer_ruecklage_monthly||[]).map(x=>+x.total||0),shock:+b.amount||0,shockM:b.month||'',resMin:+(j.reserve_account_min??0),kvY3:y[2]?(+y[2].premium||0)/12:0,mode:j.health_insurance?.mode||'gkv',thr:j.gmbh_break_even_profit??null}}
+};
+function defaults(){return {raw:{},at:{},rs:'plan',wi:{rent:0,sab:0,price:0,occ:1,hours:0,kef:false,buf:100,bl:false},set:{salary:2100,blCost:3800,sabRate:4,sabYears:6,sabFree:1,ramp:86,ownerCap:40},scen:[],cmp:[],lang:'de',notes:{tr:{},de:{}},cond:{"sel": {"gastro": true, "rent": true, "buf": true, "phase": true, "free": true, "kef": true}, "p": {"permitNow": 6000, "permitReady": 1500, "wcSave": 8000, "rentPct": 8, "bufPct": 50, "phase": [{"n": "Işık + ses", "a": 4000}, {"n": "Dekorun %50'si (DIY tadilat)", "a": 3000}, {"n": "Teras mobilyası", "a": 2000}], "phaseMonths": 3, "phaseLoss": 5, "freeMonths": 1}},doc:{variant:'bank',hdr:{name:'',phone:'',email:'',project:'Galapagos Cocktailbar, Chemnitz'}}}}
+let st=null;
+function merge(x){const d=defaults();x=x||{};const o=Object.assign(d,x);o.wi=Object.assign(defaults().wi,x.wi||{});o.set=Object.assign(defaults().set,x.set||{});o.notes=Object.assign({tr:{},de:{}},x.notes||{});const xc=x.cond||{},xd=x.doc||{};o.cond={sel:Object.assign(d.cond.sel,xc.sel||{}),p:Object.assign(d.cond.p,xc.p||{})};if(!Array.isArray(o.cond.p.phase))o.cond.p.phase=defaults().cond.p.phase;o.doc={variant:xd.variant==='stb'?'stb':'bank',hdr:Object.assign(d.doc.hdr,xd.hdr||{})};return o}
+function load(){let raw=null;try{raw=localStorage.getItem(SKEY)}catch(e){canStore=false}try{st=merge(raw?JSON.parse(raw):null)}catch(e){st=defaults()}}
+function save(){GX.dirty();try{localStorage.setItem(SKEY,JSON.stringify(st));canStore=true}catch(e){canStore=false}}
+function data(src){const raw=(src||st).raw||{};const d={};MODS.forEach(([k])=>{d[k]=EX[k](raw[k]||DEF[k]);d[k]._loaded=!!raw[k]});return d}
+
+// ---------- engine ----------
+function loanRows(amt,rate,years,freeY){const n=Math.max(1,Math.round(years*12)),f=Math.min(n-1,Math.round(freeY*12)),r=rate/1200,p=amt/(n-f);let b=amt;const rows=[];for(let k=0;k<n;k++){const it=b*r,pr=k<f?0:Math.min(b,p);b-=pr;rows.push({it,pr})}return rows}
+const yearSum=(rows,y)=>rows.slice(12*y,12*y+12).reduce((a,x)=>({it:a.it+x.it,pr:a.pr+x.pr}),{it:0,pr:0});
+function model(d,L,set,rs){
+  const m3=d.m3,m4=d.m4,m5=d.m5,m2=d.m2,m1=d.m1;
+  const Rb=rs==='target'?m3.rTarget:rs==='m1'?(m1.rev||m2.rev):m3.rPlan;
+  const ckG=m3.gpnT>0?m3.ckT/m3.gpnT:1.8,cardR=m3.rPlan?m3.card/m3.rPlan:0.011,hourly=m3.staff/(m2.staffH||1);
+  const kfw=m4.kfw.amt?m4.kfw:{amt:m3.loanAmt,rate:m3.loanRate,years:m3.loanYears,free:0};
+  const K=loanRows(kfw.amt,kfw.rate,kfw.years,kfw.free),S=L.sab>0?loanRows(L.sab,set.sabRate,set.sabYears,set.sabFree):[];
+  const y1=yearSum(K,0),y3=yearSum(K,2),s1=yearSum(S,0),s3=yearSum(S,2);
+  const ks1={it:y1.it+s1.it,pr:y1.pr+s1.pr},ks3={it:y3.it+s3.it,pr:y3.pr+s3.pr};
+  const afaM=(m4.afaY||m3.afa*12)/12,eff=m5.eff/100,ul=m3.ul||m2.ul,kv=m5.kvY3||m3.kv;
+  const nights=m3.gpnPlan>0?(m3.rPlan/m3.revpac)/m3.gpnPlan:17.3,maxG=m3.capT>0?m3.gpnT/(m3.capT/100):m3.gpnPlan*1.6;
+  const run=(occ,ramp,ks)=>{const base=Rb*occ*ramp,guests=base/(m3.revpac||1),R=base+L.price*ckG*guests/1.19;
+    const cogs=base*m3.cogs/100,card=R*cardR,staff=m3.staff+L.hours*W*hourly+(L.bl?set.blCost:0),rent=m3.rent*(1+L.rent/100),other=m3.other;
+    const intM=ks.it/12,prM=ks.pr/12,ebt=R-cogs-card-staff-rent-other-intM-afaM,tax=Math.max(0,ebt)*eff;
+    const save=ebt-tax+afaM-prM-ul-kv,cfds=(ebt+afaM+intM-tax-ul-kv)*12,ds=ks.it+ks.pr;
+    return {R,base,guests,cogs,card,staff,rent,other,intM,prM,ebt,tax,save,dscr:ds>0?cfds/ds:99,prime:R?(cogs+staff+ul)/R*100:0,rr:R?rent/R*100:0,gpn:guests/nights}};
+  const y=run(L.occ,1,ks3),y1r=run(L.occ,set.ramp/100,ks1);
+  // life break-even (scale occupancy)
+  let lo=0,hi=4,beR=null;if(run(hi,1,ks3).save>=0){for(let i=0;i<50;i++){const m=(lo+hi)/2;if(run(m,1,ks3).save>=0)hi=m;else lo=m}beR=run(hi,1,ks3).R}
+  const mos=beR!=null&&y.R?(y.R-beR)/y.R*100:-100;
+  const dOpen=L.sab+(L.kef&&m4.kmode==='cash'?m4.kaution:0)+m4.reserve*(1-L.buf/100)*1.19;
+  const open=m4.open+dOpen,tief=Math.min(open,m4.tief+dOpen),safety=3*(y.staff+y.rent+y.other+y.intM);
+  const eq=m4.fin+L.sab>0?m4.equity/(m4.fin+L.sab)*100:0,ownerH=m2.ownerH-(L.bl?20:0);
+  const capPlan=maxG?y.gpn/maxG*100:0,take=ul+y.save;
+  // scores
+  const sMek=Math.max(0,0.5*m1.suit+0.3*lin(y.rr,8,100,14,0)+0.2*(m1.seats<=40?100:m1.seats<=50?50:0)-10*m1.red);
+  const sPer=0.7*lin((y.staff+ul)/y.R*100,25,100,35,0)+0.3*lin(ownerH,40,100,55,0);
+  const sCir=0.5*lin(mos,0,0,35,100)+0.3*Math.max(0,Math.min(1,y.save/(m3.target||5000)))*100+0.2*lin(capPlan,70,100,100,0);
+  const sNak=0.6*(tief<=0?0:Math.min(100,tief/safety*100))+0.4*lin(eq,10,0,25,100);
+  const sBan=0.5*lin(y.dscr,1,0,1.5,100)+0.25*lin(y.prime,55,100,65,0)+0.25*(m5.resMin>=0?100:30);
+  const cats=[['mek','Mekân',15,sMek],['per','Personel',10,sPer],['cir','Ciro/Hedef',25,sCir],['nak','Nakit',25,sNak],['ban','Vergi/Banka',25,sBan]];
+  const score=cats.reduce((a,c)=>a+c[2]*c[3]/100,0);
+  const veto=[],auto=[];
+  if(open<0)veto.push(['open',`Açılışta kasa ${eur(open)}`,`Kassenbestand bei Eröffnung ${eur(open)}`]);
+  if(y.dscr<1)veto.push(['dscr',`3. yıl DSCR ${nf(y.dscr,2)} < 1,0`,`DSCR Jahr 3 ${nf(y.dscr,2)} < 1,0`]);
+  if(m3.capT>100||capPlan>100)veto.push(['cap',`Kapasite aşımı (%${nf(Math.max(m3.capT,capPlan))})`,`Kapazität überschritten (${nf(Math.max(m3.capT,capPlan))} %)`]);
+  if(m1.wcNo&&m1.nutz)veto.push(['wc','WC yok + Nutzungsänderung gerekiyor','Kein WC + Nutzungsänderung nötig']);
+  if(y.rr>12)veto.push(['rr',`Kira/ciro %${nf(y.rr,1)} > %12`,`Miete/Umsatz ${nf(y.rr,1)} % > 12 %`]);
+  if(m5.resMin<0)auto.push(['res','Rücklage hesabı eksiye iniyor','Steuerrücklage wird negativ']);
+  if(eq<15)auto.push(['eq',`Özsermaye %${nf(eq,1)} < %15`,`Eigenkapitalquote ${nf(eq,1)} % < 15 %`]);
+  if(ownerH>50)auto.push(['own',`Sahip saati ${nf(ownerH)}/hafta > 50`,`Inhaberstunden ${nf(ownerH)}/Woche > 50`]);
+  if(take<set.salary)auto.push(['opp',`Eline geçen ${eur(take)} < bugünkü maaş ${eur(set.salary)}`,`Entnahme ${eur(take)} < heutiges Netto ${eur(set.salary)}`]);
+  const verdict=veto.length||score<55?'r':(score<75||auto.length)?'y':'g';
+  return {Rb,y,y1:y1r,ks1,ks3,beR,mos,open,tief,safety,eq,ownerH,capPlan,take,cats,score,veto,auto,verdict,ul,kv,afaM,kfw,dOpen};
+}
+const LEV=[['rent','Kira',-30,20,1,'%',v=>(v>0?'+':'')+v+' %'],['sab','SAB Mikrodarlehen',0,30000,500,'€',v=>eur(v)],['price','Ortalama kokteyl fiyatı',-2,2,0.1,'€',v=>(v>0?'+':'')+nf(v,2)+' €'],['occ','Doluluk',0.6,1.2,0.01,'×',v=>'×'+nf(v,2)],['hours','Personel saati',-20,10,1,'s/hafta',v=>(v>0?'+':'')+v+' s/hafta'],['buf','Rezervin harcanan kısmı',0,100,5,'%',v=>'%'+v]];
+function minChange(d,key){
+  const cur=st.wi[key];const def=LEV.find(l=>l[0]===key);
+  if(!def){if(model(d,st.wi,st.set,st.rs).verdict==='g')return 'şu an yeşil';const L=Object.assign({},st.wi,{[key]:!cur});return model(d,L,st.set,st.rs).verdict==='g'?(!cur?'açınca yeşil':'kapatınca yeşil'):null}
+  const [,,min,max,step]=def,vals=[];for(let v=min;v<=max+1e-9;v+=step)vals.push(+v.toFixed(4));
+  vals.sort((a,b)=>Math.abs(a-cur)-Math.abs(b-cur));
+  for(const v of vals){const L=Object.assign({},st.wi,{[key]:v});if(model(d,L,st.set,st.rs).verdict==='g')return v===cur?'şu an yeşil':def[6](v)}
+  return null;
+}
+
+// ---------- texts ----------
+const TX={tr:{title:'Yönetici Özeti',verdict:{g:'YEŞİL · Tutulur',y:'SARI · Pazarlık / revizyon şart',r:'KIRMIZI · Uzak dur'},score:'Skor',dscr3:'DSCR 3. yıl',dscr1:'DSCR 1. yıl',open:'Açılış kasası',mos:'Güvenlik marjı',save:'Aylık birikim',eq:'Özsermaye oranı',src:'Kaynaklar',use:'Kullanım',equity:'Özsermaye',kfw:'KfW StartGeld',sab:'SAB Mikrodarlehen',total:'Toplam',inv:'Yatırım (net, rezerv dahil)',kau:'Kaution (nakit)',vat:'Vorsteuer (ön finansman)',start:'Açılış öncesi giderler (kira, yaşam, faiz)',cash:'Açılışta kasa',scen:'Senaryolar (aylık)',bad:'Kötü ay',base:'Plan',good:'İyi ay',wi:'Simülasyon',rev:'Net ciro',sv:'Birikim',risks:'Veto & riskler',qa:'Banka soruları',risk:'Risk planı',none:'Veto yok',foot:'Planlama hesabıdır; vergi veya hukuk danışmanlığı değildir. Kaynak: Galapagos Modül 1–6.',q:['Doluluk varsayımlarınızın kanıtı ne?','İlk aylarda ciro düşük kalırsa taksiti ve kirayı neyle ödersiniz?','Deneyiminiz ne, siz hastalanırsanız bar kimle açılır?'],venue:'Mekân'},
+  de:{title:'Executive Summary',verdict:{g:'GRÜN · Tragfähig',y:'GELB · Nachverhandeln / überarbeiten',r:'ROT · Nicht umsetzen'},score:'Score',dscr3:'DSCR Jahr 3',dscr1:'DSCR Jahr 1',open:'Kasse bei Eröffnung',mos:'Sicherheitsmarge',save:'Monatl. Rücklage',eq:'Eigenkapitalquote',src:'Mittelherkunft',use:'Mittelverwendung',equity:'Eigenkapital',kfw:'KfW ERP-Gründerkredit StartGeld',sab:'SAB Mikrodarlehen',total:'Summe',inv:'Investition netto (inkl. Reserve)',kau:'Mietkaution (bar)',vat:'Vorsteuer (vorfinanziert)',start:'Anlaufkosten (Miete, Lebenshaltung, Zinsen)',cash:'Liquidität bei Eröffnung',scen:'Szenarien (pro Monat)',bad:'Schwacher Monat',base:'Plan',good:'Starker Monat',wi:'Simulation',rev:'Nettoumsatz',sv:'Überschuss',risks:'K.-o.-Kriterien & Risiken',qa:'Fragen der Bank',risk:'Risikoplan',none:'Keine K.-o.-Kriterien',foot:'Planungsrechnung, keine Steuer- oder Rechtsberatung. Quelle: Galapagos Modul 1–6.',q:['Wie belegen Sie Ihre Auslastungsannahmen?','Wie bedienen Sie Rate und Miete, wenn der Umsatz anfangs niedrig bleibt?','Welche Erfahrung haben Sie und wer öffnet die Bar, wenn Sie ausfallen?'],venue:'Standort'}};
+function autoText(lang,k,d,m){
+  const de=lang==='de',bad=d.m3.sc.bad.save,fr=m.kfw.free,int1=m.ks1.it/12,pay3=(m.ks3.it+m.ks3.pr)/12;
+  if(k==='q1')return de?`Plan: ${nf(m.y.gpn)} Gäste pro Abend (${nf(m.capPlan)} % der Kapazität). Break-even inkl. Lebenshaltung bei ${nf(m.beR&&d.m3.revpac?m.beR/d.m3.revpac/(d.m3.rPlan/d.m3.revpac/d.m3.gpnPlan):0)} Gästen pro Abend, Sicherheitsmarge ${nf(m.mos)} %. Im schwachen Monat (Auslastung ×0,7) verbleiben ${eur(bad)}. [Wettbewerbspreise in Chemnitz und Daten eines Pilot-Events ergänzen.]`:`Plan: gece başı ${nf(m.y.gpn)} misafir (kapasitenin %${nf(m.capPlan)}'i). Yaşam başa başı gece başı ${nf(m.beR&&d.m3.revpac?m.beR/d.m3.revpac/(d.m3.rPlan/d.m3.revpac/d.m3.gpnPlan):0)} misafir, güvenlik marjı %${nf(m.mos)}. Kötü ayda (doluluk ×0,7) ayda ${eur(bad)} kalıyor. [Chemnitz'teki rakip fiyatlarını ve bir pilot etkinliğin verisini ekle.]`;
+  if(k==='q2')return de?`Liquidität bei Eröffnung ${eur(m.open)}, Tiefpunkt ${eur(m.tief)}. KfW ${fr} Jahr(e) tilgungsfrei (Rate ${eur(int1)}/Monat), ab Jahr 3 ${eur(pay3)}/Monat; DSCR Jahr 3 ${nf(m.y.dscr,2)}. Monatliche Fixkosten ohne Umsatz ${eur(m.safety/3)}; Puffer: Mietkautionsbürgschaft, SAB-Mikrodarlehen, Reserve ${nf(st.wi.buf)} % genutzt.`:`Açılış kasası ${eur(m.open)}, en dip ${eur(m.tief)}. KfW ${fr} yıl ödemesiz (taksit ${eur(int1)}/ay), 3. yıldan ${eur(pay3)}/ay; 3. yıl DSCR ${nf(m.y.dscr,2)}. Sıfır cironun aylık sabit gideri ${eur(m.safety/3)}; kalkan: Kaution kefaleti, SAB Mikrodarlehen, rezervin %${nf(st.wi.buf)}'i kullanıldı.`;
+  if(k==='q3')return de?`7–8 Jahre Luxushotellerie und Mixologie, davon 2 Jahre als Supervisor/Küchenchef (Einkauf, Lager, Personalplanung); in Deutschland als Barkeeper inkl. Tagesabrechnung und Bestellwesen tätig. Vertretung: Teilzeit-Barkeeper als zweiter Schlüssel${st.wi.bl?', Barleiter eingeplant':'; Barleiter ab 15–20 T€ Monatsumsatz'}; Krankentagegeld und BU-Versicherung.`:`7–8 yıl lüks otelcilik ve miksoloji, 2 yılı süpervizör/şef (satın alma, stok, personel planı); Almanya'da barmen olarak günlük kasa kapanışı ve sipariş. Yedek: Teilzeit barmen ikinci anahtar${st.wi.bl?', Barleiter planlandı':'; Barleiter 15–20 bin € aylık cirodan itibaren'}; Krankentagegeld ve BU sigortası.`;
+  if(k==='risk')return de?`Stop-Loss: 3 Monate in Folge Nettoumsatz < ${eur(m.beR||0)} → Personalstunden und Öffnungstage kürzen; 6 Monate → Nachmieter suchen (Nachmieterklausel im Mietvertrag). Liquidität: monatlich ${eur(d.m5.rl[1]||0)} Steuerrücklage, Kassenuntergrenze ${eur(m.safety)}. Krankheit: Krankengeld ab Tag 43, für 6 Wochen ${eur(m.safety/2)} Reserve. Steuerschock: ${eur(d.m5.shock)} (${d.m5.shockM}) aus der Rücklage.`:`Zarar durdurma: 3 ay üst üste net ciro < ${eur(m.beR||0)} → personel saatini ve açık günleri azalt; 6 ay → devralacak kiracı ara (kira sözleşmesinde Nachmieter maddesi). Likidite: her ay ${eur(d.m5.rl[1]||0)} Steuer-Rücklage, kasa alt sınırı ${eur(m.safety)}. Hastalık: Krankengeld 43. günden; 6 hafta için ${eur(m.safety/2)} nakit. Vergi şoku: ${eur(d.m5.shock)} (${d.m5.shockM}) Rücklage'dan.`;
+  return '';
+}
+
+// ---------- UI ----------
+const F=(k,label,min,max,step,unit,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="${k}"><em>${unit}</em></span></div>${max!=null?`<input id="r_${id}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label}">`:''}${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const R_=(l,v,cls='',big)=>`<div class="row${big?' big':''}"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+function paint(r){const p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--f',Math.max(0,Math.min(100,p))+'%')}
+function fillInputs(root){$$('[data-k]',root).forEach(el=>{const v=getP(st,el.dataset.k);if(el.dataset.t==='b')el.checked=!!v;else el.value=el.classList.contains('num')?fmtIn(v):(v??'')});$$('input[type=range]',root).forEach(paint)}
+const COL={g:'var(--ok)',y:'var(--y)',r:'var(--r)'};
+const lvOf=(s)=>s>=75?'g':s>=55?'y':'r';
+/* ---------- Güvenli sayı (Modül 1–5 ile aynı fonksiyon) ---------- */
+const BIGK=new Set(['set.salary','set.blCost','wi.sab','cond.p.permitNow','cond.p.permitReady','cond.p.wcSave']);
+const isBig=k=>BIGK.has(k)||/^cond\.p\.phase\.\d+\.a$/.test(k);
+function hard(k){
+  const lv=LEV.find(l=>'wi.'+l[0]===k);if(lv)return [lv[2],lv[3]];
+  if(k==='set.ramp')return [20,100];
+  if(k==='set.sabRate')return [0,25];
+  if(k==='set.sabYears')return [1,15];
+  if(k==='set.sabFree')return [0,5];
+  if(k==='cond.p.rentPct')return [3,15];
+  if(k==='cond.p.bufPct'||k==='cond.p.phaseLoss')return [0,100];
+  if(k==='cond.p.phaseMonths'||k==='cond.p.freeMonths')return [0,12];
+  return [0,1e9];
+}
+const clampK=(k,v)=>{const [a,b]=hard(k);return Math.min(b,Math.max(a,v))};
+const num=v=>{const x=parseNum(v,true);return Number.isFinite(x)?x:null};
+
+/* ---------- Ek veri alanları (eski çıktılarla uyumlu) ---------- */
+{const e1=EX.m1,e4=EX.m4,e5=EX.m5;
+ EX.m1=j=>{const o=e1(j),x=j.extra||{};return Object.assign(o,{kalt:+x.kaltmiete||0,nk:+x.nebenkosten||0,brut:+x.brut_m2||0,abl:+(x.startup_cash?.abloese)||0,comp:x.direct_competitors??null,compR:x.competition_radius_m??null})};
+ EX.m4=j=>{const o=e4(j);return Object.assign(o,{build:+j.build_months||0,runway:+j.runway_months_zero_revenue||0,vatPeak:+(j.vorsteuer?.peak)||0,vatDelay:+(j.vorsteuer?.delay_months)||0,afaImm:+(j.afa?.first_year_immediate)||0,leaseM:j.lease_month||'',capex:+j.capex_items_net||0})};
+ EX.m5=j=>{const o=e5(j);return Object.assign(o,{years:Array.isArray(j.years)?j.years:[],cmp:j.comparison_3y||{},rlRows:Array.isArray(j.steuer_ruecklage_monthly)?j.steuer_ruecklage_monthly:[],first:+j.first_tax_year||0,heb:+(j.assumptions?.hebesatz)||450})};
+}
+const TNAME={ez:'Einzelunternehmen',ug:'UG (haftungsbeschränkt)',gmbh:'GmbH',einzel_then_gmbh:'Einzelunternehmen → GmbH (Jahr 3)',sw:'Einzelunternehmen → GmbH (Jahr 3)'};
+const tr_=(a,b)=>st.lang==='de'?a:b;
+const ymF=s=>{const p=String(s||'').split('-');return p.length>1?`${p[1]}/${p[0]}`:String(s||'–')};
+
+/* ---------- Koşullu puan ---------- */
+const CONDK=['gastro','rent','buf','phase','free','kef'];
+const phaseSum=()=>(st.cond.p.phase||[]).reduce((a,x)=>a+(+x.a||0),0);
+function condLabel(k,lang){
+  const P=st.cond.p,de=(lang||st.lang)==='de';
+  return {gastro:de?'Objekt gastronomiefähig (WC vorhanden, keine Nutzungsänderung)':'Mekân gastronomiye hazır (WC var, Nutzungsänderung yok)',
+    rent:de?`Miete auf ${nf(P.rentPct,1)} % vom Umsatz verhandelt`:`Kira cironun %${nf(P.rentPct,1)}'ine indi`,
+    buf:de?`Reserve nur zu ${nf(P.bufPct)} % ausgegeben`:`Rezervin sadece %${nf(P.bufPct)}'i harcandı`,
+    phase:de?`Gestaffelte Eröffnung (${eur(phaseSum())} netto später)`:`Kademeli açılış (${eur(phaseSum())} net sonraya)`,
+    free:de?`Mietfreie Zeit +${nf(P.freeMonths)} Monat(e)`:`Mietfreie Zeit +${nf(P.freeMonths)} ay`,
+    kef:de?'Mietkautionsbürgschaft statt Barkaution':'Kaution yerine kefalet (Mietkautionsbürgschaft)'}[k];
+}
+function applyCond(keys,d,L,set){
+  const D=clone(d),L2=clone(L),S=clone(set),P=st.cond.p,eff={};
+  const addCash=(v,t=v)=>{D.m4.open+=v;D.m4.tief+=t};
+  keys.forEach(k=>{
+    if(k==='gastro'){
+      if(!(D.m1.nutz||D.m1.wcNo)){eff[k]='na';return}
+      D.m1.suit=Math.min(100,D.m1.suit+(D.m1.nutz?40:0)+(D.m1.wcNo?15:0));if(D.m1.wcNo)D.m1.red=Math.max(0,D.m1.red-1);
+      const sv=(D.m1.nutz?Math.max(0,(+P.permitNow||0)-(+P.permitReady||0)):0)+(D.m1.wcNo?(+P.wcSave||0):0);
+      addCash(sv*1.19);D.m1.nutz=false;D.m1.wcNo=false;eff[k]=sv;
+    }
+    if(k==='buf'){if(L2.buf<=P.bufPct){eff[k]='na';return}L2.buf=P.bufPct}
+    if(k==='phase'){
+      const sum=phaseSum();if(!sum){eff[k]='na';return}
+      const m0=model(D,L2,S,st.rs),loss=(+P.phaseMonths||0)*(+P.phaseLoss||0)/100*m0.Rb*(S.ramp/100)*(1-D.m3.cogs/100);
+      addCash(sum*1.19,sum*1.19-loss);S.ramp=S.ramp*(1-(+P.phaseLoss||0)/100*(+P.phaseMonths||0)/12);eff[k]=sum;
+    }
+    if(k==='free'){const v=(+P.freeMonths||0)*(D.m1.warmB||D.m3.rent*1.19);if(!v){eff[k]='na';return}addCash(v);eff[k]=v}
+    if(k==='kef'){if(L2.kef||D.m4.kmode!=='cash'){eff[k]='na';return}L2.kef=true}
+  });
+  if(keys.includes('rent')){const m0=model(D,L2,S,st.rs),target=P.rentPct/100*m0.y.R,cur=m0.y.rent;if(target<cur-1)L2.rent=(target/D.m3.rent-1)*100;else eff.rent='na'}
+  return {D,L2,S,eff};
+}
+function condRows(d){
+  const base=model(d,st.wi,st.set,st.rs);
+  const rows=CONDK.map(k=>{const r=applyCond([k],d,st.wi,st.set);return {k,m:model(r.D,r.L2,r.S,st.rs),na:r.eff[k]==='na'}});
+  const sel=CONDK.filter(k=>st.cond.sel[k]);const rc=applyCond(sel,d,st.wi,st.set);
+  return {base,rows,all:model(rc.D,rc.L2,rc.S,st.rs),sel};
+}
+function sabForGreen(keys,d){
+  for(let s=0;s<=30000;s+=500){const r=applyCond(keys,d,Object.assign({},st.wi,{sab:Math.max(st.wi.sab,s)}),st.set);if(model(r.D,r.L2,r.S,st.rs).verdict==='g')return Math.max(st.wi.sab,s)}
+  return null;
+}
+function greenPath(d){
+  const R=condRows(d);if(R.base.verdict==='g')return {now:true};
+  const one=R.rows.filter(r=>!r.na&&r.m.verdict==='g').map(r=>r.k);
+  return {one,all:R.all.verdict==='g',sel:R.sel,R};
+}
+
+/* ---------- Pazarlık limitleri ---------- */
+function rentForGreen(d){
+  const f=r=>model(d,Object.assign({},st.wi,{rent:r}),st.set,st.rs).verdict==='g';
+  if(!f(-80))return null;let lo=-80,hi=60;if(f(hi))return hi;
+  for(let i=0;i<30;i++){const mid=(lo+hi)/2;if(f(mid))lo=mid;else hi=mid}return lo;
+}
+function negRows(d,m,lang){
+  const de=(lang||st.lang)==='de',T=(a,b)=>de?a:b,m1=d.m1,P=st.cond.p;
+  const kalt=m1.kalt||0,brut=m1.brut||0,nk=Math.max(0,(m1.warmN||d.m3.rent)-kalt),rg=rentForGreen(d);
+  const warmMax=rg==null?null:d.m3.rent*(1+rg/100),kaltMax=warmMax==null?null:Math.max(0,warmMax-nk);
+  const cls=(v,g,y)=>v<=g?'g':v<=y?'y':'r';
+  const warmB=m1.warmB||d.m3.rent*1.19,kauM=warmB?d.m4.kaution/warmB:0,fee=d.m4.kfw.amt*0.0015;
+  const ablCap=Math.max(0,m.open-m.safety);
+  return [
+    {k:'Kaltmiete / m²',now:brut&&kalt?nf(kalt/brut,2)+' €':'–',tgt:'≤ 10,00 €',ok:'10–14 €',away:'> 14 €',st:brut&&kalt?cls(kalt/brut,10,14):'',note:kaltMax!=null&&brut?T(`Für GRÜN max. ${nf(kaltMax/brut,2)} €/m² (${eur(kaltMax)} kalt/Monat)`,`Yeşil için en fazla ${nf(kaltMax/brut,2)} €/m² (${eur(kaltMax)} kalt/ay)`):T('Miete allein reicht nicht für GRÜN; andere Hebel nötig.','Kira tek başına yeşile çevirmiyor; başka kaldıraç gerekli.')},
+    {k:T('Miete / Umsatz','Kira / ciro'),now:nf(m.y.rr,1)+' %',tgt:`≤ ${nf(P.rentPct,1)} %`,ok:'≤ 10 %',away:'> 12 %',st:cls(m.y.rr,P.rentPct,12),note:T(`Ziel-Warmmiete netto ${eur(P.rentPct/100*m.y.R)}/Monat bei ${eur(m.y.R)} Umsatz`,`Hedef net Warmmiete ${eur(P.rentPct/100*m.y.R)}/ay (${eur(m.y.R)} ciroda)`)},
+    {k:'Mietfreie Zeit',now:d.m4.build?T(`${d.m4.build} Mon. Umbau`,`${d.m4.build} ay tadilat`):'–',tgt:T(`= Umbauzeit (${d.m4.build||3} Mon.)`,`= tadilat süresi (${d.m4.build||3} ay)`),ok:T(`${Math.max(1,(d.m4.build||3)-1)} Mon.`,`${Math.max(1,(d.m4.build||3)-1)} ay`),away:T('keine','yok'),st:'',note:T(`Jeder mietfreie Monat = ${eur(warmB)} mehr Liquidität`,`Her kirasız ay = ${eur(warmB)} daha fazla nakit`)},
+    {k:'Mietkaution',now:d.m4.kmode==='cash'?T(`${nf(kauM,1)} Mieten bar`,`${nf(kauM,1)} kira nakit`):T('Bürgschaft','Kefalet'),tgt:T('Bürgschaft / ≤ 3 Mieten','Kefalet / ≤ 3 kira'),ok:T('3 Mieten bar','3 kira nakit'),away:T('> 6 Mieten bar','> 6 kira nakit'),st:d.m4.kmode!=='cash'?'g':cls(kauM,3,6),note:T(`Bürgschaft setzt ${eur(d.m4.kaution)} frei; Avalprovision ca. 1–3 %/Jahr`,`Kefalet ${eur(d.m4.kaution)} nakdi serbest bırakır; Avalprovision yılda ~%1–3`)},
+    {k:'Ablöse',now:eur(m1.abl||0),tgt:T('≤ Zeitwert lt. Inventarliste','≤ envanter listesine göre gerçek değer'),ok:T('Zeitwert + Rechnung mit USt','gerçek değer + KDV\'li fatura'),away:T('Goodwill / ohne Liste','"müşteri portföyü" / listesiz'),st:m1.abl>ablCap?'r':m1.abl?'y':'g',note:T(`Zeitwert ≈ Neupreis × Restnutzungsdauer ÷ Nutzungsdauer; Geräte vorher testen. Finanzierbar bei heutiger Liquidität: ${eur(ablCap)}`,`Gerçek değer ≈ yeni fiyat × kalan ömür ÷ toplam ömür; cihazları önce test et. Bugünkü nakitle finanse edilebilir: ${eur(ablCap)}`)},
+    {k:T('Laufzeit','Süre'),now:'–',tgt:T('5 J. fest + 5 J. Option','5 yıl + 5 yıl opsiyon'),ok:T('5–10 J. mit Nachmieterklausel','5–10 yıl, devir maddeli'),away:T('> 10 J. fest ohne Option','> 10 yıl opsiyonsuz'),st:'',note:T('Schriftform (§ 550 BGB) einhalten','Yazılı şekil şartı (§ 550 BGB)')},
+    {k:T('Indexierung / Staffel','Endeksleme / kademeli'),now:'–',tgt:T('Index (VPI) frühestens nach 3 J.','Endeks (TÜFE) en erken 3 yıl sonra'),ok:T('Index jährlich','Yıllık endeks'),away:T('Staffel > 3 %/J.','Kademe > %3/yıl'),st:'',note:T('Schwelle (z. B. ≥ 5 % Indexänderung) vereinbaren','Eşik (ör. endeks ≥ %5 değişince) koy')},
+    {k:'Rückbau',now:'–',tgt:T('Genehmigte Einbauten verbleiben','İzinli yapılan yatırımlar kalır'),ok:T('Nur mobile Teile','Sadece taşınabilir parçalar'),away:T('Vollständiger Rückbau','Tam söküm'),st:'',note:T('Tresen, Lüftung, WC-Umbau ausdrücklich ausnehmen','Tezgâh, havalandırma, WC dönüşümünü açıkça hariç tut')},
+    {k:'Konkurrenzschutz',now:'–',tgt:T('Keine weitere Bar im Objekt','Binada ikinci bar yok'),ok:T('Branchenschutz Cocktailbar','Kokteyl barı için koruma'),away:T('Fehlt','Yok'),st:'',note:''},
+    {k:'Nutzungszweck',now:'–',tgt:T('Bar mit Musik bis 03:00 + Außengastronomie','Müzikli bar 03:00\'e kadar + dış alan'),ok:T('Schankwirtschaft bis 01:00','Bar 01:00\'e kadar'),away:T('Café / Laden','Kafe / dükkân'),st:'',note:T('Mietbeginn an Erteilung der Nutzungsänderung koppeln','Kira başlangıcını kullanım izni şartına bağla')},
+    {k:'KfW Bereitstellungsprovision',now:eur(fee)+T('/Mon.','/ay'),tgt:T('Zusage ≤ 6 Mon. vor Hauptabruf','Onay, ana çekimden en fazla 6 ay önce'),ok:T('Teilabrufe nach Baufortschritt','Tadilat ilerledikçe kısmi çekim'),away:T('Zusage > 6 Mon. vor Mietbeginn','Onay kiradan 6+ ay önce'),st:'',note:T(`0,15 %/Monat auf nicht abgerufene Beträge ab 6 Mon. nach Zusage (${eur(fee)}/Monat auf ${eur(d.m4.kfw.amt)})`,`Onaydan 6 ay sonra, çekilmemiş tutara ayda %0,15 (${eur(d.m4.kfw.amt)} için ${eur(fee)}/ay)`)}
+  ];
+}
+
+/* ---------- Modüller arası kontrol (TR/DE) ---------- */
+function crossChecks(d,m){
+  const X=[],A=(lv,tr,de)=>X.push({lv,tr,de:de||tr});
+  const r1=d.m1.rev||d.m2.rev;if(r1&&Math.abs(d.m3.rPlan-r1)/r1>0.15)A('y',`Ciro: Modül 1/2 ${eur(r1)}, Modül 3 plan ${eur(d.m3.rPlan)} (fark %${nf(Math.abs(d.m3.rPlan-r1)/r1*100)}). Karar cirosunu bilinçli seç.`,`Umsatz: Modul 1/2 ${eur(r1)}, Modul 3 Plan ${eur(d.m3.rPlan)} (Abweichung ${nf(Math.abs(d.m3.rPlan-r1)/r1*100)} %).`);
+  if(d.m5.kvY3&&Math.abs(d.m5.kvY3-d.m3.kv)>200)A('y',`Sağlık sigortası: Modül 3'te ${eur(d.m3.kv)}/ay, Modül 5'te ${eur(d.m5.kvY3)}/ay. Pano Modül 5'i kullanıyor; Modül 3'ü güncelle.`,`Krankenversicherung: Modul 3 ${eur(d.m3.kv)}/Monat, Modul 5 ${eur(d.m5.kvY3)}/Monat (Bewertung nutzt Modul 5).`);
+  if(d.m4.kfw.amt&&(Math.abs(d.m4.kfw.amt-d.m3.loanAmt)>1||Math.abs(d.m4.kfw.rate-d.m3.loanRate)>0.05||d.m4.kfw.years!==d.m3.loanYears))A('y',`Kredi: Modül 3 ${eur(d.m3.loanAmt)} / %${nf(d.m3.loanRate,1)} / ${d.m3.loanYears} yıl, Modül 4 ${eur(d.m4.kfw.amt)} / %${nf(d.m4.kfw.rate,1)} / ${d.m4.kfw.years} yıl. Modül 3'te faiz ve vadeyi Modül 4'e eşitle.`,`Kredit: Modul 3 ${eur(d.m3.loanAmt)} / ${nf(d.m3.loanRate,1)} % / ${d.m3.loanYears} J., Modul 4 ${eur(d.m4.kfw.amt)} / ${nf(d.m4.kfw.rate,1)} % / ${d.m4.kfw.years} J. (Bewertung nutzt Modul 4).`);
+  if(d.m1.seats>40)A('y',`Kapasite: Modül 1 ${d.m1.seats} koltuk, senin 40 kişilik sınırının üstünde.`,`Kapazität: Modul 1 ${d.m1.seats} Sitzplätze, über der Zielgröße von 40.`);
+  if(d.m1.event&&d.m1.permit&&d.m1.event>d.m1.permit)A('y',`Event kapasitesi ${d.m1.event} > izinli ${d.m1.permit} kişi (Modül 1).`,`Eventkapazität ${d.m1.event} > genehmigt ${d.m1.permit} Personen.`);
+  if(m.ownerH>50)A('y',`Sahip saati ${nf(m.ownerH)}/hafta: tek kişi riski.`,`Inhaberstunden ${nf(m.ownerH)}/Woche: Ein-Personen-Risiko.`);
+  if(Math.abs(d.m2.staff-d.m3.staff)/(d.m2.staff||1)>0.05)A('y',`Personel: Modül 2 ${eur(d.m2.staff)}, Modül 3 ${eur(d.m3.staff)}.`,`Personal: Modul 2 ${eur(d.m2.staff)}, Modul 3 ${eur(d.m3.staff)}.`);
+  if(d.m1.warmN&&Math.abs(d.m1.warmN-d.m3.rent)>20)A('y',`Kira: Modül 1 net ${eur(d.m1.warmN)}, Modül 3 ${eur(d.m3.rent)}.`,`Miete: Modul 1 netto ${eur(d.m1.warmN)}, Modul 3 ${eur(d.m3.rent)}.`);
+  const oy=+String(d.m4.openM).slice(0,4);if(d.m2.year&&oy&&d.m2.year<oy)A('i',`Modül 2 ücretleri ${d.m2.year} yılına göre, açılış ${oy}: asgari ücret ve primler o zamana kadar artacak.`,`Modul 2 rechnet Löhne für ${d.m2.year}, Eröffnung ${oy}: Mindestlohn und Beiträge steigen bis dahin.`);
+  if(d.m4.open<0)A('r',`Modül 4: açılışta kasa ${eur(d.m4.open)} (kaldıraçsız). Finansman açığı kapanmadan imza yok.`,`Modul 4: Liquidität bei Eröffnung ${eur(d.m4.open)} ohne Maßnahmen – Finanzierungslücke vor Unterschrift schließen.`);
+  const miss=MODS.filter(([k])=>!d[k]._loaded).map(([k,l])=>l.split(' · ')[0]);if(miss.length)A('i',`Örnek değerle çalışan: ${miss.join(', ')}. Veri merkezinden kendi çıktılarını yükle.`,`Mit Beispielwerten: ${miss.map(x=>x.replace('Modül','Modul')).join(', ')}.`);
+  if(!X.length)A('ok','Modüller tutarlı.','Module konsistent.');
+  const ord={r:0,y:1,ok:2,i:3};X.sort((a,b)=>ord[a.lv]-ord[b.lv]);return X;
+}
+
+/* ---------- UI: koşullar & pazarlık ---------- */
+const VDOT=v=>`<span class="vd" style="background:${COL[v]}"></span>`;
+function renderCondUI(d){
+  const box=$('#condBox');if(!box)return;
+  const R=condRows(d),b=R.base,dl=x=>`${x>=0?'+':''}${nf(x)}`;
+  const dc=x=>`${x>=0?'+':'−'}${nf(Math.abs(Math.round(x)))} €`;
+  const line=(lab,m,na,k)=>`<div class="cr${na?' na':''}">${k?`<label class="cs"><input type="checkbox" data-csel="${k}"${st.cond.sel[k]?' checked':''} aria-label="Birlikte hesapla"></label>`:'<span class="cs"></span>'}<div class="cl"><b>${lab}</b><small>${na?'zaten sağlanıyor / etkisi yok':`açılış kasası ${eur(m.open)}${k?` (${dc(m.open-b.open)})`:''} · DSCR 3. yıl ${nf(m.y.dscr,2)}${m.veto.length?` · veto: ${m.veto.map(v=>v[1]).join(', ')}`:''}`}</small></div><div class="cv">${VDOT(m.verdict)}<b>${nf(m.score)}</b><small>${na?'':dl(m.score-b.score)}</small></div></div>`;
+  box.innerHTML=line('Bugün',b,false,null)+R.rows.map(r=>line(condLabel(r.k,'tr'),r.m,r.na,r.k)).join('')+`<div class="cr all">${'<span class="cs"></span>'}<div class="cl"><b>İşaretlenenler birlikte (${R.sel.length})</b><small>açılış kasası ${eur(R.all.open)} (${dc(R.all.open-b.open)}) · DSCR ${nf(R.all.y.dscr,2)} · ${R.all.veto.length?`veto: ${R.all.veto.map(v=>v[1]).join(', ')}`:'veto yok'}</small></div><div class="cv">${VDOT(R.all.verdict)}<b>${nf(R.all.score)}</b><small>${dl(R.all.score-b.score)}</small></div></div>${(()=>{if(R.all.verdict==='g')return '<p class="note" style="color:var(--ok)">İşaretlenenler birlikte yeşile çeviriyor.</p>';const s=sabForGreen(R.sel,d);return s!=null?`<p class="note" style="color:var(--sand)">Birlikte + SAB Mikrodarlehen <b>${eur(s)}</b> → yeşil.</p>`:'<p class="note" style="color:var(--r)">Birlikte + SAB 30.000 € ile de yeşil değil: kalan açık başka finansman veya daha küçük yatırım ister.</p>'})()}`;
+  const nb=$('#negBox');if(!nb)return;const m=model(d,st.wi,st.set,st.rs);
+  nb.innerHTML=negRows(d,m,'tr').map(r=>`<div class="ng"><div class="nh"><b>${r.k}</b>${r.st?`<span class="tagS ${r.st}">bugün ${r.now}</span>`:r.now!=='–'?`<span class="tagS">${r.now}</span>`:''}</div><div class="nr"><span class="g">Hedef: ${r.tgt}</span><span class="y">Kabul: ${r.ok}</span><span class="r">Uzak dur: ${r.away}</span></div>${r.note?`<p class="note">${r.note}</p>`:''}</div>`).join('');
+}
+function renderCondParams(){
+  const b=$('#condParams');if(!b)return;
+  b.innerHTML=`<h4>Gastro-hazır</h4>${F('cond.p.permitNow','Mimar + Nutzungsänderung + Brandschutz (bugün)',0,20000,100,'€')}${F('cond.p.permitReady','Gastro-hazır mekânda aynı kalem',0,20000,100,'€')}${F('cond.p.wcSave','WC yapımı tasarrufu (WC yoksa)',0,30000,500,'€','Modül 4 bütçende WC yapımı yoksa 0 yap.')}
+  <h4>Kira hedefi</h4>${F('cond.p.rentPct','Hedef kira / ciro',3,15,0.5,'%')}
+  <h4>Rezerv</h4>${F('cond.p.bufPct','Rezervin harcanan kısmı',0,100,5,'%')}
+  <h4>Kademeli açılış (sonraya ertelenen kalemler, net)</h4>${st.cond.p.phase.map((x,i)=>`<div class="fld"><div class="fh"><input type="text" data-k="cond.p.phase.${i}.n" data-t="s" aria-label="Kalem" style="flex:1"><span class="nu"><input class="num" type="text" inputmode="decimal" autocomplete="off" data-k="cond.p.phase.${i}.a" aria-label="Tutar"><em>€</em></span></div></div>`).join('')}${F('cond.p.phaseMonths','Temkinli ciro süresi',0,12,1,'ay')}${F('cond.p.phaseLoss','Bu sürede ciro kaybı',0,30,1,'%')}
+  <h4>Kira pazarlığı</h4>${F('cond.p.freeMonths','Ek kirasız ay',0,6,1,'ay')}`;
+  fillInputs(b);
+}
+
+/* ---------- Belge (Bank 3 S. / Steuerberater 2 S.) ---------- */
+function docHdr(d,i,n){
+  const H=st.doc.hdr,de=st.lang==='de',name=[H.name,H.phone,H.email].filter(Boolean).map(esc).join(' · ');
+  if(i>0)return `<div class="ph2"><span>${esc(H.project||'Galapagos')}</span><span>${name}</span></div>`;
+  const tt=st.doc.variant==='stb'?(de?'Steuerliche Übersicht & Finanzstatus':'Vergi özeti & finansal durum'):(de?'Entscheidungsvorlage & Finanzstatus':'Karar & finansal durum özeti');
+  return `<div class="hdr"><div><h1>${esc(H.project||'Galapagos Cocktailbar')}</h1><p class="st">${tt}</p><p>${name||(de?'[Name, Telefon, E-Mail eintragen]':'[Ad, telefon, e-posta gir]')}</p></div><div class="hr"><p>${new Date().toLocaleDateString('de-DE')}</p><p>${de?'Standort':'Mekân'}: ${esc(d.m1.name||'–')}</p><p>${de?'Eröffnung':'Açılış'}: ${ymF(d.m4.openM)}</p></div></div>`;
+}
+function pgFin(d,m){
+  const L=st.lang,T=TX[L],t=tr_,col={g:'#2e8b3e',y:'#c48a00',r:'#c8402a'}[m.verdict],note=k=>esc(st.notes[L][k]??autoText(L,k,d,m)).replace(/\n/g,'<br>');
+  const sab=st.wi.sab,fin=d.m4.fin+sab,kau=d.m4.kmode==='cash'&&!st.wi.kef?d.m4.kaution:0,inv=d.m4.invest-d.m4.reserve*(1-st.wi.buf/100),rest=fin-inv-kau-d.m4.vat-m.open,sc=d.m3.sc,rl=d.m5.rl[1]||d.m5.rl[0]||0;
+  return `<div class="vline"><span class="pill" style="background:${col}">${T.verdict[m.verdict]} · ${nf(m.score)}/100</span><span class="small">${t('Entscheidungsumsatz','Karar cirosu')}: ${eur(m.Rb)}/${t('Monat','ay')} (${st.rs==='target'?t('Ziel','hedef'):st.rs==='m1'?t('Modul 1/2','Modül 1/2'):t('Plan Modul 3','Modül 3 plan')})</span></div>
+  <div class="m6"><div><span>${T.dscr3} (${T.dscr1})</span><b>${nf(m.y.dscr,2)} (${nf(m.y1.dscr,2)})</b></div><div><span>${T.open}</span><b>${eur(m.open)}</b></div><div><span>${t('Tiefpunkt','En dip')}${d.m4.tiefM?` (${ymF(d.m4.tiefM)})`:''}</span><b>${eur(m.tief)}</b></div><div><span>${t('Reichweite ohne Umsatz','Sıfır ciroda dayanma')}</span><b>${nf(Math.max(0,m.open)/(m.safety/3||1),1)} ${t('Mon.','ay')}</b></div><div><span>${T.mos}</span><b>${nf(m.mos)} %</b></div><div><span>${T.eq}</span><b>${nf(m.eq,1)} %</b></div><div><span>${t('Überschuss / Monat (Jahr 3)','Aylık birikim (3. yıl)')}</span><b>${eur(m.y.save)}</b></div><div><span>${t('Steuerrücklage / Monat','Aylık vergi rezervi')}</span><b>${eur(rl)}</b></div></div>
+  <div class="two"><div><h2>${T.src} / ${T.use}</h2><table><tbody><tr><td>${T.equity}</td><td>${eur(d.m4.equity)}</td></tr><tr><td>${T.kfw}</td><td>${eur(d.m4.kfw.amt)}</td></tr>${sab?`<tr><td>${T.sab}</td><td>${eur(sab)}</td></tr>`:''}<tr><td><b>${T.total}</b></td><td><b>${eur(fin)}</b></td></tr><tr><td>${T.inv}</td><td>${eur(inv)}</td></tr><tr><td>${T.kau}</td><td>${eur(kau)}</td></tr><tr><td>${T.vat}</td><td>${eur(d.m4.vat)}</td></tr><tr><td>${T.start}</td><td>${eur(rest)}</td></tr><tr><td><b>${T.cash}</b></td><td><b>${eur(m.open)}</b></td></tr></tbody></table>
+  <p class="small">KfW: ${nf(d.m4.kfw.rate,2)} % · ${d.m4.kfw.years} ${t('J.','yıl')} · ${d.m4.kfw.free} ${t('J. tilgungsfrei','yıl ödemesiz')} · ${t('Rate Jahr 3','3. yıl taksit')} ${eur((m.ks3.it+m.ks3.pr)/12)}/${t('Mon.','ay')}</p></div>
+  <div><h2>${T.scen}</h2><table><thead><tr><th></th><th>${T.rev}</th><th>${T.sv}</th></tr></thead><tbody><tr><td>${T.bad}</td><td>${eur(sc.bad.R)}</td><td>${eur(sc.bad.save)}</td></tr><tr><td>${T.base}</td><td>${eur(sc.base.R)}</td><td>${eur(sc.base.save)}</td></tr><tr><td>${T.good}</td><td>${eur(sc.good.R)}</td><td>${eur(sc.good.save)}</td></tr><tr><td><b>${T.wi}</b></td><td><b>${eur(m.y.R)}</b></td><td><b>${eur(m.y.save)}</b></td></tr></tbody></table>
+  <h2>${t('Steuern & Rücklage','Vergi & rezerv')}</h2><p class="small">${TNAME[d.m5.type]||d.m5.type} · ${t('eff. Steuersatz Jahr 3','3. yıl efektif vergi')} ${nf(d.m5.eff,1)} % · ${t('größte Einzelzahlung','en büyük tek ödeme')} ${eur(d.m5.shock)} (${ymF(d.m5.shockM)}) · ${t('Rücklagekonto min.','Rezerv hesabı en düşük')} ${eur(d.m5.resMin)}</p>
+  <h2>${T.risks}</h2><ul>${m.veto.map(v=>`<li style="color:#c8402a">${L==='de'?v[2]:v[1]}</li>`).join('')}${m.auto.map(v=>`<li style="color:#a87400">${L==='de'?v[2]:v[1]}</li>`).join('')}${m.veto.length+m.auto.length?'':`<li>${T.none}</li>`}</ul></div></div>
+  <h2>${T.qa}</h2><ol>${['q1','q2','q3'].map((k,i)=>`<li><span class="q">${T.q[i]}</span><br>${note(k)}</li>`).join('')}</ol>`;
+}
+const MEAS={open:['Finanzierungslücke schließen: SAB-Mikrodarlehen, Mietkautionsbürgschaft, gestaffelte Eröffnung, Ablöse nachverhandeln.','Finansman açığını kapat: SAB Mikrodarlehen, Kaution kefaleti, kademeli açılış, Ablöse pazarlığı.'],
+  dscr:['Kapitaldienst senken: Laufzeit/Tilgungsfreiheit prüfen, Fixkosten und Miete senken, Preise anpassen.','Borç servisini düşür: vade/ödemesiz dönem, sabit gider ve kira, fiyat.'],
+  cap:['Auslastungsannahme senken oder Kapazität (Terrasse, Stehplätze) erhöhen.','Doluluk varsayımını düşür veya kapasiteyi (teras, ayakta alan) artır.'],
+  wc:['WC / Nutzungsänderung vor Unterschrift per Bauvoranfrage klären; sonst Objekt meiden.','WC / Nutzungsänderung imzadan önce Bauvoranfrage ile netleştir; yoksa mekândan uzak dur.'],
+  rr:['Miete auf Zielquote nachverhandeln (siehe Verhandlungsziele).','Kirayı hedef orana çek (pazarlık hedeflerine bak).'],
+  res:['Steuerrücklage erhöhen, Vorauszahlungen per Anpassungsantrag erhöhen lassen.','Vergi rezervini artır, Anpassungsantrag ile peşinleri yükselttir.'],
+  eq:['Eigenkapital erhöhen oder Investition senken (gebrauchte Geräte, Eigenleistung).','Öz sermayeyi artır veya yatırımı düşür (ikinci el, kendi işçiliğin).'],
+  own:['Teilzeit-Barkeeper als zweiter Schlüssel, Barleiter ab Zielumsatz.','Teilzeit barmen ikinci anahtar; hedef cirodan sonra Barleiter.'],
+  opp:['Entnahme mit heutigem Netto vergleichen; Umsatzziel oder Kosten anpassen.','Eline geçeni bugünkü maaşınla kıyasla; ciro hedefi veya gideri ayarla.']};
+function pgMeasures(d,m){
+  const L=st.lang,de=L==='de',t=tr_,R=condRows(d),b=R.base,note=k=>esc(st.notes[L][k]??autoText(L,k,d,m)).replace(/\n/g,'<br>');
+  const risks=m.veto.map(v=>['r',de?v[2]:v[1],MEAS[v[0]]]).concat(m.auto.map(v=>['y',de?v[2]:v[1],MEAS[v[0]]]));
+  risks.push(['i',t('Umsatz bleibt unter Plan','Ciro planın altında kalır'),[`Stop-Loss: 3 Monate < ${eur(m.beR||0)} → Stunden/Öffnungstage kürzen; Bad-Case-Monat: ${eur(d.m3.sc.bad.save)} Überschuss.`,`Zarar durdurma: 3 ay < ${eur(m.beR||0)} → saat/gün kıs; kötü ay: ${eur(d.m3.sc.bad.save)} birikim.`]]);
+  risks.push(['i',t('Ausfall des Inhabers','Sahibin hastalanması'),['Krankentagegeld, Teilzeit-Barkeeper mit Schlüssel, 6 Wochen Fixkostenreserve.','Krankentagegeld, anahtarlı Teilzeit barmen, 6 haftalık sabit gider rezervi.']]);
+  const condTr=(lab,mm,na)=>`<tr><td>${lab}</td><td>${na?t('bereits erfüllt','zaten sağlanıyor'):nf(mm.score)}</td><td>${na?'':`<span class="dot" style="background:${{g:'#2e8b3e',y:'#c48a00',r:'#c8402a'}[mm.verdict]}"></span>`}</td><td>${na?'':eur(mm.open)}</td><td>${na?'':nf(mm.y.dscr,2)}</td></tr>`;
+  const NR=negRows(d,m,L);
+  return `<h2>${t('Maßnahmenplan','Önlem planı')}</h2><table class="wide"><thead><tr><th>${t('Risiko','Risk')}</th><th>${t('Maßnahme','Önlem')}</th></tr></thead><tbody>${risks.map(([lv,r,mm])=>`<tr><td style="color:${lv==='r'?'#c8402a':lv==='y'?'#a87400':'#111'}">${r}</td><td>${mm?(de?mm[0]:mm[1]):''}</td></tr>`).join('')}</tbody></table>
+  <h2>${t('Bedingte Bewertung (kein Ist-Zustand)','Koşullu puan (bugünkü durum değil)')}</h2>
+  <table><thead><tr><th>${t('Bedingung','Koşul')}</th><th>Score</th><th></th><th>${t('Kasse Eröffnung','Açılış kasası')}</th><th>DSCR J3</th></tr></thead><tbody>${condTr(t('Ist-Zustand','Bugün'),b,false)}${R.rows.map(r=>condTr(condLabel(r.k),r.m,r.na)).join('')}${condTr(`<b>${t('Kombination aller markierten','İşaretlenenler birlikte')}</b>`,R.all,false)}${(()=>{if(R.all.verdict==='g')return '';const s=sabForGreen(R.sel,d);if(s==null)return `<tr><td colspan="5">${t('Auch mit 30.000 € SAB-Mikrodarlehen nicht GRÜN: weitere Finanzierung oder geringere Investition nötig.','30.000 € SAB ile de yeşil değil: ek finansman veya daha küçük yatırım gerekli.')}</td></tr>`;const r=applyCond(R.sel,d,Object.assign({},st.wi,{sab:s}),st.set),mm=model(r.D,r.L2,r.S,st.rs);return condTr(`<b>${t('Kombination + SAB','Birlikte + SAB')} ${eur(s)}</b>`,mm,false)})()}</tbody></table>
+  <h2>${t('Verhandlungsziele Mietvertrag & Finanzierung','Kira ve finansman pazarlık hedefleri')}</h2>
+  <table class="wide neg"><thead><tr><th>${t('Punkt','Kalem')}</th><th>${t('Ist','Bugün')}</th><th>${t('Ziel','Hedef')}</th><th>${t('Akzeptabel','Kabul')}</th><th>${t('No-Go','Uzak dur')}</th></tr></thead><tbody>${NR.map(r=>`<tr><td><b>${r.k}</b>${r.note?`<br><small>${r.note}</small>`:''}</td><td>${r.now}</td><td>${r.tgt}</td><td>${r.ok}</td><td>${r.away}</td></tr>`).join('')}</tbody></table>
+  <h2>${TX[L].risk}</h2><p>${note('risk')}</p>`;
+}
+function execSummary(d,m,lang){
+  const de=(lang||st.lang)==='de',T=TX[lang||st.lang],gp=greenPath(d),sab=st.wi.sab;
+  const cond=gp.now?(de?'Die Bewertung ist ohne weitere Bedingungen GRÜN.':'Değerlendirme ek koşul olmadan YEŞİL.'):gp.one.length?(de?`Einzeln führt zu GRÜN: ${gp.one.map(k=>condLabel(k,'de')).join('; ')}.`:`Tek başına yeşile çeviren: ${gp.one.map(k=>condLabel(k,'tr')).join('; ')}.`):gp.all?(de?`GRÜN erst in Kombination: ${gp.sel.map(k=>condLabel(k,'de')).join('; ')}.`:`Ancak birlikte yeşil: ${gp.sel.map(k=>condLabel(k,'tr')).join('; ')}.`):(de?'Auch alle Bedingungen zusammen ergeben noch kein GRÜN.':'Tüm koşullar birlikte bile henüz yeşil değil.');
+  return de?`${esc(st.doc.hdr.project||'Galapagos Cocktailbar')}: Standort ${esc(d.m1.name||'–')} mit ${d.m1.seats} Sitzplätzen, Eröffnung ${ymF(d.m4.openM)}. Gesamtfinanzierung ${eur(d.m4.fin+sab)} aus ${eur(d.m4.equity)} Eigenkapital (${nf(m.eq,1)} %) und ${eur(d.m4.kfw.amt)} KfW-StartGeld${sab?` sowie ${eur(sab)} SAB-Mikrodarlehen`:''}. Entscheidungsumsatz ${eur(m.y.R)} netto/Monat (${nf(m.y.gpn)} Gäste/Abend); Break-even inkl. Lebenshaltung ${m.beR?eur(m.beR):'–'}, Sicherheitsmarge ${nf(m.mos)} %. DSCR Jahr 3: ${nf(m.y.dscr,2)}. Liquidität bei Eröffnung ${eur(m.open)}, Tiefpunkt ${eur(m.tief)}. Steuerrücklage ${eur(d.m5.rl[1]||0)}/Monat; größte Einzelzahlung ${eur(d.m5.shock)} (${ymF(d.m5.shockM)}). Bewertung: ${T.verdict[m.verdict]} (${nf(m.score)}/100)${m.veto.length?`; K.-o.: ${m.veto.map(v=>v[2]).join(', ')}`:''}. ${cond}`
+  :`${esc(st.doc.hdr.project||'Galapagos Cocktailbar')}: ${esc(d.m1.name||'–')}, ${d.m1.seats} koltuk, açılış ${ymF(d.m4.openM)}. Toplam finansman ${eur(d.m4.fin+sab)}: ${eur(d.m4.equity)} öz sermaye (%${nf(m.eq,1)}) ve ${eur(d.m4.kfw.amt)} KfW StartGeld${sab?` + ${eur(sab)} SAB`:''}. Karar cirosu ${eur(m.y.R)} net/ay (gece başı ${nf(m.y.gpn)} misafir); yaşam başa başı ${m.beR?eur(m.beR):'–'}, güvenlik marjı %${nf(m.mos)}. 3. yıl DSCR ${nf(m.y.dscr,2)}. Açılış kasası ${eur(m.open)}, en dip ${eur(m.tief)}. Vergi rezervi ${eur(d.m5.rl[1]||0)}/ay; en büyük tek ödeme ${eur(d.m5.shock)} (${ymF(d.m5.shockM)}). Karar: ${T.verdict[m.verdict]} (${nf(m.score)}/100)${m.veto.length?`; veto: ${m.veto.map(v=>v[1]).join(', ')}`:''}. ${cond}`;
+}
+function modBlocks(d,m,lang){
+  const de=(lang||st.lang)==='de',t=(a,b)=>de?a:b,src=k=>d[k]._loaded?t(`geladen ${(st.at[k]||'').replace(/^Yüklendi: /,'')}`,`yüklendi ${(st.at[k]||'').replace(/^Yüklendi: /,'')}`):t('Beispielwerte','örnek değer');
+  return [
+    ['m1',t('Modul 1 · Standort & Kapazität','Modül 1 · Mekân & Kapasite'),t(`Misst, ob das Objekt passt: ${d.m1.seats} Sitzplätze (${d.m1.stools} Barhocker), Terrasse ${d.m1.terrace}, Warmmiete ${eur(d.m1.warmB)} brutto / ${eur(d.m1.warmN)} netto, Eignung ${nf(d.m1.suit)}/100${d.m1.comp!=null?`, ${d.m1.comp} direkte Wettbewerber im Umkreis ${d.m1.compR} m`:''}.`,`Mekân uyuyor mu: ${d.m1.seats} koltuk (${d.m1.stools} tabure), teras ${d.m1.terrace}, Warmmiete ${eur(d.m1.warmB)} brüt / ${eur(d.m1.warmN)} net, uygunluk ${nf(d.m1.suit)}/100${d.m1.comp!=null?`, ${d.m1.compR} m içinde ${d.m1.comp} doğrudan rakip`:''}.`),t('→ Plätze und Miete an Modul 2, 3, 4','→ koltuk ve kira Modül 2, 3, 4\'e')],
+    ['m2',t('Modul 2 · Personal & Schichten','Modül 2 · Personel & Vardiya'),t(`Arbeitgeberkosten ${eur(d.m2.staff)}/Monat ohne Inhaber, Personalkostenquote inkl. Inhaber ${nf(d.m2.pkI,1)} %, Inhaber ${nf(d.m2.ownerH)} Std./Woche, Lohnbasis ${d.m2.year}.`,`İşveren maliyeti ${eur(d.m2.staff)}/ay (sen hariç), PK % sen dahil %${nf(d.m2.pkI,1)}, sahip ${nf(d.m2.ownerH)} s/hafta, ücret yılı ${d.m2.year}.`),t('→ Personalkosten, Öffnungstage und Besetzung an Modul 3','→ personel maliyeti, açık günler ve kadro Modül 3\'e')],
+    ['m3',t('Modul 3 · Umsatz & Zielmotor','Modül 3 · Ciro & Hedef'),t(`Planumsatz ${eur(d.m3.rPlan)}/Monat, für ${eur(d.m3.target)} Überschuss nötig ${eur(d.m3.rTarget)} (${nf(d.m3.gpnT)} Gäste/Abend, ${nf(d.m3.capT)} % Kapazität), Break-even Lebenshaltung ${eur(d.m3.beLife)}.`,`Plan ciro ${eur(d.m3.rPlan)}/ay; ${eur(d.m3.target)} birikim için ${eur(d.m3.rTarget)} gerekli (gece ${nf(d.m3.gpnT)} misafir, kapasite %${nf(d.m3.capT)}); yaşam başa başı ${eur(d.m3.beLife)}.`),t('→ Umsatz, Kosten, Szenarien an Modul 4, 5, 6','→ ciro, gider, senaryolar Modül 4, 5, 6\'ya')],
+    ['m4',t('Modul 4 · Investition & Liquidität','Modül 4 · Kurulum & Nakit'),t(`Investition ${eur(d.m4.invest)} netto inkl. Reserve, Finanzierung ${eur(d.m4.fin)}, EK-Quote ${nf(d.m4.equity/(d.m4.fin||1)*100,1)} %, Liquidität bei Eröffnung ${eur(d.m4.open)}, Tiefpunkt ${eur(d.m4.tief)} (${ymF(d.m4.tiefM)}), Vorsteuer-Spitze ${eur(d.m4.vatPeak)}, AfA ${eur(d.m4.afaY)}/Jahr.`,`Yatırım ${eur(d.m4.invest)} net (rezerv dahil), finansman ${eur(d.m4.fin)}, öz sermaye %${nf(d.m4.equity/(d.m4.fin||1)*100,1)}, açılış kasası ${eur(d.m4.open)}, en dip ${eur(d.m4.tief)} (${ymF(d.m4.tiefM)}), KDV zirvesi ${eur(d.m4.vatPeak)}, AfA ${eur(d.m4.afaY)}/yıl.`),t('→ Kredit + AfA an Modul 3, Jahr-1-Ergebnis an Modul 5','→ kredi + AfA Modül 3\'e, 1. yıl sonucu Modül 5\'e')],
+    ['m5',t('Modul 5 · Steuern & Rechtsform','Modül 5 · Vergi & Şirket'),t(`${TNAME[d.m5.type]||d.m5.type}, eff. Steuersatz Jahr 3 ${nf(d.m5.eff,1)} %, Rücklage ${eur(d.m5.rl[1]||0)}/Monat (USt, ESt/GewSt, GKV), größte Einzelzahlung ${eur(d.m5.shock)} (${ymF(d.m5.shockM)}), GKV Jahr 3 ${eur(d.m5.kvY3)}/Monat.`,`${TNAME[d.m5.type]||d.m5.type}, 3. yıl efektif vergi %${nf(d.m5.eff,1)}, rezerv ${eur(d.m5.rl[1]||0)}/ay (KDV, gelir/GewSt, GKV), en büyük ödeme ${eur(d.m5.shock)} (${ymF(d.m5.shockM)}), GKV 3. yıl ${eur(d.m5.kvY3)}/ay.`),t('→ Steuerquote, Rücklage, KV an Modul 6','→ vergi oranı, rezerv, sağlık sigortası Modül 6\'ya')],
+    ['m6',t('Modul 6 · Entscheidung','Modül 6 · Karar'),t(`Gewichteter Score ${nf(m.score)}/100 (Standort 15, Personal 10, Umsatz 25, Liquidität 25, Steuer/Bank 25) mit K.-o.-Kriterien; DSCR, Sicherheitsmarge, Opportunitätskosten.`,`Ağırlıklı skor ${nf(m.score)}/100 (mekân 15, personel 10, ciro 25, nakit 25, vergi/banka 25) ve veto kuralları; DSCR, güvenlik marjı, fırsat maliyeti.`),'']
+  ].map(([k,h,body,next])=>`<div class="mb"><b>${h}</b>${k!=='m6'?`<span class="src${d[k]._loaded?' on':''}">${src(k)}</span>`:''}<p>${body}</p>${next?`<p class="nx">${next}</p>`:''}</div>`).join('');
+}
+function pgModules(d,m){
+  const L=st.lang,t=tr_,X=crossChecks(d,m);
+  return `<h2>${t('Zusammenfassung','Yönetici özeti')}</h2><p>${execSummary(d,m)}</p>
+  <h2>${t('Datenfluss','Veri akışı')}</h2><p class="chain">M1 ${t('Standort','Mekân')} → M2 ${t('Personal','Personel')} → M3 ${t('Umsatz & Ziel','Ciro & hedef')} → M4 ${t('Investition & Liquidität','Yatırım & nakit')} → M5 ${t('Steuern & Rücklage','Vergi & rezerv')} → M6 ${t('Entscheidung','Karar')}</p>
+  <h2>${t('Module im Detail','Modüller ayrıntılı')}</h2><div class="mbs">${modBlocks(d,m)}</div>
+  <h2>${t('Konsistenzprüfung zwischen den Modulen','Modüller arası tutarlılık')}</h2><ul>${X.map(x=>`<li style="color:${x.lv==='r'?'#c8402a':x.lv==='y'?'#a87400':'#111'}">${L==='de'?x.de:x.tr}</li>`).join('')}</ul>
+  <h2>${t('Annahmen','Varsayımlar')}</h2><p class="small">${t('Bewertung auf Basis Jahr 3 (volle Tilgung); Jahr 1 mit Anlaufkurve','Değerlendirme 3. yıla göre (tam taksit); 1. yıl ramp-up ile')} ${nf(st.set.ramp)} %. ${t('Simulationshebel','Kaldıraçlar')}: ${t('Miete','kira')} ${st.wi.rent>0?'+':''}${nf(st.wi.rent)} %, ${t('Auslastung','doluluk')} ×${nf(st.wi.occ,2)}, SAB ${eur(st.wi.sab)}, ${t('Reserve genutzt','rezerv kullanımı')} ${nf(st.wi.buf)} %${st.wi.kef?', Mietkautionsbürgschaft':''}${st.wi.bl?', Barleiter':''}.</p>`;
+}
+function pgTax(d,m){
+  const t=tr_,Y=d.m5.years||[],C5=d.m5.cmp||{},RL=d.m5.rlRows||[];
+  const cmpRows=Object.entries(C5).map(([k,v])=>`<tr><td>${TNAME[k]||k}</td><td>${eur(v.net_to_owner||0)}</td><td>${eur(v.taxes||0)}</td><td>${eur(v.full_distribution_equivalent||0)}</td></tr>`).join('');
+  const qs=t(['Rechtsform bestätigen (aktuell: '+(TNAME[d.m5.type]||d.m5.type)+'); Wechsel zur GmbH ab Gewinn '+(d.m5.thr?eur(d.m5.thr):'–')+'?','Vorauszahlungen im Fragebogen realistisch schätzen; Anpassungsantrag nach ersten BWA?','USt-Voranmeldung monatlich (Neugründer ab 2027) und Dauerfristverlängerung mit Sondervorauszahlung?','GWG / Sammelposten / AfA-Plan für Einrichtung und gebrauchte Geräte aus Auktionen (inkl. EU-Erwerb mit USt-IdNr)?','Lohnbuchhaltung (Minijob, Teilzeit, SFN-Zuschläge) und Kassen-/GoBD-Verfahrensdokumentation?'],
+    ['Şirket türünü onayla (şu an: '+(TNAME[d.m5.type]||d.m5.type)+'); GmbH\'ya geçiş eşiği '+(d.m5.thr?eur(d.m5.thr):'–')+' kâr mı?','Fragebogen\'de peşinleri gerçekçi tahmin; ilk BWA\'dan sonra Anpassungsantrag?','Aylık USt-VA (2027\'den itibaren kurucular) ve Dauerfristverlängerung?','GWG / Sammelposten / AfA planı; müzayede ve AB alımları (USt-IdNr ile)?','Bordro (Minijob, Teilzeit, SFN zamları) ve kasa / GoBD Verfahrensdokumentation?']);
+  return `<div class="m6"><div><span>${t('Rechtsform','Şirket türü')}</span><b style="font-size:13px">${TNAME[d.m5.type]||d.m5.type}</b></div><div><span>${t('eff. Steuersatz Jahr 3','3. yıl efektif vergi')}</span><b>${nf(d.m5.eff,1)} %</b></div><div><span>${t('Rücklage / Monat (Jahr 2)','Rezerv / ay (2. yıl)')}</span><b>${eur(d.m5.rl[1]||0)}</b></div><div><span>${t('Größte Einzelzahlung','En büyük tek ödeme')}</span><b>${eur(d.m5.shock)}</b></div><div><span>${t('Fällig','Vade')}</span><b>${ymF(d.m5.shockM)}</b></div><div><span>${t('Rücklagekonto min.','Rezerv hesabı en düşük')}</span><b>${eur(d.m5.resMin)}</b></div></div>
+  <div class="two"><div><h2>${t('Ergebnis & Steuern je Jahr','Yıllara göre sonuç & vergi')}</h2><table><thead><tr><th>${t('Jahr','Yıl')}</th><th>${t('Gewinn','Kâr')}</th><th>${t('Steuern','Vergi')}</th><th>${t('Netto Inhaber','Sahibe net')}</th></tr></thead><tbody>${Y.map(y=>`<tr><td>${y.year}</td><td>${eur(y.ebt||0)}</td><td>${eur(y.taxes_total||0)}</td><td>${eur(y.net_to_owner||0)}</td></tr>`).join('')||`<tr><td colspan="4">–</td></tr>`}</tbody></table>
+  <h2>${t('Steuerrücklage pro Monat','Aylık vergi rezervi')}</h2><table><thead><tr><th>${t('Jahr','Yıl')}</th><th>USt</th><th>ESt/GewSt</th><th>GKV</th><th>${t('Summe','Toplam')}</th></tr></thead><tbody>${RL.map(r=>`<tr><td>${r.year}</td><td>${eur(r.ust||0)}</td><td>${eur(r.income_trade_tax||0)}</td><td>${eur(r.gkv||0)}</td><td><b>${eur(r.total||0)}</b></td></tr>`).join('')}</tbody></table></div>
+  <div><h2>${t('Rechtsformvergleich (3 Jahre)','Şirket türü karşılaştırması (3 yıl)')}</h2><table><thead><tr><th></th><th>${t('Netto','Net')}</th><th>${t('Steuern','Vergi')}</th><th>${t('Äquiv.','Eşdeğer')}</th></tr></thead><tbody>${cmpRows||`<tr><td colspan="4">–</td></tr>`}</tbody></table>
+  <h2>${t('Investition, AfA & Vorsteuer','Yatırım, AfA & KDV')}</h2><table><tbody><tr><td>${t('Investition netto (inkl. Reserve)','Yatırım net (rezerv dahil)')}</td><td>${eur(d.m4.invest)}</td></tr><tr><td>${t('davon Anlagen/Positionen','bunun kalemleri')}</td><td>${eur(d.m4.capex)}</td></tr><tr><td>${t('AfA pro Jahr','Yıllık AfA')}</td><td>${eur(d.m4.afaY)}</td></tr><tr><td>${t('Sofort-Aufwand Jahr 1 (GWG, Gründung)','1. yıl hemen gider (GWG, kuruluş)')}</td><td>${eur(d.m4.afaImm)}</td></tr><tr><td>${t('Vorsteuer-Spitze / Erstattung nach','KDV zirvesi / iade süresi')}</td><td>${eur(d.m4.vatPeak)} / ${d.m4.vatDelay} ${t('Mon.','ay')}</td></tr></tbody></table></div></div>
+  <h2>${t('Kasse, Belege & Fristen','Kasa, belge & süreler')} <span class="stand">Stand: 11/2026</span></h2><ul><li>${t('TSE-Kasse innerhalb 1 Monat nach Anschaffung über ELSTER melden.','TSE\'li kasayı alımdan sonra 1 ay içinde ELSTER\'den bildir.')}</li><li>${t('Entwurf 2. Kassengesetz: Registrierkassenpflicht ab 100.000 € Umsatz (Barumsatz ≥ 12.000 €), digitale Belege ab 2028 geplant.','2. Kassengesetz taslağı: 100.000 € ciro (nakit ≥ 12.000 €) üstünde kasa zorunluluğu, 2028\'den dijital fiş planı.')}</li><li>${t('E-Rechnung: Empfang seit 2025, Ausstellung B2B ab 2028 (Kleinbetragsrechnungen ≤ 250 € ausgenommen).','E-fatura: alma 2025\'ten beri, B2B kesme 2028\'den (≤ 250 € muaf).')}</li></ul>
+  <h2>${t('Fragen an den Steuerberater','Steuerberater\'e sorular')}</h2><ol>${qs.map(q=>`<li>${q}</li>`).join('')}</ol>`;
+}
+function renderSheet(d,m){
+  const pages=st.doc.variant==='stb'?[pgTax(d,m),pgModules(d,m)]:[pgFin(d,m),pgMeasures(d,m),pgModules(d,m)],n=pages.length,T=TX[st.lang];
+  $('#sheet').innerHTML=pages.map((p,i)=>`<section class="page">${docHdr(d,i,n)}${p}<p class="foot">${T.foot} ${tr_('Nur zur Information; Zahlen sind Planwerte.','Bilgi amaçlıdır; rakamlar plan değeridir.')} · ${tr_('Seite','Sayfa')} ${i+1}/${n}</p></section>`).join('');
+  $$('[data-var]').forEach(b=>{const on=b.dataset.var===st.doc.variant;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  $$('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===st.lang));
+}
+function docText(){
+  const el=$('#sheet');if(!el)return '';
+  return el.innerText.replace(/\n{3,}/g,'\n\n').trim();
+}
+
+
+function renderStatic(){
+  $('#levers').innerHTML=LEV.map(([k,l,min,max,step,u])=>`<div class="fld lv"><div class="fh"><label for="n_wi_${k}">${l}</label><span class="nu"><input id="n_wi_${k}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="wi.${k}"><em>${u}</em></span></div><input type="range" data-k="wi.${k}" min="${min}" max="${max}" step="${step}" aria-label="${l}"><p class="minc" id="mc_${k}"></p></div>`).join('')+
+    `<div class="tog"><label for="b_wi_kef">Kaution kefaletle (Mietkautionsbürgschaft)<span class="minc" id="mc_kef" style="display:block"></span></label><input type="checkbox" class="sw" id="b_wi_kef" data-k="wi.kef" data-t="b"></div>`+
+    `<div class="tog"><label for="b_wi_bl">Barleiter'lı yıl<span class="hint" style="display:block">+${eur(st.set.blCost)}/ay personel, senin saatin −20/hafta.</span><span class="minc" id="mc_bl" style="display:block"></span></label><input type="checkbox" class="sw" id="b_wi_bl" data-k="wi.bl" data-t="b"></div>`;
+  fillInputs($('#levers'));
+  $('#setForm').innerHTML=F('set.salary','Bugünkü net maaşın',0,6000,50,'€/ay','Fırsat maliyeti çizgisi.')+F('set.blCost','Barleiter işveren maliyeti',0,8000,50,'€/ay')+F('set.sabRate','SAB faizi',0,10,0.1,'%')+F('set.sabYears','SAB vadesi',1,6,1,'yıl')+F('set.sabFree','SAB ödemesiz',0,2,1,'yıl')+F('set.ramp','1. yıl ortalama ciro (ramp-up)',40,100,1,'%','Modül 4 eğrisi: 12 ayın ortalaması.');
+  fillInputs($('#setForm'));
+  renderCondParams();
+  fillInputs($('.docf'));
+  renderNotes();
+}
+function renderNotes(){
+  const L=st.lang,T=TX[L];
+  $('#notesForm').innerHTML=['q1','q2','q3','risk'].map((k,i)=>`<label class="lb" for="nt_${k}">${k==='risk'?T.risk:`${i+1}. ${T.q[i]}`}</label><textarea id="nt_${k}" data-note="${k}"></textarea>`).join('');
+  const d=data(),m=model(d,st.wi,st.set,st.rs);
+  ['q1','q2','q3','risk'].forEach(k=>{$('#nt_'+k).value=st.notes[L][k]??autoText(L,k,d,m)});
+  $$('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===L));
+}
+
+let C=null;
+function renderOut(){
+  const d=data(),m=model(d,st.wi,st.set,st.rs);C={d,m};const T=TX.tr;
+  [['k1',nf(m.score),m.verdict],['k2',nf(m.y.dscr,2),m.y.dscr>=1.3?'g':m.y.dscr>=1.1?'y':'r'],['k3',eur(m.open),m.open<0?'r':m.open<m.safety?'y':'g'],['k4',eur(m.y.save),m.y.save<0?'r':m.y.save<d.m3.target?'y':'g']].forEach(([k,t,c])=>{const e=$('#'+k);e.className='kpi '+c;e.querySelector('b').textContent=t});
+  const R=60,cir=2*Math.PI*R;
+  $('#dial').innerHTML=`<svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="${R}" fill="none" stroke="var(--line)" stroke-width="14"/><circle cx="75" cy="75" r="${R}" fill="none" stroke="${COL[m.verdict]}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${cir*m.score/100} ${cir}"/></svg><div class="c"><div><b style="color:${COL[m.verdict]}">${nf(m.score)}</b><span>/ 100</span></div></div>`;
+  $('#vw').className='vw '+m.verdict;$('#vw').textContent=T.verdict[m.verdict];
+  $('#vsub').textContent=m.veto.length?'Veto maddesi var: skor ne olursa olsun kırmızı.':m.auto.length&&m.score>=75?'Skor yeşil ama otomatik sarı maddesi var.':`Skor ${nf(m.score)}: yeşil ≥75, sarı 55–74.`;
+  $('#veto').innerHTML=m.veto.map(v=>`<li class="r">● ${v[1]}</li>`).join('')+m.auto.map(v=>`<li class="y">● ${v[1]}</li>`).join('')||'<li>Veto veya otomatik sarı madde yok.</li>';
+  $$('[data-rs]').forEach(b=>{const on=b.dataset.rs===st.rs;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  $('#rsNote').textContent=`Karar cirosu: ${eur(m.Rb)}/ay (plan ${eur(d.m3.rPlan)} · hedef ${eur(d.m3.rTarget)} · Modül 1/2 ${eur(d.m1.rev||d.m2.rev)}). Banka en düşüğüne inanır.`;
+  const ln={mek:`${esc(d.m1.name||'Mekân')}: ${d.m1.seats} koltuk, kira/ciro %${nf(m.y.rr,1)}, uygunluk ${nf(d.m1.suit)}/100${d.m1.red?`, ${d.m1.red} kırmızı alarm`:''}`,per:`Personel ${eur(m.y.staff)} + sen ${eur(m.ul)} = cironun %${nf((m.y.staff+m.ul)/m.y.R*100,1)}; sen ${nf(m.ownerH)} s/hafta`,cir:`Ciro ${eur(m.y.R)}, yaşam başa başı ${m.beR?eur(m.beR):'–'}, marj %${nf(m.mos)}; birikim ${eur(m.y.save)}/ay`,nak:`Açılış ${eur(m.open)}, en dip ${eur(m.tief)}, 3 ay sabit gider ${eur(m.safety)}; özsermaye %${nf(m.eq,1)}`,ban:`DSCR 3. yıl ${nf(m.y.dscr,2)}, prime cost %${nf(m.y.prime,1)}, en büyük vergi ödemesi ${eur(d.m5.shock)}`};
+  const mod={mek:'m1',per:'m2',cir:'m3',nak:'m4',ban:'m5'};
+  $('#xray').innerHTML=m.cats.map(([k,l,w,s])=>{const lv=lvOf(s);return `<div class="xr"><span class="lt" style="background:${COL[lv]}"></span><div><b>${l}</b><span class="tag${d[mod[k]]._loaded?' on':''}">${d[mod[k]]._loaded?'yüklendi':'örnek'}</span><small>${ln[k]}</small></div><span class="sc" style="color:${COL[lv]}">${nf(s)}<small style="display:inline;font-size:13px;color:var(--mute)"> ×${w}%</small></span><div class="bar"><i style="width:${s}%;background:${COL[lv]}"></i></div></div>`}).join('');
+  const X=crossChecks(d,m);
+  $('#cross').innerHTML=X.map(a=>`<li class="${a.lv}">${a.tr}</li>`).join('');
+  const dsc=v=>v>=1.3?'g':v>=1.1?'y':'r';
+  $('#o_bank').innerHTML=R_('DSCR 3. yıl (tam taksit)',nf(m.y.dscr,2),dsc(m.y.dscr),1)+R_('DSCR 1. yıl (ödemesiz, ramp-up)',nf(m.y1.dscr,2),dsc(m.y1.dscr))+R_('Yıllık taksit 3. yıl',eur(m.ks3.it+m.ks3.pr))+R_('Yıllık taksit 1. yıl',eur(m.ks1.it+m.ks1.pr))+R_('Özsermaye oranı','%'+nf(m.eq,1),m.eq>=25?'g':m.eq>=15?'y':'r')+R_('Güvenlik marjı','%'+nf(m.mos),m.mos>=25?'g':m.mos>=10?'y':'r')+R_('Açılış kasası / 3 ay sabit gider',`${eur(m.open)} / ${eur(m.safety)}`,m.open<0?'r':m.open<m.safety?'y':'g')+R_('Prime cost','%'+nf(m.y.prime,1),m.y.prime<=55?'g':m.y.prime<=60?'y':'r')+R_('Kira / ciro','%'+nf(m.y.rr,1),m.y.rr<=10?'g':m.y.rr<=12?'y':'r');
+  const hrs=m.ownerH*W||1;
+  $('#o_opp').innerHTML=R_('Eline geçen (yaşam maaşı + birikim)',eur(m.take)+'/ay',m.take<st.set.salary?'y':'g',1)+R_('Bugünkü net maaşın',eur(st.set.salary)+'/ay')+R_('Saat başı (bar)',nf(m.take/hrs,2)+' €')+R_('Saat başı (bugün, 40 s/hafta)',nf(st.set.salary/(40*W),2)+' €');
+  // what-if
+  $('#wiV').innerHTML=`<i style="background:${COL[m.verdict]}"></i>${T.verdict[m.verdict]} · ${nf(m.score)}/100`;
+  LEV.forEach(([k])=>{const e=$('#mc_'+k);if(!e)return;const r=minChange(d,k);e.className='minc '+(r?'g':'n');e.textContent=r?`Yeşil için: ${r}`:'Tek başına yeşile çevirmiyor.'});
+  ['kef','bl'].forEach(k=>{const e=$('#mc_'+k);if(!e)return;const r=minChange(d,k);e.className='minc '+(r?'g':'n');e.textContent=r?`Yeşil için: ${r}`:'Tek başına yeşile çevirmiyor.'});
+  $('#o_wi').innerHTML=R_('Net ciro',eur(m.y.R),'',1)+R_('Vergi öncesi kâr',eur(m.y.ebt))+R_('Birikim / ay',eur(m.y.save),m.y.save<0?'r':m.y.save<d.m3.target?'y':'g')+R_('DSCR 3. yıl',nf(m.y.dscr,2),dsc(m.y.dscr))+R_('Açılış kasası',eur(m.open),m.open<0?'r':'g')+R_('Kaldıraçların kasaya etkisi',eur(m.dOpen))+R_('Güvenlik marjı','%'+nf(m.mos))+R_('Gece başı misafir',nf(m.y.gpn))+R_('Kira / ciro','%'+nf(m.y.rr,1))+R_('Sahip saati',nf(m.ownerH)+' s/hafta');
+  renderHub(d);renderArchive();renderSheet(d,m);renderCondUI(d);
+  const dt=$('#docTxt');if(dt)dt.value=docText();
+  $('#storeWarn').innerHTML=canStore?'':'<div class="banner">Tarayıcı kaydı kapalı: veriler sayfa kapanınca silinir. Veri sekmesinden yedek al.</div>';
+}
+function renderHub(d){
+  const prev={m1:x=>`${esc(x.name)} · ${x.seats} koltuk · warm ${eur(x.warmB)}`,m2:x=>`Personel ${eur(x.staff)}/ay · sahip ${nf(x.ownerH)} s/hafta`,m3:x=>`Plan ${eur(x.rPlan)} · hedef ${eur(x.rTarget)} · birikim ${eur(x.savePlan)}`,m4:x=>`Yatırım ${eur(x.invest)} · açılış ${eur(x.open)}`,m5:x=>`${x.type.toUpperCase()} · efektif %${nf(x.eff,1)} · şok ${eur(x.shock)}`};
+  $('#hub').innerHTML=MODS.map(([k,l])=>`<div class="card"><div class="fh"><b style="font:600 16px var(--disp)">${l}</b><span class="tag${d[k]._loaded?' on':''}">${d[k]._loaded?'yüklendi':'örnek'}</span></div><p class="note">${prev[k](d[k])}</p>${d[k]._loaded?`<p class="note">${esc(st.at[k]||'')}</p><div class="btns"><button class="btn" type="button" data-unload="${k}">Örneğe dön</button></div>`:''}</div>`).join('');
+}
+function snapshot(name){const d=data(),m=model(d,st.wi,st.set,st.rs);return {id:uid(),name:name||`${d.m1.name||'Senaryo'} · ${new Date().toLocaleDateString('de-DE')}`,at:new Date().toISOString(),raw:clone(st.raw),wi:clone(st.wi),set:clone(st.set),rs:st.rs,sum:{score:m.score,verdict:m.verdict,open:m.open,tief:m.tief,dscr:m.y.dscr,mos:m.mos,save:m.y.save,shock:d.m5.shock,ownerH:m.ownerH,R:m.y.R}}}
+function renderArchive(){
+  $('#scList').innerHTML=st.scen.length?st.scen.map(s=>`<div class="sc-item"><input type="checkbox" data-cmp="${s.id}"${st.cmp.includes(s.id)?' checked':''} aria-label="Kıyasla"><div class="nm"><b>${esc(s.name)}</b><small><span style="color:${COL[s.sum.verdict]}">●</span> ${nf(s.sum.score)}/100 · ${new Date(s.at).toLocaleDateString('de-DE')}</small></div><button class="btn" type="button" data-loadsc="${s.id}">Yükle</button><button class="btn dan" type="button" data-delsc="${s.id}" aria-label="Sil">×</button></div>`).join(''):'<p class="note">Henüz kayıt yok. "Ne değişirse" sekmesinden bir ayarı kaydet.</p>';
+  const cur={id:'_',name:'Şu anki',sum:snapshot('').sum};const list=[cur].concat(st.scen.filter(s=>st.cmp.includes(s.id)));
+  const rows=[['Skor / ışık',s=>`<span style="color:${COL[s.sum.verdict]}">●</span> ${nf(s.sum.score)}`],['Net ciro',s=>eur(s.sum.R)],['Açılış kasası',s=>eur(s.sum.open),s=>s.sum.open<0?'r':''],['En dip',s=>eur(s.sum.tief),s=>s.sum.tief<0?'r':''],['DSCR 3. yıl',s=>nf(s.sum.dscr,2),s=>s.sum.dscr>=1.3?'g':s.sum.dscr>=1.1?'y':'r'],['Güvenlik marjı',s=>'%'+nf(s.sum.mos)],['Birikim / ay',s=>eur(s.sum.save),s=>s.sum.save<0?'r':''],['En büyük vergi ödemesi',s=>eur(s.sum.shock)],['Sahip saati',s=>nf(s.sum.ownerH)+' s']];
+  $('#scTbl').innerHTML=`<thead><tr><th></th>${list.map(s=>`<th style="white-space:normal;min-width:7em">${esc(s.name)}</th>`).join('')}</tr></thead><tbody>${rows.map(([l,f,c])=>`<tr><td>${l}</td>${list.map(s=>`<td class="${c?c(s):''}">${f(s)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+function extractObjects(t){const out=[];let depth=0,start=-1,inStr=false,escN=false;for(let i=0;i<t.length;i++){const c=t[i];if(inStr){if(escN)escN=false;else if(c==='\\')escN=true;else if(c==='"')inStr=false;continue}if(c==='"'){inStr=true;continue}if(c==='{'){if(depth===0)start=i;depth++}else if(c==='}'){depth--;if(depth===0&&start>=0){out.push(t.slice(start,i+1));start=-1}}}return out}
+function importText(t){
+  const msg=$('#impMsg'),keep=clone(st.raw),got=[];
+  let objs=[];try{const j=JSON.parse(t);objs=Array.isArray(j)?j:[j]}catch(e){objs=extractObjects(t).map(s=>{try{return JSON.parse(s)}catch(e){return null}}).filter(Boolean)}
+  objs.forEach(j=>{const mm=MODS.find(([,,sc])=>j&&j.schema===sc);if(mm){st.raw[mm[0]]=prune(j);st.at[mm[0]]=`Yüklendi: ${new Date().toLocaleString('de-DE')}`;got.push(mm[1].split(' · ')[0])}});
+  if(!got.length){msg.textContent='Tanınan modül çıktısı bulunamadı. Her modülün "aktar" JSON\'unu yapıştır.';return}
+  save();renderNotes();renderOut();msg.textContent=`Alındı: ${got.join(', ')}.`;toast(`${got.length} modül alındı`,()=>{st.raw=keep;save();renderNotes();renderOut()});
+}
+function prune(j){const x=clone(j);['daily','staff','months','loan_schedule','monthly_cash','tax_calendar'].forEach(k=>delete x[k]);return x}
+
+let tTimer,undoFn=null;
+function toast(t,undo){$('#toastT').textContent=t;undoFn=undo||null;$('#toastU').hidden=!undo;const el=$('#toast');el.style.display='flex';clearTimeout(tTimer);tTimer=setTimeout(()=>{el.style.display='none';undoFn=null},undo?6000:2600)}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Kopyalandı')}catch(e){toast('Kopyalama engellendi: metni seçip kopyala')}}
+function download(name,text){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('İndirme başlatıldı (engellenirse Kopyala kullan)')}catch(e){toast('İndirme engellendi: Kopyala kullan')}}
+function go(tab){const t=['karar','whatif','veri','ozet','rehber'].includes(tab)?tab:'karar';$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+t));$$('nav.tabs a').forEach(a=>{const on=a.dataset.tab===t;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
+
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.note){st.notes[st.lang][el.dataset.note]=el.value;save();const d=data();renderSheet(d,model(d,st.wi,st.set,st.rs));return}
+  if(el.dataset.cmp){const id=el.dataset.cmp;if(el.checked){if(st.cmp.length>=3){el.checked=false;toast('En fazla 3 senaryo');return}st.cmp.push(id)}else st.cmp=st.cmp.filter(x=>x!==id);save();renderArchive();return}
+  if(el.dataset.csel){st.cond.sel[el.dataset.csel]=el.checked;save();renderOut();return}
+  if(!el.dataset.k)return;
+  const k=el.dataset.k;let v;
+  if(el.dataset.t==='b')v=el.checked;else if(el.dataset.t==='s')v=el.value;else{v=el.type==='range'?parseFloat(el.value):parseNum(el.value,!isBig(k));if(!Number.isFinite(v))return;v=clampK(k,v)}
+  setP(st,k,v);
+  $$(`[data-k="${k}"]`).forEach(o=>{if(o!==el&&o.type!=='checkbox')o.value=o.type==='range'?v:(o.classList.contains('num')?fmtIn(v):v);if(o.type==='range')paint(o)});
+  save();renderOut();
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.rs){st.rs=d.rs;save();renderOut();return}
+  if(d.lang){st.lang=d.lang;save();renderNotes();renderOut();return}
+  if(d.var){st.doc.variant=d.var;save();renderOut();return}
+  if(d.unload){const keep=st.raw[d.unload];delete st.raw[d.unload];save();renderNotes();renderOut();toast('Örneğe dönüldü',()=>{st.raw[d.unload]=keep;save();renderOut()});return}
+  if(d.loadsc){const s=st.scen.find(x=>x.id===d.loadsc);if(s){st.raw=clone(s.raw);st.wi=Object.assign(defaults().wi,s.wi);st.set=Object.assign(defaults().set,s.set);st.rs=s.rs||'plan';save();renderStatic();renderOut();toast(`"${s.name}" yüklendi`);go('karar');location.hash='karar'}return}
+  if(d.delsc){const i=st.scen.findIndex(x=>x.id===d.delsc),s=st.scen[i];st.scen.splice(i,1);st.cmp=st.cmp.filter(x=>x!==s.id);save();renderArchive();toast(`"${s.name}" silindi`,()=>{st.scen.splice(i,0,s);save();renderArchive()});return}
+  switch(b.id){
+    case 'wiReset':st.wi=defaults().wi;save();renderStatic();renderOut();break;
+    case 'scSave':{const s=snapshot($('#scName').value.trim());st.scen.unshift(s);if(st.cmp.length<3)st.cmp.push(s.id);save();renderArchive();$('#scName').value='';toast(`"${s.name}" kaydedildi`);break}
+    case 'autoFill':st.notes[st.lang]={};save();renderNotes();renderOut();toast('Otomatik öneri yüklendi');break;
+    case 'printBtn':try{window.print();$('#printMsg').textContent=''}catch(err){$('#printMsg').textContent='Yazdırma bu görünümde engelli: HTML dosyasını tarayıcıda açıp Yazdır → PDF olarak kaydet.'}setTimeout(()=>{$('#printMsg').textContent='Yazdırma penceresi açılmadıysa: HTML dosyasını tarayıcıda açıp Yazdır → "PDF olarak kaydet" kullan.'},800);break;
+    case 'impIn':importText($('#impTxt').value);break;
+    case 'printBtn2':$('#printBtn').click();break;
+    case 'docCopy':{const t=docText();$('#docTxt').value=t;b.closest('.docf').querySelector('details.sub').open=true;copyText(t);break}
+    case 'bkOut':$('#bkTxt').value=JSON.stringify({schema:'galapagos.karar.backup.v1',exported_at:new Date().toISOString(),state:st},null,2);$('#bkMsg').textContent='Yedek hazır.';break;
+    case 'bkCopy':if(!$('#bkTxt').value)$('#bkOut').click();copyText($('#bkTxt').value);break;
+    case 'bkDl':if(!$('#bkTxt').value)$('#bkOut').click();download(`galapagos-modul6-yedek-${new Date().toISOString().slice(0,10)}.json`,$('#bkTxt').value);break;
+    case 'bkIn':{try{const j=JSON.parse($('#bkTxt').value);if(j.schema!=='galapagos.karar.backup.v1'||!j.state){$('#bkMsg').textContent='Bu bir Modül 6 yedeği değil.';break}const keep=st;st=merge(j.state);save();renderStatic();renderOut();$('#bkMsg').textContent='Geri yüklendi.';toast('Yedek yüklendi',()=>{st=keep;save();renderStatic();renderOut()})}catch(err){$('#bkMsg').textContent='JSON okunamadı: '+err.message}break}
+    case 'wipe':if(b.dataset.arm){const keep=st;st=defaults();save();renderStatic();renderOut();delete b.dataset.arm;b.textContent='Varsayılana sıfırla';toast('Sıfırlandı',()=>{st=keep;save();renderStatic();renderOut()})}else{b.dataset.arm='1';b.textContent='Emin misin? Tekrar dokun';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.textContent='Varsayılana sıfırla'}},4000)}break;
+    case 'toastU':if(undoFn){undoFn();undoFn=null;$('#toast').style.display='none'}break;
+  }
+});
+document.addEventListener('change',e=>{const el=e.target;if(el.classList&&el.classList.contains('num')&&el.type==='text'&&el.dataset.k)el.value=fmtIn(getP(st,el.dataset.k))});
+$('#impFile').addEventListener('change',e=>{const fs=[...e.target.files];Promise.all(fs.map(f=>f.text())).then(ts=>{const t=ts.join('\n');$('#impTxt').value=t.slice(0,20000);importText(t)});e.target.value=''});
+$('#bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>{$('#bkTxt').value=t;$('#bkIn').click()});e.target.value=''});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+load();renderStatic();renderOut();go(location.hash.slice(1));
+/* Galapagos veri köprüsü */
+GX.register('m6',{ta:'#impTxt',btn:'#impIn',msg:'#impMsg',tab:'veri',
+  exp(){const d=data(),m=model(d,st.wi,st.set,st.rs),r=x=>Number.isFinite(x)?Math.round(x):null;
+    return {schema:'galapagos.karar.v1',module:'karar',verdict:m.verdict,score:r(m.score),open:r(m.open),tief:r(m.tief),
+      dscr3:Number.isFinite(m.y.dscr)?+m.y.dscr.toFixed(2):null,save:r(m.y.save),revenue:r(m.y.R),venue:d.m1.name||'',
+      loaded:MODS.filter(([k])=>d[k]._loaded).map(([k])=>k),veto:m.veto.map(v=>v[1])}},
+  auto(t){importText(t);return ($('#impMsg')||{}).textContent||''},
+  pull(){const s=GX.stale('m6');if(!s.length)return;importText(GX.upText(s));GX.markSeen('m6',s);GX.flush()},
+  onReady(){this.pull()}});
+}
+</script>
+</body>
+</html>

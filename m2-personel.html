@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos Personel & Vardiya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool with a bar handbook's warmth, same family as Modül 1
+   IDEA the bar's weekly rota pinned behind the counter, with the cost of every hour
+   PICTURE per-day shift timeline: one bar per person, guest curve and a staffing-status strip under it
+   COLOUR deep smoke-green night ground, beige ink, olive lead, sand for owner, amber/coral alarms
+   TYPE Fraunces 600 display + DM Sans text
+   LAYOUT phone: sticky KPI strip, day chips, timeline, editor, week rows, alarms; >=900px: timeline left, costs + alarms right */
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sm:#80a493;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 4px}
+h1{font:600 clamp(28px,5vw,40px)/1.05 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2,h3{font:600 20px/1.2 var(--disp);margin:0 0 8px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0}
+main{max-width:1240px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.view{display:none}
+.view.on{display:block}
+.kpis{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0 8px;border-bottom:1px solid var(--line);margin-top:6px}
+.kpi b{display:block;font:600 clamp(19px,5.4vw,30px)/1.1 var(--disp);white-space:nowrap}
+.kpi span{font-size:13px;color:var(--mute);white-space:nowrap}
+.kpi.y b{color:var(--y)}
+.kpi.r b{color:var(--r)}
+.kpi.g b{color:var(--ok)}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:78px}}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ph h2{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{min-height:44px;padding:6px 12px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--mute);font:500 14px var(--txt);cursor:pointer;text-align:left;line-height:1.2}
+.chip small{display:block;font-size:13px}
+.chip.on{background:var(--p2);color:var(--ink);border-color:var(--ol)}
+.chip .dot{margin-right:4px}
+.gt{display:grid;grid-template-columns:86px minmax(0,1fr);gap:6px 8px;align-items:center;margin-top:6px}
+.gl{font-size:13px;line-height:1.2;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.gl small{display:block;color:var(--mute)}
+.trk{position:relative;height:34px;background:var(--p2);border-radius:8px;overflow:hidden}
+.trk .band{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--ol) 10%,transparent)}
+.trk .pk{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--sand) 12%,transparent)}
+.bar{position:absolute;top:4px;bottom:4px;border:0;border-radius:6px;color:#141a10;font:600 13px var(--txt);padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;text-align:left}
+.bar.sel{outline:2px solid var(--ink);outline-offset:1px}
+.ticks{position:relative;height:18px}
+.ticks span{position:absolute;top:0;transform:translateX(-50%);font-size:13px;color:var(--mute);white-space:nowrap}
+.cur{display:flex;align-items:flex-end;height:54px;background:transparent;gap:1px}
+.cur i{flex:1;background:var(--sm);border-radius:2px 2px 0 0;opacity:.75}
+.ld{display:flex;gap:1px;height:30px;background:transparent}
+.ld button{flex:1;border:0;padding:0;border-radius:3px;font:600 13px var(--txt);color:#141a10;cursor:pointer;min-width:0;overflow:hidden}
+.st-ok{background:var(--ok)}
+.st-over{background:var(--y)}
+.st-under{background:var(--r)}
+.st-min{background:#d9a3a0}
+.st-prep{background:var(--line);color:var(--mute)!important}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute);margin-top:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.al{list-style:none;margin:0;padding:0}
+.al li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.al li:first-child{border-top:0}
+.al li::before{content:'';width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mute)}
+.al li.r::before{background:var(--r)}
+.al li.y::before{background:var(--y)}
+.al li.i::before{background:var(--sm)}
+.al li.ok::before{background:var(--ok)}
+details.sec{background:var(--p);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 19px/1.2 var(--disp);min-height:54px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'+';font:400 22px var(--txt);color:var(--mute);flex:none}
+details.sec[open]>summary::after{content:'–'}
+.sv{font:500 14px var(--txt);color:var(--sand);white-space:nowrap;margin-left:auto}
+.in{padding:0 14px 14px}
+.fld{padding:10px 0;border-top:1px solid var(--line)}
+.fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fh label{font-size:15px}
+.nu{display:flex;align-items:center;gap:6px;flex:none}
+.nu em{font-style:normal;color:var(--mute);font-size:14px;min-width:2.4em;white-space:nowrap}
+input.num{width:6.4em;font:500 16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:right;min-height:44px;font-variant-numeric:tabular-nums}
+input[type=text],input[type=time],textarea,select{width:100%;font:16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input[type=time]{width:auto;min-width:7.5em}
+textarea{min-height:110px;resize:vertical}
+textarea.code{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:170px}
+label.lb{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ol);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:4px 0 0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--ol) var(--f,50%),var(--line) var(--f,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--sand);border:3px solid var(--bg);margin-top:-11px;box-shadow:0 0 0 1px var(--ol)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--ol)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--sand);border:3px solid var(--bg)}
+.hint{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-height:54px}
+.sw{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.sw:checked{background:var(--ol)}
+.sw:checked::after{transform:translateX(22px)}
+.out{margin-top:8px;background:var(--p2);border-radius:10px;padding:4px 12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-top:1px dashed var(--line);font-size:15px}
+.row:first-child{border-top:0}
+.row b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.row.big b{font:600 20px var(--disp);color:var(--sand)}
+.row b.y{color:var(--y)}
+.row b.r{color:var(--r)}
+.row b.g{color:var(--ok)}
+.btn{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--ol);color:#141a10;border-color:var(--ol)}
+.btn.dan{color:var(--r)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));gap:0 12px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:8px}
+.seg button{flex:1;min-height:44px;background:var(--p2);color:var(--mute);border:0;border-left:1px solid var(--line);font:500 15px var(--txt);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.on.m-open{background:var(--ol);color:#141a10}
+.seg button.on.m-prep{background:#80a493;color:#101a14}
+.seg button.on.m-closed{background:var(--line);color:var(--ink)}
+.dq{margin-top:10px;padding:10px 12px;background:var(--p2);border-radius:10px}
+.dq .dayset input{min-height:44px}
+.dq .fh{gap:8px}
+.chip.cl{opacity:.55}
+.chip .md{display:block;font-size:11px;color:var(--mute);letter-spacing:.02em}
+.dayset{display:grid;grid-template-columns:repeat(auto-fit,minmax(8em,1fr));gap:0 10px}
+.wk{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:14px}
+.wk .b{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.wk .b i{display:block;height:100%;border-radius:6px}
+.wk b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.wk small{color:var(--mute);display:block;font-size:13px}
+.pc{border-left:4px solid var(--line)}
+.pc .meta{color:var(--mute);font-size:14px;margin:0 0 6px}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.mini div{background:var(--p2);border-radius:10px;padding:8px}
+.mini b{display:block;font:600 18px var(--disp);white-space:nowrap}
+.mini span{font-size:13px;color:var(--mute)}
+.ed{border-color:var(--ol)}
+.guide{max-width:760px}
+.guide h3{margin-top:18px}
+.guide dt{font-weight:700;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.banner{background:#3a2a14;color:var(--sand);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.src{font-size:14px;color:var(--sand)}
+.btn:disabled{opacity:.55}
+.pl{list-style:none;margin:10px 0 0;padding:0}
+.pl li{padding:10px 0;border-top:1px solid var(--line)}
+.pl label{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.pl input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--ol)}
+.pl small{color:var(--mute);font-size:12px;white-space:nowrap}
+.pv{margin:4px 0 0 32px;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:14px}
+.pv .old{color:var(--mute)}
+.pv .ar{color:var(--mute)}
+.pv .new{color:var(--sand);overflow-wrap:break-word}
+.pl li.flag .new{color:var(--y)}
+.pl .fl{margin:4px 0 0 32px;font-size:13px;color:var(--y)}
+.pl li.same{opacity:.6}
+.scroll{overflow-x:auto}
+table.cmp{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+.cmp th,.cmp td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cmp th:first-child,.cmp td:first-child{text-align:left;color:var(--mute);position:sticky;left:0;background:var(--p)}
+.cmp thead th{font:600 16px var(--disp);color:var(--ink);vertical-align:bottom}
+.cmp th small{display:block;font:500 11px var(--txt);color:var(--mute)}
+.cmp td.best{color:var(--ok);font-weight:700}
+#tplSec .chip{line-height:1.3;padding:10px 12px}
+@media(max-width:600px){.cmp th,.cmp td{padding:6px 5px;font-size:13px}}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--p);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--mute);text-decoration:none;font-size:13px;min-height:58px}
+nav.tabs a.on{color:var(--sand)}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:15px;display:none;gap:12px;align-items:center;z-index:20;max-width:calc(100% - 32px)}
+#toast button{background:transparent;border:0;color:#3d5a2a;font:700 15px var(--txt);cursor:pointer;min-height:36px}
+@media(max-width:600px){.kpi span{font-size:12px}.gt{grid-template-columns:70px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.sw::after{transition:none}}
+</style>
+<meta name="gx-module" content="m2">
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="shared/shell.css">
+<script src="shared/core.js"></script>
+<script src="shared/shell.js" defer></script>
+</head>
+<body>
+<header class="top"><h1>Personel &amp; Vardiya</h1><p class="sub">Galapagos · Modül 2 · her saatin gerçek işveren maliyeti</p></header>
+<main>
+  <section class="view" id="v-plan">
+    <div id="storeWarn"></div>
+    <div class="kpis" aria-live="polite">
+      <div class="kpi" id="k1"><b>–</b><span>Personel / ay</span></div>
+      <div class="kpi" id="k2"><b>–</b><span>PK % (sen dahil)</span></div>
+      <div class="kpi" id="k3"><b>–</b><span>PK % (hariç)</span></div>
+      <div class="kpi" id="k4"><b>–</b><span>Saat / hafta</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <div class="ph"><h2>Haftalık vardiya</h2><button class="btn pri" type="button" id="addSh">+ Vardiya</button></div>
+          <div class="chips" id="dayChips"></div>
+          <div id="dayQuick"></div>
+          <div id="gantt"></div>
+          <div class="leg"><span><i class="dot st-ok"></i>Yeterli</span><span><i class="dot st-over"></i>Fazla personel</span><span><i class="dot st-under"></i>Eksik</span><span><i class="dot st-min"></i>Minimumun altında</span><span><i class="dot st-prep"></i>Hazırlık / kapanış</span></div>
+          <p class="note" id="slotInfo">Durum şeridinde bir kutuya dokun: o yarım saatin misafir, içki ve personel hesabı.</p>
+          <div id="editor"></div>
+        </div>
+        <div class="card"><h2>Hafta özeti</h2><div class="wk" id="week"></div><p class="note">Bar = günün personel maliyeti / günün cirosu (sen hariç).</p></div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Alarmlar</h3><ul class="al" id="al"></ul></div>
+        <details class="sec" open><summary>Maliyet özeti<span class="sv" id="sv_cost"></span></summary><div class="in"><div class="out" id="o_cost"></div></div></details>
+        <details class="sec"><summary>Açılış saatleri &amp; doluluk<span class="sv" id="sv_days"></span></summary><div class="in" id="daysForm"></div></details>
+        <details class="sec"><summary>Modül 3'e aktar<span class="sv">JSON</span></summary><div class="in"><p class="hint">"Ciro, RevPASH &amp; €5.000 Hedef Motoru" bu JSON'u doğrudan okur.</p><div class="btns"><button class="btn pri" type="button" id="exCopy">Kopyala</button><button class="btn" type="button" id="exDl">İndir (.json)</button></div><textarea class="code" id="exTxt" readonly spellcheck="false" style="margin-top:10px"></textarea></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-kadro">
+    <div class="card" style="margin-top:12px">
+      <h2>Mekân &amp; ciro</h2>
+      <p class="src" id="srcLine"></p>
+      <label class="lb" for="m1Txt">Modül 1 JSON'unu yapıştır ("Modül 2'ye aktar")</label>
+      <textarea class="code" id="m1Txt" spellcheck="false" style="min-height:90px"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="m1In">Modül 1'den al</button><label class="btn" for="m1File">Dosyadan al</label><input type="file" id="m1File" accept=".json,application/json" hidden></div>
+      <p class="note" id="m1Msg" aria-live="polite"></p>
+      <div id="m1Diff"></div>
+      <div id="venueForm"></div>
+    </div>
+    <details class="sec" id="tplSec"><summary>Kadro şablonları<span class="sv" id="sv_tpl"></span></summary><div class="in" id="tplBox"></div></details>
+    <div class="ph" style="margin:6px 0 4px"><h2>Kadro</h2></div>
+    <div class="btns" style="margin-bottom:12px"><button class="btn" type="button" data-add="tz">+ Teilzeit</button><button class="btn" type="button" data-add="mj">+ Minijob</button><button class="btn" type="button" data-add="ws">+ Werkstudent</button><button class="btn" type="button" data-add="vz">+ Vollzeit</button><button class="btn" type="button" data-add="aus">+ Aushilfe</button></div>
+    <div id="staffList"></div>
+  </section>
+
+  <section class="view" id="v-rehber">
+    <div class="card guide" style="margin-top:12px">
+      <h2>Nasıl kullanılır &amp; ne işe yarar?</h2>
+      <p>Bu araç iki soruya cevap verir: "Bu kadroyla bir ay bana gerçekte kaça patlar?" ve "Hangi saatte fazla, hangi saatte eksik insan var?" Brüt maaşla yetinmez; işveren primlerini, gece ve pazar zamlarını, izin/hastalık payını ve kendi emeğinin karşılığını ekler. Vardiyaları sürükler gibi düzenlersin, maliyet ve alarmlar anında değişir.</p>
+      <h3>Dört adımda</h3>
+      <ol>
+        <li><b>Mekânı al:</b> Kadro → Modül 1 JSON'unu yapıştır. Koltuk, tabure, teras, kira ve ciro önce bir değişiklik listesinde görünür; işaretlediklerin uygulanır. Kadro ve vardiyalara dokunulmaz. Elle de girebilirsin.</li>
+        <li><b>Kadroyu kur:</b> Kadro → "Kadro şablonları"ndan A, B veya C'yi seç ya da kişi ekle, türünü (Teilzeit, Minijob, Werkstudent…) ve ücretini seç.</li>
+        <li><b>Günleri ayarla:</b> Plan'da güne dokun, kartın altındaki <b>Açık / Kapalı / Pre-Batch</b> ile durumunu seç; açık günün saatlerini ve doluluğunu aynı yerde değiştir. Varsayılan: Salı Lager &amp; Pre-Batch, Perşembe–Cumartesi açık, Pazar ve Çarşamba kapalı.</li>
+        <li><b>Vardiyaları yerleştir:</b> Plan'da güne dokun, "+ Vardiya" veya bir çubuğa dokunup saatleri değiştir. Molalar otomatik düşülür.</li>
+        <li><b>Alarmları temizle, Modül 3'e aktar.</b></li>
+      </ol>
+      <h3>Gün durumları</h3>
+      <ul>
+        <li><b>Açık:</b> misafir var. Saat, pik ve doluluk kullanılır; aylık ciro açık günlere doluluk oranıyla dağıtılır; eksik/fazla personel kontrol edilir.</li>
+        <li><b>Pre-Batch:</b> misafire kapalı Lager, sipariş kabulü ve batch günü. Vardiyalar maliyete ve saate girer, ciro ve kapasite alarmı yoktur.</li>
+        <li><b>Kapalı:</b> ciro ve personel maliyeti yok. O gündeki vardiyalar silinmez, kenara alınır; günü tekrar açınca geri gelir.</li>
+        <li>Bir günü kapatmak <b>aylık ciroyu düşürmez</b>; o günün payı diğer açık günlere dağılır. Pazarı kapatınca ciron da düşecekse Kadro → Mekân &amp; ciro'dan elle düşür.</li>
+      </ul>
+      <h3>Kadro şablonları</h3>
+      <p>Üç hazır düzen, her seferinde <b>senin açılış, pik ve kapanış saatlerine göre</b> yeniden üretilir. Uygulamadan önce tabloda mevcut kadronla yan yana görürsün: aylık maliyet, PK %, eksik personel saati ve alarm sayısı. Yeşil = o satırın en iyisi.</p>
+      <ul>
+        <li><b>A · Sahip + TZ barmen + 2 Minijob:</b> başlangıç düzeni. Sabit barmen Cuma–Cumartesi gece ve pre-batch gününde.</li>
+        <li><b>B · Sahip + TZ garson + 2 Werkstudent:</b> servisin omurgası sabit garson; bar ve Pazar Werkstudent'lerde. Werkstudent'in işveren primi en düşük.</li>
+        <li><b>C · Temkinli açılış:</b> sahip her gün barda, tek Minijob sadece Cuma–Cumartesi pikinde. Ramp-up ayları için.</li>
+      </ul>
+      <p><b>Uygula</b> şablonun kadrosunu ve vardiyalarını yükler. <b>Sadece eksik rolleri ekle</b> mevcut kadrona dokunmaz, sadece şablonda olup sende olmayan tür+rol kişileri vardiyalarıyla ekler. İkisinde de önceki kadron saklanır: hemen "Geri al", sonradan "Önceki kadroma dön". Kendi kadronu kurduysan "Uygula" iki dokunuşla onay ister. Senin Unternehmerlohn ve büro saatin hiçbir şablonla değişmez. Minijob vardiyaları sınırın %95'ine, Werkstudent'ler dönem içinde 20 saate otomatik kısaltılır.</p>
+      <h3>Sayı yazımı</h3>
+      <p>Kutulara virgülle veya noktayla yazabilirsin: <code>16,25</code> ve <code>16.25</code> aynı. Bu modülde nokta her zaman ondalıktır (<code>1.3</code> = %1,3); sadece ciro, Warmmiete ve Unternehmerlohn'da <code>29.000</code> = 29000 okunur. Mantıksız değerler sınırlanır (yüzdeler 0–100, sözleşme 0–48 saat).</p>
+      <h3>Metrikler ne demek?</h3>
+      <dl>
+        <dt>Arbeitgeberbrutto (işveren maliyeti)</dt><dd>Çalışanın brüt maaşı + senin ödediğin sosyal sigorta payları (sağlık, emeklilik, işsizlik, bakım), Umlage'ler (U1 hastalık, U2 doğum, Insolvenzgeld) ve meslek birliği (BGN) primi. Normal çalışanda brütün yaklaşık %22–25'i kadar ek maliyettir. Saksonya'da bakım sigortası işveren payı %1,3 (diğer eyaletlerde %1,8).</dd>
+        <dt>Minijob</dt><dd>Aylık kazanç sınırın altında kalan iş. Çalışan neredeyse kesintisiz alır, ama sen yaklaşık %31–34 götürü prim ödersin. Sınır asgari ücrete bağlı: asgari ücret × 130 ÷ 3. Sınırı aşarsa "Midijob" olur ve normal sigortalıya döner.</dd>
+        <dt>Werkstudent</dt><dd>Kayıtlı üniversite öğrencisi. Dönem içinde haftada 20 saate kadar çalışırsa sadece emeklilik payı (%9,3) ve Umlage'ler ödenir. Chemnitz'te (TU Chemnitz) en ucuz kalifiye saat genelde budur. Sömestr tatilinde 20 saat sınırı yoktur (Ayarlar → "Sömestr tatili"); dönem içinde 20 saati aşmak yılda en fazla 26 hafta mümkün, aşılırsa normal sigortalı olur.</dd>
+        <dt>Teilzeit / Vollzeit sözleşme saati</dt><dd>Sözleşmedeki haftalık saat ödenir, planlamasan da. Uygulama "ödenen ama planlanmayan saat" uyarısı verir.</dd>
+        <dt>SFN zamları</dt><dd>Gece (20–24 %25, 00–04 %40, 04–06 %25), pazar %50, resmi tatil %125. Fiilen çalışılan saat için temel ücrete ek ödenirse vergiden ve sigortadan muaftır, Minijob sınırına sayılmaz. Cumartesi gecesi 00:00 sonrası Pazar sayılır; gece + pazar zammı toplanır.</dd>
+        <dt>Nachtarbeitnehmer (gece çalışanı)</dt><dd>23–06 arasında 2 saatten fazla çalıştığı gün yılda 48'i geçen kişi. Ona gece çalışması için telafi (zam veya ücretli izin) vermek yasal zorunluluk. SFN kapalıysa kırmızı alarm çıkar.</dd>
+        <dt>İzin / hastalık tamponu</dt><dd>Herkesin (Minijob dahil) yıllık izni ve 6 haftalık hastalık maaşı var. O saatleri başkası doldurur; maliyete % olarak eklenir (varsayılan %12).</dd>
+        <dt>Mola ve dinlenme</dt><dd>6 saatten uzun vardiyada 30 dk, 9 saatten uzunda 45 dk ücretsiz mola otomatik düşülür. Günlük en fazla 10 saat. İki vardiya arası 11 saat dinlenme; gastronomide 10 saate inebilir ama 4 hafta içinde telafi edilmeli.</dd>
+        <dt>Yılda 15 boş Pazar</dt><dd>Pazar çalışan herkesin yılda en az 15 Pazarı boş olmalı ve Pazar çalıştığı her hafta için 2 hafta içinde bir yedek dinlenme günü almalı. Perşembe–Pazar açık barda rotasyon şart.</dd>
+        <dt>Unternehmerlohn</dt><dd>Şahıs şirketinde kendine maaş ödeyemezsin; emeğin kâğıtta bedava görünür. Uygulama ona kâğıt üzerinde bir maaş biçer. Kendi sağlık sigortanı ve emeklilik birikimini de bu paradan ödeyeceksin.</dd>
+        <dt>Personalkosten % (PK %)</dt><dd>Aylık personel maliyeti ÷ aylık net ciro. İki oran gösterilir: senin emeğin dahil (gerçek resim, kırmızı çizgiler buna uygulanır) ve hariç. Sahibi çalışan bir barda hedef %18–25; %28 üstü dikkat, %30 üstü kâr kalmaz.</dd>
+        <dt>Prime cost hazırlığı</dt><dd>PK % + mal maliyeti % (pour cost). İkisi birlikte işletmenin "kontrol edebildiği" ana gider. Modül 3'te gerçek pour cost ile birleşir.</dd>
+        <dt>Misafir / personel oranı</dt><dd>Pik anda bir çalışana düşen misafir. Çok düşükse para boşa, çok yüksekse servis çöker.</dd>
+        <dt>Fazla / eksik personel</dt><dd>Her yarım saat için misafir × saatlik içki = içki ihtiyacı; barmen kapasitesi (batch'li 75–80/saat) ve servis kapasitesiyle (25–30 koltuk/kişi) karşılaştırılır. Barmen boş kalınca masalara yardım ettiği varsayılır. Barmen başına içki eşiğin altına düşerse (varsayılan 45) fazla personel uyarısı çıkar.</dd>
+        <dt>Hedef yıl</dt><dd>Bar 2028–2029'da açılacak. Asgari ücret 2027'de 14,60 €; sonrası yıllık artış varsayımıyla hesaplanır, Minijob sınırı da buna göre değişir.</dd>
+      </dl>
+      <h3>Alarm renkleri</h3>
+      <ul>
+        <li><b style="color:var(--r)">Kırmızı:</b> yasa ihlali veya servis çökmesi: Minijob sınırı aşımı, dönem içinde 20 saati aşan Werkstudent, asgari ücret altı, 10 saati aşan vardiya, 10 saatten kısa dinlenme, telafisiz gece çalışanı, eksik personel, PK % 30 üstü.</li>
+        <li><b style="color:var(--y)">Sarı:</b> para kaçağı veya risk: fazla personel, ödenen ama planlanmayan saat, fazla mesai, PK % 28–30.</li>
+        <li><b style="color:var(--sm)">Bilgi:</b> yasal hatırlatma: Pazar rotasyonu, gece çalışanı, sahibinin saatleri.</li>
+      </ul>
+      <h3>Unutma</h3>
+      <ul>
+        <li>Gastronomide Minijob dahil her çalışanın başlangıç, bitiş ve süre kaydı zorunlu. Kâğıt veya Excel yeterli; günü gününe tut.</li>
+        <li>İşe başlatırken anlık bildirim (Sofortmeldung) şartı ve çalışanın kimlik taşıma zorunluluğu var. Gümrük denetimi (Zoll FKS) barlara sık gelir.</li>
+        <li>Bahşiş misafirden çalışana gönüllü verilirse çalışan için vergisiz; maliyet değildir ve asgari ücrete sayılmaz. Senin aldığın bahşiş işletme geliridir.</li>
+        <li>Prim oranları kasaya göre değişir (U1, ek prim, BGN). Ayarlar'daki değerleri kendi Lohnbüro'nun rakamlarıyla güncelle.</li>
+      </ul>
+      <h3>Veriler nerede?</h3>
+      <p>Her şey yalnızca bu tarayıcıda (localStorage). Ayarlar → Yedekle ile düzenli yedek al. Bu bir planlama aracıdır; bordro yerine geçmez, sözleşmeden önce Steuerberater/Lohnbüro ile kontrol et.</p>
+    </div>
+  </section>
+
+  <section class="view" id="v-ayarlar">
+    <div id="setForm" style="margin-top:12px"></div>
+    <div class="card">
+      <h2>Yedekle &amp; içe aktar</h2>
+      <div class="btns"><button class="btn" type="button" id="bkOut">Yedek oluştur</button><button class="btn" type="button" id="bkCopy">Kopyala</button><button class="btn" type="button" id="bkDl">İndir (.json)</button></div>
+      <label class="lb" for="bkTxt">Modül 2 yedek JSON</label>
+      <textarea class="code" id="bkTxt" spellcheck="false"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="bkIn">Metinden geri yükle</button><label class="btn" for="bkFile">Dosyadan geri yükle</label><input type="file" id="bkFile" accept=".json,application/json" hidden><button class="btn dan" type="button" id="wipe">Varsayılana sıfırla</button></div>
+      <p class="note" id="bkMsg"></p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sekmeler">
+  <a href="#plan" data-tab="plan"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h5M7 17h9"/></svg>Plan</a>
+  <a href="#kadro" data-tab="kadro"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.7c2.6.2 4.4 2 5 5.3"/></svg>Kadro</a>
+  <a href="#rehber" data-tab="rehber"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg>Rehber</a>
+  <a href="#ayarlar" data-tab="ayarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Ayarlar</a>
+</nav>
+<div id="toast" role="status"><span id="toastT"></span><button type="button" id="toastU" hidden>Geri al</button></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const SKEY='galapagos_m2_v1';
+let canStore=true;
+const W=52/12;
+const DAYN=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],DAYL=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+const MD=[1,2,3,4,5,6],SD=[1,2,3,4,5,6];
+const MODES={open:'Açık',closed:'Kapalı',prep:'Pre-Batch'};
+const modeOf=d=>st.days[d]?.mode||(st.days[d]?.on?'open':'closed');
+const TYPES={owner:['Sahip (sen)','#dcc69b'],vz:['Vollzeit','#adb862'],tz:['Teilzeit','#c3cb74'],mj:['Minijob','#80a493'],ws:['Werkstudent','#b394bd'],aus:['Aushilfe (SV)','#7f9fb4']};
+const ROLES={bar:'Barmen',service:'Servis',prep:'Prep / Lager'};
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>(Number.isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>nf(Math.round(n))+' €';
+const hrs=h=>nf(h,2).replace(/,00$/,'').replace(/(,\d)0$/,'$1')+' s';
+const fT=h=>{const m=Math.round((((h%24)+24)%24)*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const toH=s=>{const p=String(s||'').split(':').map(Number);if(!Number.isFinite(p[0]))return null;const h=p[0]+(p[1]||0)/60;return h<6?h+24:h};
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split('.');const l=ks.pop();ks.reduce((a,k)=>a[k],o)[l]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+const DEFSET={year:2028,base27:14.60,g:3,kv:7.3,kvz:2.9,rv:9.3,av:1.3,pv:1.3,u1:1.6,u2:0.42,ins:0.15,bgn:1.5,mjKv:13,mjRv:15,mjSt:5,mjU1:0.8,mjU2:0.22,buf:12,sfn:true,rN1:25,rN2:40,rN3:25,rSun:50,rHol:125,hol:5,dpg:1.2,barCap:78,srvCap:28,overThr:45,srvIdle:6,minStaff:1,semBreak:false,pkT1:18,pkT2:25,pkY:28,pkR:30,cogs:21};
+function defaults(){
+  const d={v:{name:'',seats:40,stools:10,terrace:12,warmmiete:0,revenue:29000,src:'manuel'},summer:false,pre:1,clean:0.75,
+    days:{1:{mode:'prep',on:false,open:18,close:24,ps:20,pe:23,occ:30},2:{mode:'closed',on:false,open:18,close:24,ps:20,pe:23,occ:30},3:{mode:'open',on:true,open:18,close:25,ps:20,pe:23,occ:35},4:{mode:'open',on:true,open:18,close:27,ps:21,pe:25,occ:75},5:{mode:'open',on:true,open:18,close:27,ps:21,pe:25,occ:90},6:{mode:'closed',on:false,open:16,close:24,ps:19,pe:22,occ:40}},parked:{},
+    staff:[{id:'o',name:'Sen',type:'owner',role:'bar',wmode:'fix',wage:0,plus:0,contract:0,ul:3000,office:4},
+      {id:'t',name:'Barmen (TZ)',type:'tz',role:'bar',wmode:'fix',wage:16,plus:1,contract:20},
+      {id:'a',name:'Servis A',type:'mj',role:'service',wmode:'min',wage:16,plus:1,contract:0},
+      {id:'b',name:'Servis B',type:'mj',role:'service',wmode:'min',wage:16,plus:1,contract:0}],
+    shifts:[['o',1,14,18],['o',3,17,25.75],['o',4,17,27.75],['o',5,17,27.75],['t',1,14,18.5],['t',4,19.5,27.75],['t',5,19.5,27.75],['a',3,19,24],['b',4,21,25],['b',5,21,26]].map(([s,d,a,b])=>({id:uid(),s,d,a,b})),
+    set:clone(DEFSET),selDay:5,sel:null,template:'A',tplSig:null,prevCrew:null};
+  {const g=genTemplate('A',d);d.staff=g.staff;d.shifts=g.shifts}
+  d.tplSig=crewSig(d.staff,d.shifts);return d;
+}
+let st=null;
+function load(){
+  try{const raw=localStorage.getItem(SKEY);if(raw)st=JSON.parse(raw)}catch(e){canStore=false}
+  const d=defaults();
+  if(!st||!Array.isArray(st.staff)||!st.days){st=d;return}
+  load2();
+}
+function setMode(d,mode,quiet){
+  const x=st.days[d],prev=modeOf(d);if(!x||prev===mode)return;
+  const keep=clone({days:st.days,shifts:st.shifts,parked:st.parked,sel:st.sel});
+  let note='';
+  if(mode==='closed'){
+    const mine=st.shifts.filter(s=>s.d===d);
+    if(mine.length){st.parked[d]=(st.parked[d]||[]).concat(mine);st.shifts=st.shifts.filter(s=>s.d!==d);note=` · ${mine.length} vardiya kenara alındı (gün açılınca geri gelir)`}
+    if(st.sel&&!st.shifts.some(s=>s.id===st.sel))st.sel=null;
+  }else if(prev==='closed'&&st.parked[d]&&st.parked[d].length){
+    const ids=new Set(st.staff.map(p=>p.id));const back=st.parked[d].filter(s=>ids.has(s.s));
+    st.shifts.push(...back);note=` · ${back.length} vardiya geri geldi`;delete st.parked[d];
+  }
+  x.mode=mode;x.on=mode==='open';
+  save();renderStatic();renderOut();
+  if(!quiet)toast(`${DAYL[d]}: ${MODES[mode]}${note}`,()=>{Object.assign(st,keep);save();renderStatic();renderOut()});
+}
+function fixTpl(legacy){
+  if(!st.staff.some(p=>p.type==='owner'))st.staff.unshift(defaults().staff[0]);
+  if(legacy){const dd=defaults();if(crewSig(st.staff,st.shifts)===crewSig(dd.staff,dd.shifts)){st.template='A';st.tplSig=crewSig(st.staff,st.shifts)}else{st.template='custom';st.tplSig=null}}
+}
+function save(){GX.dirty();try{localStorage.setItem(SKEY,JSON.stringify(st));canStore=true}catch(e){canStore=false}}
+
+function law(){
+  const s=st.set;
+  const mw=s.year<=2026?13.90:s.year===2027?14.60:s.base27*Math.pow(1+s.g/100,s.year-2027);
+  const lim=Math.ceil(mw*130/3);
+  const sv=s.kv+s.kvz/2+s.rv+s.av+s.pv+s.u1+s.u2+s.ins+s.bgn;
+  const mj=s.mjKv+s.mjRv+s.mjSt+s.mjU1+s.mjU2+s.ins+s.bgn;
+  const ws=s.rv+s.u1+s.u2+s.ins+s.bgn;
+  return {mw,lim,sv,mj,ws};
+}
+const brk=g=>g>9?0.75:g>6?0.5:0;
+function shInfo(x){
+  const s=st.set,g=Math.max(0,x.b-x.a),br=brk(g),net=g-br;
+  let w=0,nz=0,sun=0;
+  for(let t=x.a;t<x.b-1e-9;t+=0.25){
+    const m=t+0.125,off=Math.floor(m/24),hod=m-off*24,wd=(x.d+off)%7;
+    let r=0;
+    if(hod>=20)r+=s.rN1;else if(hod<4)r+=(x.a<off*24?s.rN2:s.rN3);else if(hod<6)r+=s.rN3;
+    if(wd===6||(wd===0&&hod<4&&x.d===6&&x.a<24))r+=s.rSun;
+    w+=0.25*r/100;
+    if(hod>=23||hod<6)nz+=0.25;
+    if(wd===6)sun+=0.25;
+  }
+  return {g,br,net,sfn:g?w*net/g:0,nz,sun};
+}
+const wageOf=(p,L)=>p.type==='owner'?0:(p.wmode==='min'?L.mw+(+p.plus||0):(+p.wage||0));
+const rateOf=(p,L)=>p.type==='mj'?L.mj:p.type==='ws'?L.ws:p.type==='owner'?0:L.sv;
+
+function slots(d,people){
+  const D=st.days[d],s=st.set,out=[];
+  if(!D||!D.on)return out;
+  const seatsIn=+st.v.seats||0,stools=Math.min(+st.v.stools||0,seatsIn),seatsT=seatsIn+(st.summer?(+st.v.terrace||0):0);
+  const tbl=seatsT?(seatsT-stools)/seatsT:0;
+  const sh=st.shifts.filter(x=>x.d===d);
+  for(let t=D.open-st.pre;t<D.close+st.clean-1e-9;t+=0.5){
+    const mid=t+0.25;
+    const on=sh.filter(x=>x.a<=mid&&x.b>mid).map(x=>people.find(p=>p.id===x.s)).filter(Boolean);
+    const ph=mid<D.open?'pre':mid>=D.close?'post':'open';
+    let f=0;if(ph==='open')f=(mid>=D.ps&&mid<D.pe)?1:(mid<D.open+1||mid>=D.close-1)?0.5:0.75;
+    const guests=seatsT*D.occ/100*f,tg=guests*tbl,drinks=guests*s.dpg;
+    const nb=on.filter(p=>p.role==='bar').length,ns=on.filter(p=>p.role==='service').length,hc=on.length;
+    const barNeed=drinks/s.barCap,srvNeed=tg/s.srvCap;
+    let stt='prep',why='';
+    if(ph==='open'){
+      if(!hc){stt='under';why='Kimse yok'}
+      else if(barNeed>nb+1e-9){stt='under';why=nb?'Bar kapasitesi yetmiyor':'Barda kimse yok'}
+      else if((nb-barNeed)+ns<srvNeed-1e-9){stt='under';why='Servis yetişmiyor'}
+      else if(hc<s.minStaff){stt='min';why='Minimum personelin altında'}
+      else{
+        const nbOnly=nb-Math.max(0,srvNeed-ns);
+        if(nbOnly>1.5&&drinks/nbOnly<s.overThr){stt='over';why=`Barmen başı ${nf(drinks/nbOnly)} içki/saat`}
+        else if(ns>=1&&tg/ns<s.srvIdle){stt='over';why=`Servis başı ${nf(tg/ns,1)} misafir`}
+        else{stt='ok';why='Dengeli'}
+      }
+    }
+    out.push({t,ph,guests,tg,drinks,nb,ns,hc,stt,why,names:on.map(p=>p.name)});
+  }
+  return out;
+}
+
+function calc(){
+  const s=st.set,L=law(),al=[],A=(lv,t)=>al.push({lv,t});
+  const openDays=SD.filter(d=>st.days[d].on);
+  MD.forEach(d=>{if(modeOf(d)==='closed'){const n=st.shifts.filter(x=>x.d===d).length;if(n)A('y',`${DAYL[d]} kapalı ama ${n} vardiya var: maliyete giriyor. Günü Pre-Batch yap ya da vardiyayı sil.`)}});
+  const people=st.staff.map(p=>{
+    const sh=st.shifts.filter(x=>x.s===p.id).sort((a,b)=>(a.d*24+a.a)-(b.d*24+b.a));
+    let hours=0,sfnW=0,nightDays=0,sun=0,maxNet=0;const dayH={};
+    sh.forEach(x=>{const i=shInfo(x);hours+=i.net;sfnW+=i.sfn;if(i.nz>2)nightDays++;sun+=i.sun;maxNet=Math.max(maxNet,i.net);dayH[x.d]=(dayH[x.d]||0)+i.net});
+    let minRest=Infinity;
+    for(let i=0;i<sh.length&&sh.length>1;i++){const cur=sh[i],nx=sh[(i+1)%sh.length];const ns=nx.d*24+nx.a+(i+1===sh.length?168:0);minRest=Math.min(minRest,ns-(cur.d*24+cur.b))}
+    const w=wageOf(p,L),rate=rateOf(p,L);
+    const paidW=(p.type==='vz'||p.type==='tz')?Math.max(+p.contract||0,hours):hours;
+    const brutto=paidW*W*w;
+    const svcDays=Object.keys(dayH).filter(d=>st.days[d]?.on).length;
+    const svcH=Object.entries(dayH).filter(([d])=>st.days[d]?.on).reduce((a,[,h])=>a+h,0);
+    const holM=s.sfn&&svcDays&&p.type!=='owner'?(svcH/svcDays)*(s.hol*svcDays/Math.max(1,openDays.length)/12)*w*s.rHol/100:0;
+    const sfnM=s.sfn&&p.type!=='owner'?sfnW*w*W+holM:0;
+    const sv=brutto*rate/100,base=brutto+sv+sfnM,buf=p.type==='owner'?0:base*s.buf/100;
+    const total=p.type==='owner'?(+p.ul||0):base+buf;
+    const wsAlt=p.type==='mj'?(brutto*(1+L.ws/100)+sfnM)*(1+s.buf/100):null;
+    return {p,sh,hours,dayH,sfnW,nightDays,sun,maxNet,minRest,w,rate,paidW,brutto,sv,sfnM,buf,total,wsAlt};
+  });
+  people.forEach(c=>{
+    const p=c.p,n=esc(p.name);
+    if(p.type==='owner'){const tot=c.hours+(+p.office||0);if(tot>50)A('y',`Sen haftada ${hrs(tot)} çalışıyorsun (vardiya + büro). ArbZG sana uygulanmaz ama 5 yıllık hedefinle çelişir.`);else if(tot>=40)A('i',`Sen haftada ${hrs(tot)}: kadronun omurgası sensin; hastalanırsan kim açıyor?`);return}
+    if(c.w<L.mw-1e-9)A('r',`${n}: ${nf(c.w,2)} €/saat, ${st.set.year} asgari ücreti (${nf(L.mw,2)} €) altında.`);
+    if(p.type==='mj'){if(c.brutto>L.lim)A('r',`${n}: aylık ${eur(c.brutto)} > Minijob sınırı ${eur(L.lim)}. Midijob olur, normal sigortalıya döner.`);else if(c.brutto>L.lim*0.95)A('y',`${n}: ${eur(c.brutto)}, sınıra çok yakın (${eur(L.lim)}). Bir ekstra vardiya sınırı aşar.`)}
+    if(p.type==='ws'&&c.hours>20){if(s.semBreak)A('i',`${n}: haftada ${hrs(c.hours)}. Sömestr tatilinde 20 saat sınırı yok; dönem başlayınca 20 saate in.`);else A('r',`${n}: haftada ${hrs(c.hours)}. Werkstudent dönem içinde 20 saati aşarsa statüsünü kaybeder, normal sigortalı olur. Tatildeysen Ayarlar → Minijob & Werkstudent → "Sömestr tatili".`)}
+    if((p.type==='tz'||p.type==='vz')&&c.hours>(+p.contract||0)+0.5)A('y',`${n}: planlanan ${hrs(c.hours)} > sözleşme ${hrs(+p.contract||0)}. Fazla mesai ödenir veya telafi edilir.`);
+    if((p.type==='tz'||p.type==='vz')&&c.hours<(+p.contract||0)-0.5)A('y',`${n}: sözleşme ${hrs(+p.contract)} ama planda ${hrs(c.hours)}. Haftada ${hrs((+p.contract)-c.hours)} boşa ödeniyor.`);
+    if(c.maxNet>10)A('r',`${n}: ${hrs(c.maxNet)} vardiya. Günlük en fazla 10 saat.`);
+    if(c.minRest<10)A('r',`${n}: iki vardiya arası ${hrs(c.minRest)} dinlenme. Gastronomide bile en az 10 saat.`);
+    else if(c.minRest<11)A('y',`${n}: dinlenme ${hrs(c.minRest)}. 10 saat gastronomide mümkün ama 4 hafta içinde telafi edilmeli.`);
+    if(c.nightDays*52>=48){if(!s.sfn)A('r',`${n}: gece çalışanı (haftada ${c.nightDays} gece). Yasal telafi zorunlu ama SFN kapalı.`);else A('i',`${n}: gece çalışanı (Nachtarbeitnehmer). Gece zammı yasal telafiyi karşılıyor.`)}
+    if(c.sun>0)A('i',`${n}: Pazar saatlerinde çalışıyor${c.sh.some(x=>x.d===5&&x.b>24)?' (Cumartesi gecesi 00:00 sonrası dahil)':''}. Yılda en az 15 boş Pazar + 2 hafta içinde yedek dinlenme günü: rotasyon planla.`);
+  });
+  const emp=people.filter(c=>c.p.type!=='owner'),own=people.find(c=>c.p.type==='owner');
+  const fixed=emp.filter(c=>['vz','tz'].includes(c.p.type)).reduce((a,c)=>a+c.total,0);
+  const variable=emp.filter(c=>['mj','ws','aus'].includes(c.p.type)).reduce((a,c)=>a+c.total,0);
+  const staffTotal=fixed+variable,ul=own?own.total:0,incl=staffTotal+ul,rev=+st.v.revenue||0;
+  const pk=rev?staffTotal/rev*100:0,pkI=rev?incl/rev*100:0;
+  const sum=k=>emp.reduce((a,c)=>a+c[k],0);
+  const empH=sum('hours'),ownH=own?own.hours:0;
+  const sumOcc=openDays.reduce((a,d)=>a+st.days[d].occ,0)||1;
+  const days=MD.map(d=>{
+    const sl=SD.includes(d)?slots(d,st.staff):[];
+    const cost=emp.reduce((a,c)=>a+(c.hours?c.total*(c.dayH[d]||0)/c.hours:0),0)/W;
+    const ownCost=own&&own.hours?ul*(own.dayH[d]||0)/own.hours/W:0;
+    const revD=st.days[d]?.on?rev/W*st.days[d].occ/sumOcc:0;
+    const h=emp.reduce((a,c)=>a+(c.dayH[d]||0),0);
+    let peak=null;sl.filter(x=>x.ph==='open').forEach(x=>{if(!peak||x.guests>peak.guests)peak=x});
+    return {d,sl,cost,ownCost,rev:revD,h,ownH:own?own.dayH[d]||0:0,pk:revD?cost/revD*100:0,peak};
+  });
+  days.forEach(D=>{
+    let cur=null;const runs=[];
+    D.sl.forEach(x=>{if(x.ph!=='open')return;if(cur&&cur.stt===x.stt&&Math.abs(cur.e-x.t)<1e-6){cur.e=x.t+0.5}else{cur={stt:x.stt,s:x.t,e:x.t+0.5,why:x.why};runs.push(cur)}});
+    runs.forEach(r=>{const rng=`${DAYN[D.d]} ${fT(r.s)}–${fT(r.e)}`;if(r.stt==='under')A('r',`${rng}: eksik personel (${r.why}).`);else if(r.stt==='over')A('y',`${rng}: fazla personel (${r.why}).`);else if(r.stt==='min')A('y',`${rng}: minimum personelin altında.`)});
+  });
+  if(pkI>s.pkR)A('r',`Personalkosten (sen dahil) %${nf(pkI,1)}: %${s.pkR} üstü, kâr kalmaz.`);
+  else if(pkI>s.pkY)A('y',`Personalkosten (sen dahil) %${nf(pkI,1)}: %${s.pkY}–${s.pkR} dikkat bandı.`);
+  if(!rev)A('y','Aylık ciro girilmedi: Kadro → Mekân & ciro.');
+  const ord={r:0,y:1,i:2};al.sort((a,b)=>ord[a.lv]-ord[b.lv]);
+  return {L,people,emp,own,fixed,variable,staffTotal,ul,incl,rev,pk,pkI,empH,ownH,days,al,
+    svT:sum('sv'),sfnT:sum('sfnM'),bufT:sum('buf'),brT:sum('brutto'),prime:pkI+s.cogs};
+}
+
+const F=(k,label,min,max,step,unit,hint='',attr='data-k')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" ${attr}="${k}"><em>${unit}</em></span></div>${max!=null?`<input id="r_${id}" type="range" ${attr}="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label}">`:''}${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const TG=(k,label,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="tog"><label for="b_${id}">${label}${hint?`<span class="hint" style="display:block">${hint}</span>`:''}</label><input type="checkbox" class="sw" id="b_${id}" data-k="${k}" data-t="b"></div>`};
+const R=(l,v,cls='',big)=>`<div class="row${big?' big':''}"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+function paint(r){const p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--f',Math.max(0,Math.min(100,p))+'%')}
+function fillInputs(root){$$('[data-k]',root).forEach(el=>{const v=getP(st,el.dataset.k);if(el.dataset.t==='b')el.checked=!!v;else if(el.type==='time')el.value=fT(v);else el.value=el.classList.contains('num')?fmtIn(v):(v??'')});$$('input[type=range]',root).forEach(paint)}
+
+function renderStatic(){
+  $('#daysForm').innerHTML=TG('summer','Yaz modu: teras koltukları dahil','Teras koltukları kapasiteye eklenir.')+F('pre','Açılıştan önce hazırlık',0,2,0.25,'saat')+F('clean','Kapanış temizliği',0,2,0.25,'saat')+
+    SD.map(d=>`<div class="fld"><div class="fh"><b>${DAYL[d]}</b><select data-mode="${d}" aria-label="${DAYL[d]} durumu" style="width:auto;min-width:9em">${Object.entries(MODES).map(([k,v])=>`<option value="${k}"${modeOf(d)===k?' selected':''}>${v}</option>`).join('')}</select></div>
+      <div class="dayset"><div><label class="lb">Açılış</label><input type="time" step="900" data-k="days.${d}.open"></div><div><label class="lb">Kapanış</label><input type="time" step="900" data-k="days.${d}.close"></div><div><label class="lb">Pik başı</label><input type="time" step="900" data-k="days.${d}.ps"></div><div><label class="lb">Pik sonu</label><input type="time" step="900" data-k="days.${d}.pe"></div></div>
+      ${F(`days.${d}.occ`,'Pikte doluluk',0,100,5,'%','İlk ve son saatte yarısı, pik dışında %75\'i.')}<p class="hint">Saatler ve doluluk sadece "Açık" günde kullanılır.</p></div>`).join('');
+  fillInputs($('#daysForm'));
+  $('#venueForm').innerHTML=`<label class="lb" for="t_vname">Mekân adı</label><input id="t_vname" type="text" data-k="v.name" data-t="s">`+F('v.seats','Oturma kapasitesi (iç)',0,120,1,'koltuk')+F('v.stools','Bunun bar taburesi',0,30,1,'tabure','Tabureye barmen doğrudan servis yapar.')+F('v.terrace','Teras koltuğu',0,60,1,'koltuk','Sadece yaz modunda hesaba girer.')+F('v.revenue','Beklenen aylık net ciro',5000,60000,500,'€')+F('v.warmmiete','Warmmiete (bilgi)',0,6000,10,'€/ay','Modül 3\'e aktarılır.');
+  fillInputs($('#venueForm'));
+  renderStaffForms();
+  const S=st.set;
+  $('#setForm').innerHTML=`<details class="sec" open><summary>Hedef yıl &amp; asgari ücret<span class="sv" id="sv_law"></span></summary><div class="in">${F('set.year','Hedef yıl',2026,2032,1,'')}${F('set.base27','2027 asgari ücret (baz)',12,20,0.01,'€/s')}${F('set.g','Sonraki yıllık artış',0,8,0.5,'%')}<div class="out" id="o_law"></div></div></details>
+  <details class="sec"><summary>İşveren sosyal sigorta (normal)<span class="sv" id="sv_sv"></span></summary><div class="in">${F('set.kv','Sağlık (KV) işveren',0,10,0.05,'%')}${F('set.kvz','Ek prim (Zusatzbeitrag) toplam',0,5,0.05,'%','İşveren yarısını öder. 2026 ortalaması %2,9.')}${F('set.rv','Emeklilik (RV)',0,12,0.05,'%')}${F('set.av','İşsizlik (AV)',0,3,0.05,'%')}${F('set.pv','Bakım (PV), Saksonya',0,3,0.05,'%','Saksonya işveren payı %1,3.')}${F('set.u1','U1 (hastalık Umlage)',0,4,0.05,'%','Kasaya göre değişir, genelde %1–3,5.')}${F('set.u2','U2 (doğum Umlage)',0,1,0.01,'%')}${F('set.ins','Insolvenzgeldumlage',0,1,0.01,'%')}${F('set.bgn','BGN (meslek birliği) tahmini',0,4,0.1,'%','Gerçek oran BGN tarifesinden gelir.')}</div></details>
+  <details class="sec"><summary>Minijob &amp; Werkstudent<span class="sv" id="sv_mj"></span></summary><div class="in">${F('set.mjKv','Minijob sağlık götürü',0,15,0.5,'%')}${F('set.mjRv','Minijob emeklilik götürü',0,15,0.5,'%')}${F('set.mjSt','Minijob götürü vergi',0,6,0.5,'%','Bugün %2; 2027 için %5 taslakta. Yasalaşmazsa 2 yap.')}${F('set.mjU1','Minijob U1',0,2,0.05,'%')}${F('set.mjU2','Minijob U2',0,1,0.01,'%')}${TG('set.semBreak','Sömestr tatili (Werkstudent)','Açıkken Werkstudent 20 saat sınırı kalkar. Dönem içinde 20 saati aşmak yılda en fazla 26 hafta mümkün.')}<div class="out" id="o_mj"></div></div></details>
+  <details class="sec"><summary>Tampon &amp; SFN zamları<span class="sv" id="sv_sfn"></span></summary><div class="in">${F('set.buf','İzin / hastalık tamponu',0,25,1,'%')}${TG('set.sfn','SFN zamları açık','Vergisiz ve sigortasız; gece çalışanı için yasal telafi.')}${F('set.rN1','Gece 20–24',0,50,5,'%')}${F('set.rN2','Gece 00–04',0,50,5,'%')}${F('set.rN3','Gece 04–06',0,50,5,'%')}${F('set.rSun','Pazar',0,100,5,'%')}${F('set.rHol','Resmi tatil',0,150,5,'%')}${F('set.hol','Açık olunan resmi tatil',0,12,1,'gün/yıl','Saksonya\'nın tatillerinden Per–Paz\'a düşenler.')}</div></details>
+  <details class="sec"><summary>Kapasite &amp; verim<span class="sv"></span></summary><div class="in">${F('set.dpg','Misafir başı içki',0.5,3,0.1,'/saat')}${F('set.barCap','Barmen kapasitesi (batch)',30,120,1,'içki/s')}${F('set.srvCap','Servis kapasitesi',10,40,1,'misafir')}${F('set.overThr','Fazla personel eşiği',10,80,1,'içki/s','Barmen başı bunun altına düşerse sarı.')}${F('set.srvIdle','Servis boşta eşiği',1,20,1,'misafir')}${F('set.minStaff','Açıkken minimum personel',1,3,1,'kişi')}</div></details>
+  <details class="sec"><summary>Kırmızı çizgiler<span class="sv"></span></summary><div class="in">${F('set.pkT1','PK hedef alt',5,40,1,'%')}${F('set.pkT2','PK hedef üst',5,40,1,'%')}${F('set.pkY','PK sarı',10,50,1,'%')}${F('set.pkR','PK kırmızı',10,50,1,'%')}${F('set.cogs','Mal maliyeti (pour cost)',10,40,1,'%','Prime cost hazırlığı için.')}</div></details>`;
+  fillInputs($('#setForm'));
+}
+function renderStaffForms(){
+  $('#staffList').innerHTML=st.staff.map(p=>{
+    const id=p.id,o=p.type==='owner';
+    const sel=(f,opts)=>`<select data-sf="${id}.${f}" aria-label="${f}">${Object.entries(opts).map(([k,v])=>`<option value="${k}"${p[f]===k?' selected':''}>${v}</option>`).join('')}</select>`;
+    return `<div class="card pc" style="border-left-color:${TYPES[p.type][1]}">
+      <div class="two"><div><label class="lb" style="margin-top:0">Ad</label><input type="text" data-sf="${id}.name" value="${esc(p.name)}"></div>
+      ${o?'':`<div><label class="lb" style="margin-top:0">Tür</label>${sel('type',Object.fromEntries(Object.entries(TYPES).filter(([k])=>k!=='owner').map(([k,v])=>[k,v[0]])))}</div>`}
+      <div><label class="lb"${o?' style="margin-top:0"':''}>Rol</label>${sel('role',ROLES)}</div></div>
+      ${o?F(`${id}.ul`,'Unternehmerlohn (kâğıt üzerinde)',0,8000,50,'€/ay','Kendi sigortan ve birikimin bu paradan.','data-sf')+F(`${id}.office`,'Büro saati',0,20,0.5,'s/hafta','Vardiya dışı yönetim işi.','data-sf'):
+      `<div class="tog"><label for="wm_${id}">Ücret asgari ücrete bağlı<span class="hint" style="display:block">Hedef yılın asgari ücreti + ek</span></label><input type="checkbox" class="sw" id="wm_${id}" data-sf="${id}.wmode" data-t="wm"${p.wmode==='min'?' checked':''}></div>
+      ${p.wmode==='min'?F(`${id}.plus`,'Asgari ücret üstü',0,10,0.25,'€/s','','data-sf'):F(`${id}.wage`,'Brüt saat ücreti',10,30,0.25,'€/s','','data-sf')}
+      ${['tz','vz'].includes(p.type)?F(`${id}.contract`,'Sözleşme saati',1,48,0.5,'s/hafta','Planlamasan da ödenir.','data-sf'):''}`}
+      <div class="out" id="po_${id}"></div>
+      ${o?'':`<div class="btns"><button class="btn dan" type="button" data-rm="${id}">Kişiyi sil</button></div>`}
+    </div>`}).join('');
+  $$('#staffList [data-sf]').forEach(el=>{const [id,f]=el.dataset.sf.split('.');const p=st.staff.find(x=>x.id===id);if(el.classList.contains('num'))el.value=fmtIn(p[f]??0);else if(el.type==='range')el.value=p[f]??0});
+  $$('#staffList input[type=range]').forEach(paint);
+}
+
+/* ---------- Güvenli sayı (Modül 1 ile aynı fonksiyon) ---------- */
+// Modül 2'de nokta varsayılan olarak ONDALIK; binlik kuralı yalnızca büyük tutar alanlarında.
+const BIG=new Set(['v.revenue','v.warmmiete','ul']);
+// Sert sınırlar (kaydırıcı sınırı değil; mantıksız değeri engeller)
+function hard(k){
+  const f=k.split('.').pop();
+  if(/^days\.\d\.occ$/.test(k))return [0,100];
+  if(f==='contract')return [0,48];
+  if(f==='office')return [0,80];
+  if(f==='wage')return [0,100];
+  if(f==='plus')return [0,50];
+  if(f==='pre'||f==='clean')return [0,6];
+  if(k==='set.year')return [2026,2040];
+  if(k==='set.dpg')return [0.1,10];
+  if(['set.barCap','set.srvCap','set.overThr','set.srvIdle','set.minStaff','set.hol','set.base27'].includes(k))return [0,1000];
+  if(k.startsWith('set.'))return [0,100];
+  return [0,1e9];
+}
+const clampK=(k,v)=>{const [a,b]=hard(k);return Math.min(b,Math.max(a,v))};
+const num=v=>{const x=parseNum(v,true);return Number.isFinite(x)?x:null};
+function looseJSON(t){
+  let s=String(t||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'').trim();
+  try{return JSON.parse(s)}catch(e){}
+  const a=s.indexOf('{'),b=s.lastIndexOf('}');
+  if(a>-1&&b>a){try{return JSON.parse(s.slice(a,b+1))}catch(e){}}
+  throw new Error('Metin geçerli JSON değil. Modül 1\'deki "Modül 2\'ye aktar" kutusunun tamamını kopyala.');
+}
+
+/* ---------- Kadro şablonları ---------- */
+const TPL={
+  A:{t:'A · Sahip + TZ barmen + 2 Minijob',d:'Bugünkü düzen. Sabit bir barmen Cuma–Cumartesi gece ve pre-batch gününde; iki Minijob servisi pik saatlerde tamamlar.'},
+  B:{t:'B · Sahip + TZ garson + 2 Werkstudent',d:'Servisin omurgası sabit bir garson; barı ve Pazar\'ı Werkstudent\'ler (TU Chemnitz) taşır. Werkstudent işveren primi en düşük kalifiye saat.'},
+  C:{t:'C · Temkinli açılış',d:'Sahip her açık günde barda; tek bir Minijob sadece Cuma ve Cumartesi pikinde takviye. Ramp-up ayları için en düşük sabit maliyet.'}
+};
+const crewSig=(staff,shifts)=>{const ix=id=>staff.findIndex(p=>p.id===id);return JSON.stringify({p:staff.filter(p=>p.type!=='owner').map(p=>[p.type,p.role,p.name,p.wmode,+p.wage||0,+p.plus||0,+p.contract||0]),s:shifts.map(x=>[ix(x.s),x.d,+x.a.toFixed(2),+x.b.toFixed(2)]).sort((a,b)=>String(a).localeCompare(String(b)))})};
+const isCustom=()=>!st.tplSig||crewSig(st.staff,st.shifts)!==st.tplSig;
+const tplName=()=>isCustom()?'custom':(st.template||'custom');
+function genTemplate(key,base){
+  const days=base.days,pre=base.pre,clean=base.clean,on=d=>days[d]&&days[d].on;
+  const owner=base.staff.find(p=>p.type==='owner')||defaults().staff[0];
+  const P=(id,name,type,role,o={})=>Object.assign({id,name,type,role,wmode:'min',wage:16,plus:1,contract:0},o);
+  const staff=[owner],shifts=[];
+  const S=(s,d,a,b)=>{if(b-a>=0.5)shifts.push({id:uid(),s,d,a,b})};
+  const cap=(a,b)=>Math.min(b,a+10.75);
+  // sahip: Çarşamba prep + her açık gün açılış öncesinden kapanış sonrasına (en fazla 10 s net)
+  const PD=MD.filter(d=>(days[d]?.mode||(days[d]?.on?'open':'closed'))==='prep'),P1=PD[0];
+  PD.forEach(d=>S(owner.id,d,14,18));
+  SD.forEach(d=>{if(on(d)){const D=days[d];S(owner.id,d,D.open-pre,cap(D.open-pre,D.close+clean))}});
+  // kapalı günlerin kenardaki vardiyaları şablonla silinir
+  if(key==='A'){
+    const t=P(uid(),'Barmen (TZ)','tz','bar',{wmode:'fix',wage:16}),a=P(uid(),'Servis A','mj','service'),b=P(uid(),'Servis B','mj','service');
+    staff.push(t,a,b);
+    if(P1!=null)S(t.id,P1,14,18.5);
+    [4,5].forEach(d=>{if(on(d)){const D=days[d],x=Math.max(D.open,D.ps-1.5);S(t.id,d,x,cap(x,D.close+clean))}});
+    if(on(3)){const D=days[3];S(a.id,3,Math.max(D.open,D.ps-1),Math.min(D.close,D.pe+1))}
+    if(on(6)){const D=days[6];S(a.id,6,Math.max(D.open,D.ps-1),Math.min(D.close,D.pe))}
+    if(on(4)){const D=days[4];S(b.id,4,D.ps,Math.min(D.close,D.pe))}
+    if(on(5)){const D=days[5];S(b.id,5,D.ps,Math.min(D.close,D.pe+1))}
+  }else if(key==='B'){
+    const g=P(uid(),'Garson (TZ)','tz','service',{plus:1}),w1=P(uid(),'Werkstudent Bar','ws','bar',{plus:0.5}),w2=P(uid(),'Werkstudent Servis','ws','service',{plus:0.5});
+    staff.push(g,w1,w2);
+    [3,4,5].forEach(d=>{if(on(d)){const D=days[d],x=Math.max(D.open,D.ps-2);S(g.id,d,x,cap(x,D.close))}});
+    if(P1!=null)S(w1.id,P1,14,18);
+    [4,5].forEach(d=>{if(on(d)){const D=days[d],x=Math.max(D.open,D.ps-1);S(w1.id,d,x,Math.min(D.close,D.pe+1))}});
+    if(on(3)){const D=days[3];S(w2.id,3,D.ps,Math.min(D.close,D.pe))}
+    if(on(6)){const D=days[6];S(w2.id,6,D.open,cap(D.open,D.close))}
+  }else{
+    const m=P(uid(),'Takviye (Minijob)','mj','service');
+    staff.push(m);
+    [4,5].forEach(d=>{if(on(d)){const D=days[d];S(m.id,d,D.ps,Math.min(D.close,D.pe))}});
+  }
+  // sözleşme saatleri plana eşit; Minijob sınırı ve Werkstudent 20 saat için kırp
+  const keep=st;st=Object.assign(clone(base),{staff,shifts});
+  try{
+    const L=law();
+    staff.forEach(p=>{
+      if(p.type==='owner')return;
+      const mine=()=>shifts.filter(x=>x.s===p.id).sort((x,y)=>(y.d*24+y.b)-(x.d*24+x.b));
+      const net=()=>mine().reduce((a,x)=>a+shInfo(x).net,0);
+      let max=Infinity;
+      if(p.type==='mj')max=L.lim*0.95/(wageOf(p,L)*W);
+      if(p.type==='ws'&&!base.set.semBreak)max=20;
+      let guard=0;
+      while(net()>max+1e-9&&guard++<200){const x=mine().find(x=>x.b-x.a>1);if(!x)break;x.b-=0.25}
+      if(p.type==='tz'||p.type==='vz')p.contract=Math.max(1,Math.round(net()*2)/2);
+    });
+  }finally{st=keep}
+  return {staff,shifts};
+}
+function previewCrew(crew){
+  const keep=st;st=Object.assign(clone(st),crew);
+  try{const c=calc();return {n:c.emp.length,h:c.empH,cost:c.staffTotal,pkI:c.pkI,red:c.al.filter(a=>a.lv==='r').length,yel:c.al.filter(a=>a.lv==='y').length,under:c.days.reduce((a,D)=>a+D.sl.filter(x=>x.stt==='under').length,0)/2}}
+  finally{st=keep}
+}
+function mergeMissing(gen){
+  const cur=st.staff.filter(p=>p.type!=='owner'),have={};
+  cur.forEach(p=>{const k=p.type+'|'+p.role;have[k]=(have[k]||0)+1});
+  const add=[],addSh=[];
+  gen.staff.filter(p=>p.type!=='owner').forEach(p=>{const k=p.type+'|'+p.role;if(have[k]){have[k]--;return}add.push(p);addSh.push(...gen.shifts.filter(x=>x.s===p.id))});
+  return {add,addSh};
+}
+function snapshotCrew(){return {staff:clone(st.staff),shifts:clone(st.shifts),template:tplName(),sig:st.tplSig||null,at:new Date().toISOString()}}
+function applyTemplate(key,mode){
+  const gen=genTemplate(key,st),prev=snapshotCrew(),keep=clone({staff:st.staff,shifts:st.shifts,template:st.template,tplSig:st.tplSig,prevCrew:st.prevCrew});
+  if(mode==='merge'){
+    const {add,addSh}=mergeMissing(gen);
+    if(!add.length){toast('Eksik rol yok: kadronda bu şablonun tüm rolleri var.');return}
+    st.prevCrew=prev;st.staff.push(...add);st.shifts.push(...addSh);st.template='custom';st.tplSig=null;
+    done(`${add.length} kişi eklendi: ${add.map(p=>p.name).join(', ')}`);
+  }else{
+    st.prevCrew=prev;st.staff=gen.staff;st.shifts=gen.shifts;st.parked={};st.template=key;st.tplSig=crewSig(st.staff,st.shifts);
+    done(`Şablon ${key} uygulandı`);
+  }
+  function done(t){st.sel=null;save();renderStaffForms();renderOut();toast(t,()=>{Object.assign(st,keep);save();renderStaffForms();renderOut()})}
+}
+function restorePrev(){
+  if(!st.prevCrew)return;
+  const cur=snapshotCrew(),p=st.prevCrew;
+  st.staff=p.staff;st.shifts=p.shifts;st.template=p.template;st.tplSig=p.template==='custom'?null:(p.sig||crewSig(st.staff,st.shifts));
+  if(!st.staff.some(x=>x.type==='owner'))st.staff.unshift(defaults().staff[0]);
+  st.prevCrew=cur;st.sel=null;save();renderStaffForms();renderOut();toast('Önceki kadro geri geldi (şimdikini sakladım, tekrar dönebilirsin)');
+}
+let tplSel='B';
+function renderTpl(){
+  const box=$('#tplBox');if(!box)return;
+  const cur=previewCrew({staff:st.staff,shifts:st.shifts});
+  const cols=[['Şu an',cur,tplName()==='custom'?'kendi kadron':'şablon '+tplName()],...['A','B','C'].map(k=>[k,previewCrew(genTemplate(k,st)),''])];
+  const best=f=>Math.min(...cols.map(c=>f(c[1])));
+  const row=(l,f,fmt,lo=true)=>`<tr><td>${l}</td>${cols.map(c=>{const v=f(c[1]);return `<td class="${lo&&v===best(f)?'best':''}">${fmt(v)}</td>`}).join('')}</tr>`;
+  const cust=isCustom();
+  box.innerHTML=`<p class="note">Şablonlar senin açılış saatlerine göre üretilir; Minijob sınırı${st.set.semBreak?'':' ve Werkstudent 20 saat'} için vardiyalar otomatik kısaltılır. Sahibin Unternehmerlohn ve büro saati değişmez. Yeşil = en az eksik saat / alarm; en ucuz düzen her zaman en iyisi değildir.</p>
+  <div class="scroll"><table class="cmp"><thead><tr><th></th>${cols.map(c=>`<th>${c[0]}${c[2]?`<small>${c[2]}</small>`:''}</th>`).join('')}</tr></thead><tbody>
+  ${row('Çalışan',c=>c.n,v=>v,false)}${row('Saat / hafta',c=>c.h,v=>hrs(v),false)}${row('Personel / ay',c=>c.cost,eur,false)}${row('PK % (sen dahil)',c=>c.pkI,v=>'%'+nf(v,1),false)}${row('Eksik personel',c=>c.under,v=>v?hrs(v):'–')}${row('Kırmızı alarm',c=>c.red,v=>v)}${row('Sarı alarm',c=>c.yel,v=>v)}</tbody></table></div>
+  <div class="chips" role="group" aria-label="Şablon">${['A','B','C'].map(k=>`<button type="button" class="chip${tplSel===k?' on':''}" data-tpl="${k}" aria-pressed="${tplSel===k}">${TPL[k].t}</button>`).join('')}</div>
+  <p class="hint">${TPL[tplSel].d}</p>
+  ${cust?`<p class="note" style="color:var(--y)">Kendi kurduğun kadro var. "Uygula" onu değiştirir; önce saklanır, geri dönebilirsin.</p>`:''}
+  <div class="btns"><button class="btn pri" type="button" id="tplApply">${cust?'Kadromu değiştir: ':''}Şablon ${tplSel}'yi uygula</button><button class="btn" type="button" id="tplMerge">Sadece eksik rolleri ekle</button></div>
+  ${st.prevCrew?`<div class="btns"><button class="btn" type="button" id="tplPrev">Önceki kadroma dön</button><span class="note" style="align-self:center;margin:0">${st.prevCrew.template==='custom'?'kendi kadron':'şablon '+st.prevCrew.template} · ${st.prevCrew.staff.length-1} çalışan · ${new Date(st.prevCrew.at).toLocaleDateString('de-DE')}</span></div>`:''}`;
+}
+
+/* ---------- Modül 1 içe aktarım (önizlemeli) ---------- */
+let pend=null;
+function importM1(t){
+  const msg=$('#m1Msg');pend=null;renderPend();
+  let j;try{j=looseJSON(t)}catch(e){msg.textContent=e.message;return}
+  if(Array.isArray(j.venues)){msg.textContent='Bu Modül 1 yedeği (tüm mekânlar). Modül 1\'de mekânı açıp "Modül 2\'ye aktar" JSON\'unu kopyala.';return}
+  if(j.schema&&j.schema!=='galapagos.mekan.v1'){msg.textContent=`Bu JSON "${j.schema}" şemasında; Modül 1 çıktısı (galapagos.mekan.v1) bekleniyor.`;return}
+  if(j.total_seats==null){msg.textContent='Bu JSON\'da total_seats yok: Modül 1\'in "Modül 2\'ye aktar" çıktısı değil.';return}
+  const N=x=>{const n=parseNum(x,false);return Number.isFinite(n)?n:null};
+  const e=j.extra||{};
+  const nv={name:j.venue_name!=null?String(j.venue_name):null,seats:N(j.total_seats),stools:N(j.bar_stools),terrace:N(j.terrace_seats),warmmiete:N(j.warmmiete),revenue:N(e.expected_revenue??j.expected_revenue)};
+  const L={name:['Mekân adı','s'],seats:['Oturma (iç)','n'],stools:['Bar taburesi','n'],terrace:['Teras koltuğu','n'],warmmiete:['Warmmiete','e'],revenue:['Beklenen aylık net ciro','e']};
+  const rows=[];
+  Object.keys(L).forEach(k=>{
+    const val=nv[k];if(val==null)return;
+    const cur=st.v[k],same=k==='name'?String(cur||'')===val:+cur===+val;
+    let flag='';
+    if(k==='seats'&&val<=0)flag='Modül 1\'de oturma 0: mekânda misafir alanı kalmamış.';
+    if(k==='stools'&&nv.seats!=null&&val>nv.seats)flag='Tabure sayısı oturmadan fazla.';
+    if(k==='revenue'&&val<5000)flag='Ciro çok düşük görünüyor.';
+    rows.push({k,l:L[k][0],t:L[k][1],cur,val,same,flag,on:!same&&!flag});
+  });
+  const info=[];
+  if(nv.revenue==null)info.push(`Modül 1 çıktısında ciro yok; mevcut ${eur(st.v.revenue)} kalıyor.`);
+  if(e.direct_competitors!=null)info.push(`Bilgi: ${e.competition_radius_m||'?'} m içinde ${e.direct_competitors} doğrudan rakip${e.nearest_cocktail_bar_m!=null?`, en yakın kokteyl barı ${e.nearest_cocktail_bar_m} m`:''} (Modül 2'de kullanılmaz).`);
+  if(e.event_capacity!=null&&e.permit_limit!=null&&e.event_capacity>e.permit_limit)info.push(`Uyarı: Modül 1'de event kapasitesi ${e.event_capacity} > izin ${e.permit_limit}.`);
+  pend={rows,info,name:nv.name};
+  msg.textContent=rows.some(r=>!r.same)?`Modül 1 okundu${nv.name?` (${nv.name})`:''}. Değişiklikleri kontrol et ve uygula. Kadro ve vardiyalar değişmez.`:'Modül 1 verisi zaten aynı; değişecek bir şey yok.';
+  renderPend();
+}
+const fmtV=(v,t)=>v==null||v===''?'–':t==='e'?eur(+v):t==='n'?nf(+v):String(v);
+function renderPend(){
+  const box=$('#m1Diff');if(!box)return;
+  if(!pend){box.innerHTML='';return}
+  box.innerHTML=`<ul class="pl">${pend.rows.map((r,i)=>`<li class="${r.flag?'flag':''}${r.same?' same':''}"><label><input type="checkbox" data-pd="${i}"${r.on?' checked':''}${r.same?' disabled':''}><span>${esc(r.l)}${r.same?' <small>aynı</small>':''}</span></label><div class="pv"><span class="old">${esc(fmtV(r.cur,r.t))}</span><span class="ar">→</span><span class="new">${esc(fmtV(r.val,r.t))}</span></div>${r.flag?`<p class="fl">${esc(r.flag)}</p>`:''}</li>`).join('')}</ul>
+  ${pend.info.map(t=>`<p class="note">${esc(t)}</p>`).join('')}
+  <div class="btns"><button class="btn pri" type="button" id="pdApply">Seçilenleri uygula (${pend.rows.filter(r=>r.on).length})</button><button class="btn" type="button" id="pdCancel">Vazgeç</button></div>`;
+}
+function applyPend(){
+  if(!pend)return;
+  const keep=clone(st.v),sel=pend.rows.filter(r=>r.on);
+  if(!sel.length){toast('Seçili alan yok');return}
+  sel.forEach(r=>{st.v[r.k]=r.val});st.v.src='Modül 1';
+  pend=null;save();renderStatic();renderOut();renderPend();
+  $('#m1Msg').textContent=`${sel.length} alan Modül 1'den alındı: ${sel.map(r=>r.l).join(', ')}. Kadro ve vardiyalar aynı kaldı.`;
+  toast('Modül 1 verisi uygulandı',()=>{st.v=keep;save();renderStatic();renderOut()});
+}
+
+let C=null,selSlot=null;
+function renderOut(){
+  C=calc();const s=st.set,L=C.L;
+  const pkc=C.pkI>s.pkR?'r':C.pkI>s.pkY?'y':C.pkI>=s.pkT1&&C.pkI<=s.pkT2?'g':'';
+  [['k1',eur(C.staffTotal),''],['k2','%'+nf(C.pkI,1),pkc],['k3','%'+nf(C.pk,1),''],['k4',hrs(C.empH+C.ownH),'']].forEach(([k,t,c])=>{const e=$('#'+k);e.className='kpi'+(c?' '+c:'');e.querySelector('b').textContent=t});
+  $('#dayChips').innerHTML=C.days.map(D=>{const red=D.sl.some(x=>x.stt==='under'),yel=D.sl.some(x=>x.stt==='over'||x.stt==='min');return `<button type="button" class="chip${st.selDay===D.d?' on':''}${modeOf(D.d)==='closed'?' cl':''}" data-day="${D.d}" aria-pressed="${st.selDay===D.d}"><span class="dot" style="background:${red?'var(--r)':yel?'var(--y)':D.sl.length?'var(--ok)':modeOf(D.d)==='prep'?'var(--sm)':'var(--line)'}"></span>${DAYN[D.d]}<span class="md">${modeOf(D.d)==='open'?'açık':modeOf(D.d)==='prep'?'pre-batch':'kapalı'}</span><small>${modeOf(D.d)==='closed'&&!D.cost?'–':eur(D.cost)}</small></button>`}).join('');
+  renderDayQuick();
+  renderGantt();renderEditor();
+  const mx=Math.max(35,...C.days.map(D=>D.pk));
+  $('#week').innerHTML=C.days.map(D=>`<span>${DAYN[D.d]}</span><div><div class="b"><i style="width:${D.rev?Math.min(100,D.pk/mx*100):0}%;background:${D.pk>s.pkR?'var(--r)':D.pk>s.pkY?'var(--y)':'var(--ol)'}"></i></div><small>${modeOf(D.d)==='prep'?`${hrs(D.h+D.ownH)} Lager &amp; pre-batch · misafir yok`:modeOf(D.d)==='closed'?(D.h+D.ownH?`kapalı ama ${hrs(D.h+D.ownH)} vardiya var`:'kapalı'):`${hrs(D.h)} personel · ciro ${eur(D.rev)}`}${D.peak?` · pik ${nf(D.peak.guests)} misafir / ${D.peak.hc} kişi`:''}</small></div><b>${eur(D.cost)}<small>${D.rev?'%'+nf(D.pk,1):modeOf(D.d)==='prep'?'pre-batch':modeOf(D.d)==='closed'?'kapalı':'–'}</small></b>`).join('');
+  $('#al').innerHTML=C.al.length?C.al.map(a=>`<li class="${a.lv}">${a.t}</li>`).join(''):'<li class="ok">Alarm yok: yasal sınırlar ve kapasite dengede.</li>';
+  $('#sv_cost').textContent=eur(C.incl)+' / ay';
+  $('#o_cost').innerHTML=R('Brüt maaşlar',eur(C.brT))+R('İşveren primleri',eur(C.svT))+R('SFN zamları (tatil dahil)',eur(C.sfnT))+R(`İzin / hastalık tamponu %${s.buf}`,eur(C.bufT))+R('Sabit (Voll/Teilzeit)',eur(C.fixed))+R('Değişken (Minijob, Werkstudent, Aushilfe)',eur(C.variable))+R('Personel toplamı',eur(C.staffTotal),'',1)+R('Unternehmerlohn (sen)',eur(C.ul))+R('Toplam (sen dahil)',eur(C.incl),'',1)+R('PK % sen hariç','%'+nf(C.pk,1))+R('PK % sen dahil','%'+nf(C.pkI,1),pkc)+R(`Prime cost hazırlığı (+%${s.cogs} mal)`,'%'+nf(C.prime,1),C.prime>65?'r':C.prime>58?'y':'g')+R('Çalışan saati / ay',hrs(C.empH*W))+R('Senin saatin / ay',hrs((C.ownH+(+(C.own?.p.office)||0))*W));
+  $('#sv_days').textContent=SD.filter(d=>st.days[d].on).map(d=>DAYN[d]).join(' ')+(SD.some(d=>modeOf(d)==='prep')?' · prep '+SD.filter(d=>modeOf(d)==='prep').map(d=>DAYN[d]).join(' '):'');
+  $('#exTxt').value=JSON.stringify(exportObj(),null,2);
+  C.people.forEach(c=>{const e=$('#po_'+c.p.id);if(!e)return;const p=c.p;
+    e.innerHTML=p.type==='owner'?R('Vardiya + büro',hrs(c.hours+(+p.office||0))+' / hafta')+R('Kâğıt üzerinde saat ücreti',c.hours?nf((+p.ul||0)/((c.hours+(+p.office||0))*W),2)+' €':'–')+R('Aylık',eur(c.total),'',1):
+      R('Planlanan',hrs(c.hours)+' / hafta')+R('Saat ücreti',nf(c.w,2)+' €',c.w<L.mw-1e-9?'r':'')+R('Aylık brüt',eur(c.brutto),p.type==='mj'&&c.brutto>L.lim?'r':'')+R(`İşveren primi %${nf(c.rate,1)}`,eur(c.sv))+R('SFN zamları',eur(c.sfnM))+R('Tampon',eur(c.buf))+R('Aylık işveren maliyeti',eur(c.total),'',1)+R('Gerçek saat maliyeti',c.hours?nf(c.total/(c.hours*W),2)+' €':'–')+(c.wsAlt!=null?R('Werkstudent olsaydı',`${eur(c.wsAlt)} (${c.wsAlt<c.total?'−':'+'}${eur(Math.abs(c.total-c.wsAlt))})`,c.wsAlt<c.total?'g':''):'')});
+  $('#sv_law').textContent=`${s.year}: ${nf(L.mw,2)} €`;
+  const ol=$('#o_law');if(ol)ol.innerHTML=R(`${s.year} asgari ücret`,nf(L.mw,2)+' €/s','',1)+R('Minijob sınırı',eur(L.lim)+' / ay')+R('Minijob\'da asgari ücretle',hrs(L.lim/L.mw/W)+' / hafta')+R('Normal çalışan işveren yükü','%'+nf(L.sv,2));
+  $('#sv_sv').textContent='%'+nf(L.sv,1);$('#sv_mj').textContent=`MJ %${nf(L.mj,1)} · WS %${nf(L.ws,1)}`;$('#sv_sfn').textContent=s.sfn?'açık':'kapalı';
+  const om=$('#o_mj');if(om)om.innerHTML=R('Minijob işveren yükü','%'+nf(L.mj,2),'',1)+R('Werkstudent işveren yükü','%'+nf(L.ws,2),'g',1);
+  $('#srcLine').textContent=`Kaynak: ${st.v.src}${st.v.name?' · '+st.v.name:''}`;
+  const tn=tplName();$('#sv_tpl').textContent=tn==='custom'?'kendi kadron':'Şablon '+tn;
+  if($('#tplSec').open)renderTpl();
+  $('#storeWarn').innerHTML=canStore?'':'<div class="banner">Tarayıcı kaydı kapalı: veriler sayfa kapanınca silinir. Ayarlar\'dan yedek al.</div>';
+}
+
+function renderDayQuick(){
+  const box=$('#dayQuick');if(!box)return;
+  const d=st.selDay,m=modeOf(d),D=st.days[d];if(!D){box.innerHTML='';return}
+  const key=d+'|'+m+'|'+(st.parked[d]||[]).length;
+  if(box.dataset.key!==key){box.dataset.key=key;box.innerHTML=`<div class="seg" role="group" aria-label="${DAYL[d]} durumu">${Object.entries(MODES).map(([k,v])=>`<button type="button" class="m-${k}${m===k?' on':''}" data-setmode="${k}" aria-pressed="${m===k}">${v}</button>`).join('')}</div>
+  ${m==='open'?`<div class="dq"><div class="dayset"><div><label class="lb" for="q_open">Açılış</label><input id="q_open" type="time" step="900" data-k="days.${d}.open"></div><div><label class="lb" for="q_close">Kapanış</label><input id="q_close" type="time" step="900" data-k="days.${d}.close"></div><div><label class="lb" for="q_ps">Pik başı</label><input id="q_ps" type="time" step="900" data-k="days.${d}.ps"></div><div><label class="lb" for="q_pe">Pik sonu</label><input id="q_pe" type="time" step="900" data-k="days.${d}.pe"></div></div>
+    <div class="fh" style="margin-top:8px"><label for="q_occ">Pikte doluluk</label><span class="nu"><input id="q_occ" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="days.${d}.occ"><em>%</em></span></div></div>`:
+  `<p class="note">${m==='prep'?`${DAYL[d]}: Lager, sipariş kabulü ve pre-batch. Vardiya ekle; maliyete ve saate girer, misafir/kapasite alarmı üretmez.`:`${DAYL[d]} kapalı: ciro ve personel maliyeti yok.${(st.parked[d]||[]).length?` ${st.parked[d].length} vardiya kenarda bekliyor.`:''}`}</p>`}`}
+  if(m==='open'){const a=document.activeElement;$$('#dayQuick [data-k]').forEach(el=>{if(el===a)return;const v=getP(st,el.dataset.k);el.value=el.type==='time'?fT(v):fmtIn(v)})}
+}
+function renderGantt(){
+  const d=st.selDay,D=C.days.find(x=>x.d===d),dc=st.days[d];
+  const sh=st.shifts.filter(x=>x.d===d);
+  let lo=Infinity,hi=-Infinity;
+  if(dc&&dc.on){lo=dc.open-st.pre;hi=dc.close+st.clean}
+  sh.forEach(x=>{lo=Math.min(lo,x.a);hi=Math.max(hi,x.b)});
+  if(!Number.isFinite(lo)){lo=14;hi=20}
+  lo=Math.floor(lo);hi=Math.ceil(hi);const span=hi-lo,X=h=>(h-lo)/span*100;
+  const step=span>14?2:1;let ticks='';for(let h=lo;h<=hi;h+=step)ticks+=`<span style="left:${X(h)}%">${fT(h).slice(0,2)}</span>`;
+  const bands=dc&&dc.on?`<i class="band" style="left:${X(dc.open)}%;width:${X(dc.close)-X(dc.open)}%"></i><i class="pk" style="left:${X(dc.ps)}%;width:${X(dc.pe)-X(dc.ps)}%"></i>`:'';
+  const rows=st.staff.map(p=>{const mine=sh.filter(x=>x.s===p.id);const h=mine.reduce((a,x)=>a+shInfo(x).net,0);
+    return `<span class="gl">${esc(p.name)}<small>${h?hrs(h):'–'}</small></span><div class="trk">${bands}${mine.map(x=>`<button type="button" class="bar${st.sel===x.id?' sel':''}" data-sh="${x.id}" style="left:${X(x.a)}%;width:${X(x.b)-X(x.a)}%;background:${TYPES[p.type][1]}" aria-label="${esc(p.name)} ${fT(x.a)}–${fT(x.b)}">${fT(x.a)}–${fT(x.b)}</button>`).join('')}</div>`}).join('');
+  let extra='';
+  if(D&&D.sl.length){
+    const mg=Math.max(1,...D.sl.map(x=>x.guests));
+    const pad=`<div style="flex:0 0 ${X(D.sl[0].t)}%"></div>`,padR=`<div style="flex:0 0 ${100-X(D.sl[D.sl.length-1].t+0.5)}%"></div>`;
+    extra=`<span class="gl">Misafir<small>pik ${nf(mg)}</small></span><div class="trk cur">${pad}${D.sl.map(x=>`<i style="height:${x.guests/mg*100}%"></i>`).join('')}${padR}</div>
+    <span class="gl">Durum<small>kişi</small></span><div class="trk ld">${pad}${D.sl.map((x,i)=>`<button type="button" class="st-${x.stt}" data-slot="${i}" aria-label="${fT(x.t)} ${x.why||'hazırlık'}">${i%2===0&&x.hc?x.hc:''}</button>`).join('')}${padR}</div>`;
+  }else extra=`<span class="gl">Not</span><p class="note" style="margin:0">${modeOf(d)==='prep'?'Lager &amp; Pre-Batch günü: misafir yok, kapasite kontrolü yapılmaz. Vardiyalar maliyete ve saate girer.':`Bu gün kapalı.${(st.parked[d]||[]).length?` Kenarda ${st.parked[d].length} vardiya var; günü açınca geri gelir.`:''}`}</p>`;
+  $('#gantt').innerHTML=`<div class="gt"><span></span><div class="ticks">${ticks}</div>${rows}${extra}</div>`;
+  if(selSlot!=null&&D&&D.sl[selSlot])showSlot(D.sl[selSlot]);else $('#slotInfo').textContent='Durum şeridinde bir kutuya dokun: o yarım saatin misafir, içki ve personel hesabı.';
+}
+function showSlot(x){$('#slotInfo').innerHTML=`<b>${fT(x.t)}–${fT(x.t+0.5)}</b> · ${nf(x.guests,1)} misafir (${nf(x.tg,1)} masada) · ${nf(x.drinks)} içki/saat · ${x.nb} barmen + ${x.ns} servis${x.hc-x.nb-x.ns>0?` + ${x.hc-x.nb-x.ns} prep`:''} · <b>${x.ph==='open'?x.why:'hazırlık / kapanış'}</b>${x.names.length?`<br>${x.names.map(esc).join(', ')}`:''}`}
+
+function renderEditor(){
+  const x=st.shifts.find(s=>s.id===st.sel),e=$('#editor');
+  if(!x){e.innerHTML='';return}
+  const i=shInfo(x);
+  e.innerHTML=`<div class="card ed" style="margin:12px 0 0;background:var(--p2)"><div class="ph"><h3 style="margin:0">Vardiya</h3><button class="btn" type="button" id="edClose">Kapat</button></div>
+    <div class="two"><div><label class="lb" for="edS">Kişi</label><select id="edS">${st.staff.map(p=>`<option value="${p.id}"${p.id===x.s?' selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+    <div><label class="lb" for="edD">Gün</label><select id="edD">${MD.map(d=>`<option value="${d}"${d===x.d?' selected':''}>${DAYL[d]}${modeOf(d)==='open'?'':modeOf(d)==='prep'?' (pre-batch)':' (kapalı)'}</option>`).join('')}</select></div>
+    <div><label class="lb" for="edA">Başlangıç</label><input type="time" step="900" id="edA" value="${fT(x.a)}"></div>
+    <div><label class="lb" for="edB">Bitiş</label><input type="time" step="900" id="edB" value="${fT(x.b)}"></div></div>
+    <p class="note">${hrs(i.g)} brüt · mola ${i.br?nf(i.br*60)+' dk':'yok'} · ${hrs(i.net)} ücretli · SFN ağırlıklı ${nf(i.sfn,2)} saat${i.nz>2?' · gece çalışması (>2 s, 23–06)':''}</p>
+    <div class="btns"><button class="btn dan" type="button" id="edDel">Sil</button><button class="btn" type="button" id="edDup">Ertesi güne kopyala</button></div></div>`;
+}
+
+function exportObj(){
+  const c=C,s=st.set;
+  return {schema:'galapagos.personel.v1',module:'personel_vardiya',exported_at:new Date().toISOString(),target_year:s.year,venue_name:st.v.name,
+    monthly_fixed_staff_cost:Math.round(c.fixed),monthly_variable_staff_cost:Math.round(c.variable),monthly_staff_cost:Math.round(c.staffTotal),unternehmerlohn:Math.round(c.ul),monthly_staff_cost_incl_owner:Math.round(c.incl),
+    monthly_hours_staff:+(c.empH*W).toFixed(1),monthly_hours_owner:+((c.ownH+(+(c.own?.p.office)||0))*W).toFixed(1),monthly_hours_total:+((c.empH+c.ownH+(+(c.own?.p.office)||0))*W).toFixed(1),
+    personalkosten_pct:+c.pk.toFixed(1),personalkosten_pct_incl_owner:+c.pkI.toFixed(1),expected_revenue:c.rev,prime_cost_prep_pct:+c.prime.toFixed(1),
+    daily:c.days.map(D=>{const hourly=[];D.sl.forEach(x=>{const h=Math.floor(x.t);let r=hourly.find(y=>y.h===h);if(!r){r={h,time:fT(h),staff:0,bartenders:0,servers:0,guests:0,n:0};hourly.push(r)}r.staff=Math.max(r.staff,x.hc);r.bartenders=Math.max(r.bartenders,x.nb);r.servers=Math.max(r.servers,x.ns);r.guests+=x.guests;r.n++});
+      return {day:DAYL[D.d],day_index:D.d,open:st.days[D.d]?.on?fT(st.days[D.d].open):null,close:st.days[D.d]?.on?fT(st.days[D.d].close):null,occupancy_pct:st.days[D.d]?.on?(st.days[D.d].occ??0):0,staff_hours:+D.h.toFixed(2),owner_hours:+D.ownH.toFixed(2),staff_cost:Math.round(D.cost),staff_cost_incl_owner:Math.round(D.cost+D.ownCost),revenue_share:Math.round(D.rev),personalkosten_pct:+D.pk.toFixed(1),
+        hourly:hourly.map(r=>({time:r.time,staff:r.staff,bartenders:r.bartenders,servers:r.servers,guests:+(r.guests/r.n).toFixed(1)}))}}),
+    from_module1:{total_seats:+st.v.seats,bar_stools:+st.v.stools,terrace_seats:+st.v.terrace,warmmiete:+st.v.warmmiete,summer_mode:st.summer},
+    assumptions:{min_wage:+c.L.mw.toFixed(2),minijob_limit:c.L.lim,employer_rate_pct:+c.L.sv.toFixed(2),minijob_rate_pct:+c.L.mj.toFixed(2),werkstudent_rate_pct:+c.L.ws.toFixed(2),buffer_pct:s.buf,sfn_on:s.sfn,weeks_per_month:+W.toFixed(3),staff_template:tplName()},
+    staff:c.people.map(p=>({name:p.p.name,type:p.p.type,role:p.p.role,weekly_hours:+p.hours.toFixed(2),hourly_wage:+p.w.toFixed(2),monthly_cost:Math.round(p.total)}))};
+}
+
+let tTimer,undoFn=null;
+function toast(t,undo){$('#toastT').textContent=t;undoFn=undo||null;$('#toastU').hidden=!undo;const el=$('#toast');el.style.display='flex';clearTimeout(tTimer);tTimer=setTimeout(()=>{el.style.display='none';undoFn=null},undo?6000:2600)}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Kopyalandı')}catch(e){toast('Kopyalama engellendi: metni seçip kopyala')}}
+function download(name,text){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('İndirme başlatıldı (engellenirse Kopyala kullan)')}catch(e){toast('İndirme engellendi: Kopyala kullan')}}
+function all(){save();renderOut()}
+function go(tab){const t=['plan','kadro','rehber','ayarlar'].includes(tab)?tab:'plan';$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+t));$$('nav.tabs a').forEach(a=>{const on=a.dataset.tab===t;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
+
+function restore(t){
+  const msg=$('#bkMsg');
+  try{const j=JSON.parse(t);if(j.schema!=='galapagos.personel.backup.v1'||!j.state){msg.textContent='Bu bir Modül 2 yedeği değil.';return}
+    const keep=st;st=j.state;load2();save();renderStatic();renderOut();msg.textContent='Geri yüklendi.';toast('Yedek yüklendi',()=>{st=keep;save();renderStatic();renderOut()});
+  }catch(e){msg.textContent='JSON okunamadı: '+e.message}
+}
+const OLD_SH=[['o',2,14,18],['o',3,17,25.75],['o',4,17,27.75],['o',5,17,27.75],['o',6,15,24.75],['t',2,14,18.5],['t',4,19.5,27.75],['t',5,19.5,27.75],['a',3,19,24],['a',6,18,22],['b',4,21,25],['b',5,21,26]];
+const OLD_DAYS={3:[18,25,20,23,35],4:[18,27,21,25,75],5:[18,27,21,25,90],6:[16,24,19,22,40]};
+function migrateDays(){
+  // galapagos_m2_v1 eski kayıt: günlerde "mode" yok, Çarşamba gizli prep günüydü, Salı yoktu.
+  if(st.days&&st.days[1]&&st.days[3]&&st.days[3].mode)return false;
+  const d=defaults(),od=st.days||{};
+  const oldStaff=[{id:'o',name:'Sen',type:'owner',role:'bar'},{id:'t',name:'Barmen (TZ)',type:'tz',role:'bar',wmode:'fix',wage:16,plus:1,contract:20},{id:'a',name:'Servis A',type:'mj',role:'service',wmode:'min',wage:16,plus:1,contract:0},{id:'b',name:'Servis B',type:'mj',role:'service',wmode:'min',wage:16,plus:1,contract:0}],oldSig=crewSig(oldStaff,OLD_SH.map(([s,dd,a,b])=>({id:'x',s,d:dd,a,b})));
+  const untouched=Array.isArray(st.staff)&&crewSig(st.staff,st.shifts||[])===oldSig&&[3,4,5,6].every(k=>od[k]&&od[k].on&&OLD_DAYS[k].every((v,i)=>+od[k][['open','close','ps','pe','occ'][i]]===v));
+  if(untouched){st.days=d.days;st.shifts=d.shifts;st.parked={};st.template='A';st.tplSig=d.tplSig;return 'default'}
+  [3,4,5,6].forEach(k=>{if(od[k])od[k].mode=od[k].on?'open':'closed'});
+  od[2]=Object.assign({},d.days[2],{mode:'prep',on:false});
+  od[1]=Object.assign({},d.days[1]);
+  st.days=od;return 'kept';
+}
+function load2(){const mig=migrateDays();const legacy=!('tplSig' in st)&&mig!=='default';const d=defaults();st=Object.assign(d,st,{v:Object.assign(d.v,st.v||{}),set:Object.assign(d.set,st.set||{}),days:Object.assign(d.days,st.days||{})});if(!st.parked||typeof st.parked!=='object')st.parked={};MD.forEach(k=>{const x=st.days[k];if(!x.mode)x.mode=x.on?'open':'closed';x.on=x.mode==='open'});fixTpl(legacy)}
+
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.k){
+    const k=el.dataset.k;let v;
+    if(el.dataset.t==='b')v=el.checked;else if(el.dataset.t==='s')v=el.value;else if(el.type==='time'){v=toH(el.value);if(v==null)return}else{v=el.type==='range'?parseFloat(el.value):parseNum(el.value,!BIG.has(k));if(!Number.isFinite(v))return;v=clampK(k,v)}
+    setP(st,k,v);
+    $$(`[data-k="${k}"]`).forEach(o=>{if(o!==el&&o.type==='time')o.value=fT(v);else if(o!==el&&o.type!=='checkbox')o.value=o.type==='range'?v:fmtIn(v);if(o.type==='range')paint(o)});
+    all();return;
+  }
+  if(el.dataset.sf){
+    const [id,f]=el.dataset.sf.split('.');const p=st.staff.find(x=>x.id===id);if(!p)return;
+    if(el.dataset.t==='wm'){p.wmode=el.checked?'min':'fix';save();renderStaffForms();renderOut();return}
+    if(el.tagName==='SELECT'){p[f]=el.value;if(f==='type'&&!['tz','vz'].includes(p.type))p.contract=0;if(f==='type'&&['tz','vz'].includes(p.type)&&!p.contract)p.contract=20;save();renderStaffForms();renderOut();return}
+    if(f==='name'){p.name=el.value;all();return}
+    let v=el.type==='range'?parseFloat(el.value):parseNum(el.value,f!=='ul');if(!Number.isFinite(v))return;v=clampK(f,v);p[f]=v;
+    $$(`[data-sf="${id}.${f}"]`).forEach(o=>{if(o!==el)o.value=o.type==='range'?v:fmtIn(v);if(o.type==='range')paint(o)});
+    all();return;
+  }
+  const x=st.shifts.find(s=>s.id===st.sel);
+  if(x&&['edS','edD','edA','edB'].includes(el.id)){
+    if(el.id==='edS')x.s=el.value;
+    if(el.id==='edD'){x.d=+el.value;st.selDay=x.d}
+    if(el.id==='edA'||el.id==='edB'){const a=toH($('#edA').value),b=toH($('#edB').value);if(a==null||b==null)return;x.a=a;x.b=b<=a?b+24:b;if(x.b-x.a>16)x.b=x.a+16}
+    save();C=calc();renderOut();
+  }
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(['edS','edD'].includes(el.id)){renderEditor();return}
+  if(el.dataset.mode){setMode(+el.dataset.mode,el.value);return}
+  if(el.dataset.pd!=null&&pend){pend.rows[+el.dataset.pd].on=el.checked;const b=$('#pdApply');if(b)b.textContent=`Seçilenleri uygula (${pend.rows.filter(r=>r.on).length})`;return}
+  if(el.classList.contains('num')&&el.type==='text'){
+    if(el.dataset.k)el.value=fmtIn(getP(st,el.dataset.k));
+    else if(el.dataset.sf){const [id,f]=el.dataset.sf.split('.');const p=st.staff.find(x=>x.id===id);if(p)el.value=fmtIn(p[f]??0)}
+  }
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tpl){tplSel=d.tpl;renderTpl();return}
+  if(d.setmode){setMode(st.selDay,d.setmode);return}
+  if(d.day){st.selDay=+d.day;st.sel=null;selSlot=null;all();return}
+  if(d.sh){st.sel=st.sel===d.sh?null:d.sh;all();if(st.sel)$('#editor').scrollIntoView({block:'nearest'});return}
+  if(d.slot!=null){selSlot=+d.slot;const D=C.days.find(x=>x.d===st.selDay);if(D)showSlot(D.sl[selSlot]);return}
+  if(d.add){const n=st.staff.filter(p=>p.type===d.add).length+1;const p={id:uid(),name:`${TYPES[d.add][0]} ${n}`,type:d.add,role:d.add==='mj'?'service':'bar',wmode:d.add==='mj'?'min':'fix',wage:d.add==='ws'?15.5:16,plus:1,contract:d.add==='vz'?40:d.add==='tz'?20:0};st.staff.push(p);save();renderStaffForms();renderOut();toast('Eklendi. Plan\'da vardiya ver.');return}
+  if(d.rm){const i=st.staff.findIndex(p=>p.id===d.rm),p=st.staff[i],sh=st.shifts.filter(x=>x.s===p.id);st.staff.splice(i,1);st.shifts=st.shifts.filter(x=>x.s!==p.id);save();renderStaffForms();renderOut();toast(`"${p.name}" silindi`,()=>{st.staff.splice(i,0,p);st.shifts.push(...sh);save();renderStaffForms();renderOut()});return}
+  const x=st.shifts.find(s=>s.id===st.sel);
+  switch(b.id){
+    case 'addSh':{if(modeOf(st.selDay)==='closed'){toast(`${DAYL[st.selDay]} kapalı: önce Açık veya Pre-Batch seç`);break}const dc=st.days[st.selDay];const a=dc&&dc.on?dc.open-st.pre:14;const n={id:uid(),s:st.staff[0].id,d:st.selDay,a,b:a+4};st.shifts.push(n);st.sel=n.id;all();$('#editor').scrollIntoView({block:'nearest'});break}
+    case 'edClose':st.sel=null;all();break;
+    case 'edDel':if(x){const keep=clone(x);st.shifts=st.shifts.filter(s=>s.id!==x.id);st.sel=null;all();toast('Vardiya silindi',()=>{st.shifts.push(keep);all()})}break;
+    case 'edDup':if(x){const nd=MD[(MD.indexOf(x.d)+1)%MD.length];const n=Object.assign(clone(x),{id:uid(),d:nd});st.shifts.push(n);st.sel=n.id;st.selDay=nd;all();toast(`${DAYL[nd]} gününe kopyalandı`)}break;
+    case 'exCopy':copyText($('#exTxt').value);break;
+    case 'exDl':download(`modul2-personel-${st.set.year}.json`,$('#exTxt').value);break;
+    case 'm1In':importM1($('#m1Txt').value);break;
+    case 'pdApply':applyPend();break;
+    case 'pdCancel':pend=null;renderPend();$('#m1Msg').textContent='Vazgeçildi; hiçbir şey değişmedi.';break;
+    case 'tplApply':if(isCustom()&&!b.dataset.arm){b.dataset.arm='1';b.textContent='Emin misin? Kendi kadron değişecek (saklanır). Tekrar dokun';setTimeout(()=>{if(b.isConnected&&b.dataset.arm){delete b.dataset.arm;renderTpl()}},5000);break}applyTemplate(tplSel,'replace');break;
+    case 'tplMerge':applyTemplate(tplSel,'merge');break;
+    case 'tplPrev':restorePrev();break;
+    case 'bkOut':$('#bkTxt').value=JSON.stringify({schema:'galapagos.personel.backup.v1',exported_at:new Date().toISOString(),state:st},null,2);$('#bkMsg').textContent='Yedek hazır.';break;
+    case 'bkCopy':if(!$('#bkTxt').value)$('#bkOut').click();copyText($('#bkTxt').value);break;
+    case 'bkDl':if(!$('#bkTxt').value)$('#bkOut').click();download(`galapagos-modul2-yedek-${new Date().toISOString().slice(0,10)}.json`,$('#bkTxt').value);break;
+    case 'bkIn':restore($('#bkTxt').value);break;
+    case 'wipe':if(b.dataset.arm){const keep=st;st=defaults();save();renderStatic();renderOut();delete b.dataset.arm;b.textContent='Varsayılana sıfırla';toast('Sıfırlandı',()=>{st=keep;save();renderStatic();renderOut()})}else{b.dataset.arm='1';b.textContent='Emin misin? Tekrar dokun';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.textContent='Varsayılana sıfırla'}},4000)}break;
+    case 'toastU':if(undoFn){undoFn();undoFn=null;$('#toast').style.display='none'}break;
+  }
+});
+$('#m1File').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>{$('#m1Txt').value=t;importM1(t)});e.target.value=''});
+$('#bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(restore);e.target.value=''});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+$('#tplSec').addEventListener('toggle',e=>{if(e.target.open)renderTpl()});
+load();save();renderStatic();renderOut();go(location.hash.slice(1));
+}
+</script>
+<script>/* Galapagos veri köprüsü */
+GX.register('m2',{ta:'#m1Txt',btn:'#m1In',msg:'#m1Msg',tab:'kadro',apply:'#pdApply'});
+</script>
+</body>
+</html>

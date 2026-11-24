@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos Ciro & Hedef</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool with a bar handbook's warmth, same family as Modül 1 and 2
+   IDEA the end-of-month cash-up: where every net euro of revenue goes before 5.000 € lands in the tin
+   PICTURE a waterfall bar of the required revenue split into goods, staff, rent, loan, tax, living and savings, with today's plan marked against it
+   COLOUR deep smoke-green night ground, beige ink, olive lead, sand for savings, amber/coral alarms
+   TYPE Fraunces 600 display + DM Sans text
+   LAYOUT phone: sticky KPI strip, target card, scenarios, break-even, 12 months; >=900px: engine left, alarms + P&L right */
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sm:#80a493;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 4px}
+h1{font:600 clamp(28px,5vw,40px)/1.05 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2,h3{font:600 20px/1.2 var(--disp);margin:0 0 8px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0}
+main{max-width:1240px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.view{display:none}
+.view.on{display:block}
+.kpis{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0 8px;border-bottom:1px solid var(--line);margin-top:6px}
+.kpi b{display:block;font:600 clamp(18px,5.2vw,30px)/1.1 var(--disp);white-space:nowrap}
+.kpi span{display:block;font-size:13px;line-height:1.2;color:var(--mute)}
+.kpi.y b{color:var(--y)}
+.kpi.r b{color:var(--r)}
+.kpi.g b{color:var(--ok)}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:78px}}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.lead{font:600 clamp(22px,4.4vw,30px)/1.15 var(--disp);margin:6px 0 4px;text-wrap:balance}
+.lead em{font-style:normal;color:var(--sand)}
+.wf{margin-top:14px}
+.wfl{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.wfb{position:relative;display:flex;height:34px;border-radius:8px;overflow:hidden;background:var(--line)}
+.wfb i{display:block;height:100%}
+.wfp{position:relative;height:16px;border-radius:6px;background:var(--p2);overflow:visible}
+.wfp i{display:block;height:100%;border-radius:6px;background:var(--sm)}
+.mk{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.leg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:4px 14px;font-size:14px;margin-top:10px}
+.leg span{display:flex;justify-content:space-between;gap:8px}
+.leg b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;flex:none}
+.al{list-style:none;margin:0;padding:0}
+.al li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.al li:first-child{border-top:0}
+.al li::before{content:'';width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mute)}
+.al li.r::before{background:var(--r)}
+.al li.y::before{background:var(--y)}
+.al li.i::before{background:var(--sm)}
+.al li.ok::before{background:var(--ok)}
+details.sec{background:var(--p);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 19px/1.2 var(--disp);min-height:54px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'+';font:400 22px var(--txt);color:var(--mute);flex:none}
+details.sec[open]>summary::after{content:'–'}
+.sv{font:500 14px var(--txt);color:var(--sand);white-space:nowrap;margin-left:auto}
+.in{padding:0 14px 14px}
+.fld{padding:10px 0;border-top:1px solid var(--line)}
+.fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fh label{font-size:15px}
+.nu{display:flex;align-items:center;gap:6px;flex:none}
+.nu em{font-style:normal;color:var(--mute);font-size:14px;min-width:2.4em;white-space:nowrap}
+input.num{width:6.4em;font:500 16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:right;min-height:44px;font-variant-numeric:tabular-nums}
+input[type=text],input[type=time],textarea,select{width:100%;font:16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input[type=time]{width:auto;min-width:7.5em}
+textarea{min-height:90px;resize:vertical}
+textarea.code{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:150px}
+label.lb{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ol);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:4px 0 0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--ol) var(--f,50%),var(--line) var(--f,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--sand);border:3px solid var(--bg);margin-top:-11px;box-shadow:0 0 0 1px var(--ol)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--ol)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--sand);border:3px solid var(--bg)}
+.hint{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-height:54px}
+.sw{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.sw:checked{background:var(--ol)}
+.sw:checked::after{transform:translateX(22px)}
+.out{margin-top:8px;background:var(--p2);border-radius:10px;padding:4px 12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-top:1px dashed var(--line);font-size:15px}
+.row:first-child{border-top:0}
+.row b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.row.big b{font:600 20px var(--disp);color:var(--sand)}
+.row b.y{color:var(--y)}
+.row b.r{color:var(--r)}
+.row b.g{color:var(--ok)}
+.btn{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--ol);color:#141a10;border-color:var(--ol)}
+.btn.dan{color:var(--r)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.seg button{min-height:44px;padding:0 14px;background:var(--p2);color:var(--mute);border:0;border-left:1px solid var(--line);font:500 15px var(--txt);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--ol);color:#141a10}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th,.t td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t th:first-child,.t td:first-child{text-align:left;color:var(--mute);position:sticky;left:0;background:var(--p)}
+.t thead th{font:600 15px var(--disp);color:var(--ink)}
+.t td.r{color:var(--r)}
+.t td.y{color:var(--y)}
+.t td.g{color:var(--ok)}
+.mo{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;align-items:stretch;height:150px;margin-top:10px}
+.mo>div{position:relative;height:100%}
+.mo i{position:absolute;left:0;right:0;border-radius:3px}
+.mo span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:13px;color:var(--mute)}
+.zero{position:absolute;left:0;right:0;height:1px;background:var(--mute)}
+.mi{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:14px}
+.mi .b{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.mi .b i{display:block;height:100%;background:var(--ol)}
+.mi b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.pc{border-left:4px solid var(--ol)}
+.dayset{display:grid;grid-template-columns:repeat(auto-fit,minmax(8em,1fr));gap:0 10px}
+.idx{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.5em,1fr));gap:8px}
+.idx label{display:flex;flex-direction:column;font-size:14px;color:var(--mute);gap:4px}
+.idx input.num{width:100%}
+.guide{max-width:760px}
+.guide h3{margin-top:18px}
+.guide dt{font-weight:700;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.src{font-size:14px;color:var(--sand);margin:4px 0}
+.pl{list-style:none;margin:8px 0 0;padding:0}
+.pl li{padding:10px 0;border-top:1px solid var(--line)}
+.pl label,.pl .plh{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.pl label{cursor:pointer}
+.pl .plh{justify-content:space-between}
+.pl input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--ol)}
+.pl small{color:var(--mute);font-size:12px;white-space:nowrap}
+.pv{margin:4px 0 0 32px;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:14px}
+.plh+.pv{margin-left:0}
+.pv .old,.pv .ar{color:var(--mute)}
+.pv .new{color:var(--sand);overflow-wrap:break-word}
+.pl li.flag .new{color:var(--y)}
+.pl .fl{margin:4px 0 0 32px;font-size:13px;color:var(--y)}
+.pl li.same{opacity:.6}
+h3.grp{margin:16px 0 0;font-size:17px;color:var(--sand)}
+.banner{background:#3a2a14;color:var(--sand);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--p);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--mute);text-decoration:none;font-size:13px;min-height:58px}
+nav.tabs a.on{color:var(--sand)}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:15px;display:none;gap:12px;align-items:center;z-index:20;max-width:calc(100% - 32px)}
+#toast button{background:transparent;border:0;color:#3d5a2a;font:700 15px var(--txt);cursor:pointer;min-height:36px}
+@media(max-width:600px){.kpi span{font-size:12px}.t{font-size:13px}.t th,.t td{padding:6px 5px}}
+@media(prefers-reduced-motion:reduce){.sw::after{transition:none}}
+</style>
+<meta name="gx-module" content="m3">
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<style>
+/* Galapagos · kabuk stilleri (modül CSS'ine dokunmaz; sadece gx- sınıfları) */
+.gx-side{position:fixed;top:0;bottom:0;left:0;width:248px;z-index:60;background:#121a15;border-right:1px solid #304036;display:flex;flex-direction:column;transform:translateX(-105%);transition:transform .22s ease;padding:max(12px,env(safe-area-inset-top,0px)) 0 max(12px,env(safe-area-inset-bottom,0px)) env(safe-area-inset-left,0px);overflow-y:auto;color:#f1e8d7;font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.gx-open .gx-side{transform:none}
+.gx-ov{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s}
+.gx-open .gx-ov{opacity:1;pointer-events:auto}
+.gx-brand{display:flex;gap:10px;align-items:center;padding:6px 16px 14px;border-bottom:1px solid #304036}
+.gx-logo{width:38px;height:38px;border-radius:9px;background:#0f1411;border:1px solid #304036;color:#f08a3c;display:grid;place-items:center;font:700 24px 'Fraunces',Georgia,serif}
+.gx-brand b{display:block;font:600 18px 'Fraunces',Georgia,serif;color:#dcc69b}
+.gx-brand small{display:block;color:#aab4a5;font-size:12px}
+.gx-nav{display:flex;flex-direction:column;padding:8px 8px;gap:2px}
+.gx-nav a{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 10px;border-radius:9px;color:#d8d2c4;text-decoration:none;font-size:15px;position:relative}
+.gx-nav a:hover{background:#1f2922}
+.gx-nav a.on{background:#1f2922;color:#f1e8d7;box-shadow:inset 3px 0 0 #f08a3c}
+.gx-nav a svg,.gx-burger svg,.gx-tabmenu svg,.gx-ban svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.gx-nav a span{flex:1;min-width:0}
+.gx-nav a em{font-style:normal;color:#aab4a5;font-size:12px;margin-right:6px}
+.gx-dot{width:9px;height:9px;border-radius:50%;background:#ebb94d;flex:none}
+.gx-sfoot{margin-top:auto;padding:12px 16px 4px;border-top:1px solid #304036;font-size:14px}
+.gx-sfoot a{color:#dcc69b}
+.gx-sfoot small{display:block;color:#aab4a5;font-size:12px;margin-top:4px}
+header.top.gx-hdr{position:relative;padding-left:max(64px,calc(env(safe-area-inset-left,0px) + 52px))!important}
+.gx-burger{position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:14px;width:44px;height:44px;border-radius:10px;border:1px solid #304036;background:#171f1a;color:#f1e8d7;display:grid;place-items:center;cursor:pointer;padding:0}
+.gx-burger:focus-visible,.gx-nav a:focus-visible,.gx-ban button:focus-visible{outline:2px solid #f08a3c;outline-offset:2px}
+nav.tabs .gx-tabmenu{color:#f08a3c}
+nav.tabs.gx-n6 a{font-size:11.5px}
+nav.tabs.gx-n6 a svg{width:20px;height:20px}
+.gx-ban{max-width:1240px;margin:8px auto 0;box-sizing:border-box;width:calc(100% - 32px);display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(235,185,77,.10);border:1px solid rgba(235,185,77,.45);border-radius:12px;padding:10px 12px;color:#f1e8d7;font-size:14px}
+.gx-ban[hidden]{display:none}
+.gx-ban>svg{color:#ebb94d}
+.gx-ban>div:not(.gx-bb){flex:1;min-width:160px}
+.gx-ban b{display:block;font-weight:600}
+.gx-ban small{display:block;color:#aab4a5;font-size:12.5px}
+.gx-bb{display:flex;gap:8px}
+.gx-ban button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #304036;background:#1f2922;color:#f1e8d7;font:500 14px inherit;cursor:pointer}
+.gx-ban .gx-take{background:#ebb94d;border-color:#ebb94d;color:#1a1608;font-weight:700}
+.gx-toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);z-index:70;background:#1f2922;border:1px solid #304036;color:#f1e8d7;border-radius:12px;padding:8px 8px 8px 14px;display:flex;gap:10px;align-items:center;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100% - 24px);font-size:14px}
+.gx-toast.on{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+.gx-toast button{min-height:40px;padding:0 14px;border-radius:9px;border:0;background:#f08a3c;color:#140c05;font-weight:700;cursor:pointer}
+@media (min-width:1024px){
+  .gx-side{transform:none;z-index:20}
+  .gx-ov,.gx-burger{display:none}
+  body.gx{padding-left:248px}
+  body.gx nav.tabs{left:248px}
+  body.gx nav.tabs .gx-tabmenu{display:none}
+  header.top.gx-hdr{padding-left:max(16px,env(safe-area-inset-left,0px))!important}
+  .gx-toast{left:calc(50% + 124px)}
+}
+@media (min-width:1024px){body.gx nav.tabs.gx-n5{grid-template-columns:repeat(4,minmax(0,1fr))!important}body.gx nav.tabs.gx-n6{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+@media print{.gx-side,.gx-ov,.gx-burger,.gx-ban,.gx-toast,.gx-tabmenu{display:none!important}body.gx{padding-left:0!important}header.top.gx-hdr{padding-left:0!important}}
+
+</style>
+<script>
+/* Galapagos · ortak çekirdek
+   - parseNum / fmtIn: 6 modülün tek sayı kuralı
+   - GX: modüller arası veri köprüsü (localStorage anahtarı galapagos_bus_v1)
+   Modüllerin kendi kayıt anahtarları (galapagos_m1_v1 … galapagos_m6_v1) ve JSON şemaları değişmez. */
+
+/* ---------- Güvenli sayı ----------
+   dec=true  → nokta ONDALIK (7.5 → 7,5); "1.234,56" ve "1.234.567" yine doğru okunur
+   dec=false → büyük tutar: "1.250" → 1250 (binlik), "1.250,50" → 1250,5
+   Hangi alanın büyük tutar olduğu modülün kendi BIG/DEC listesindedir. */
+function parseNum(x,dec){
+  if(typeof x==='number')return Number.isFinite(x)?x:NaN;
+  if(x==null)return NaN;
+  const m=String(x).replace(/[\s  '’]/g,'').replace(/\u2212/g,'-').match(/-?\d[\d.,]*/);
+  if(!m)return NaN;
+  let s=m[0].replace(/[.,]+$/,'');const neg=s[0]==='-';if(neg)s=s.slice(1);
+  const d=s.lastIndexOf('.'),c=s.lastIndexOf(',');
+  if(d>-1&&c>-1){const dc=d>c?'.':',';s=s.split(dc==='.'?',':'.').join('');const i=s.lastIndexOf(dc);s=s.slice(0,i).split(dc).join('')+'.'+s.slice(i+1)}
+  else if(c>-1)s=(s.split(',').length>2)?s.split(',').join(''):s.replace(',','.');
+  else if(d>-1){if(s.split('.').length>2)s=s.split('.').join('');else if(!dec&&/^[1-9]\d{0,2}\.\d{3}$/.test(s))s=s.replace('.','')}
+  const n=parseFloat(s);return Number.isFinite(n)?(neg?-n:n):NaN;
+}
+const fmtIn=n=>n!==''&&n!=null&&Number.isFinite(+n)?String(+(+n).toFixed(4)).replace('.',','):'';
+
+/* ---------- Veri köprüsü ---------- */
+const GX=(()=>{
+  const BUS='galapagos_bus_v1',APP='galapagos_app_v1';
+  const MODS=[
+    {id:'m1',file:'m1-mekan.html',key:'galapagos_m1_v1',sc:'galapagos.mekan',n:'Mekân & Kapasite',s:'Mekân'},
+    {id:'m2',file:'m2-personel.html',key:'galapagos_m2_v1',sc:'galapagos.personel',n:'Personel & Vardiya',s:'Personel'},
+    {id:'m3',file:'m3-ciro.html',key:'galapagos_m3_v1',sc:'galapagos.ciro',n:'Ciro & Hedef',s:'Ciro'},
+    {id:'m4',file:'m4-kurulum.html',key:'galapagos_m4_v1',sc:'galapagos.kurulum',n:'Kurulum & Nakit',s:'Kurulum'},
+    {id:'m5',file:'m5-vergi.html',key:'galapagos_m5_v1',sc:'galapagos.vergi',n:'Vergi & Şirket',s:'Vergi'},
+    {id:'m6',file:'m6-karar.html',key:'galapagos_m6_v1',sc:'galapagos.karar',n:'Master Karar Panosu',s:'Karar'}];
+  const UP={m2:['m1'],m3:['m1','m2','m4'],m4:['m1','m3'],m5:['m3','m4'],m6:['m1','m2','m3','m4','m5']};
+  const byId=id=>MODS.find(m=>m.id===id);
+  const meta=document.querySelector('meta[name="gx-module"]');
+  const ME=meta?meta.content:'home';
+  const AUTO=/[?&]gx=auto\b/.test(location.search);
+  let ad=null,ready=false,tm=null,loadedAt=0;
+
+  const read=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}};
+  const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+  function bus(){const b=read(BUS)||{};b.pub=b.pub||{};b.seen=b.seen||{};return b}
+  const app=()=>Object.assign({lastBackup:0},read(APP)||{});
+  const setApp=o=>write(APP,Object.assign(app(),o));
+
+  function stable(v){
+    if(Array.isArray(v))return '['+v.map(stable).join(',')+']';
+    if(v&&typeof v==='object')return '{'+Object.keys(v).filter(k=>k!=='exported_at').sort().map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';
+    return JSON.stringify(v);
+  }
+  function hash(o){const s=stable(o);let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'.'+s.length}
+
+  /* Metin içindeki { … } bloklarını sırayla çıkarır (birden çok JSON, etrafında yazı olsa bile) */
+  function extractObjects(t){
+    const out=[];let depth=0,start=-1,inS=false,esc=false;t=String(t||'');
+    for(let i=0;i<t.length;i++){const ch=t[i];
+      if(inS){if(esc)esc=false;else if(ch==='\\')esc=true;else if(ch==='"')inS=false;continue}
+      if(ch==='"'){if(depth>0)inS=true;continue}
+      if(ch==='{'){if(depth===0)start=i;depth++}
+      else if(ch==='}'&&depth>0){depth--;if(depth===0&&start>-1){try{out.push(JSON.parse(t.slice(start,i+1)))}catch(e){}start=-1}}}
+    if(!out.length){try{const j=JSON.parse(t);(Array.isArray(j)?j:[j]).forEach(x=>x&&typeof x==='object'&&out.push(x))}catch(e){}}
+    return out;
+  }
+  /* Şema → {mod, kind:'export'|'backup'|'app'} */
+  function classify(j){
+    if(!j||typeof j!=='object'||typeof j.schema!=='string')return null;
+    if(j.schema==='galapagos.app.backup.v1')return {kind:'app'};
+    const m=MODS.find(m=>j.schema===m.sc+'.v1'||j.schema===m.sc+'.backup.v1');
+    if(!m)return null;
+    return {mod:m.id,kind:j.schema.endsWith('.backup.v1')?'backup':'export'};
+  }
+
+  function publish(id,obj,force){
+    if(!obj)return false;const b=bus(),h=hash(obj);
+    if(!force&&b.pub[id]&&b.pub[id].hash===h)return false;
+    b.pub[id]={at:Date.now(),hash:h,data:obj};
+    // modül kendi yayınını görmüş sayılır
+    return write(BUS,b);
+  }
+  function stale(id){const b=bus();return (UP[id]||[]).filter(u=>b.pub[u]&&((b.seen[id]||{})[u]!==b.pub[u].hash))}
+  function markSeen(id,ups){const b=bus();b.seen[id]=b.seen[id]||{};(ups||UP[id]||[]).forEach(u=>{if(b.pub[u])b.seen[id][u]=b.pub[u].hash});write(BUS,b)}
+  function upText(ups){const b=bus();return ups.filter(u=>b.pub[u]).map(u=>JSON.stringify(b.pub[u].data,null,1)).join('\n\n')}
+
+  /* ---------- modül tarafı ---------- */
+  function expFromTxt(){const el=document.querySelector('#exTxt');if(!el||!el.value)return null;try{return JSON.parse(el.value)}catch(e){return null}}
+  function flush(force){
+    if(!ad||ME==='home')return false;
+    let o=null;try{o=ad.exp?ad.exp():expFromTxt()}catch(e){o=null}
+    return publish(ME,o,force);
+  }
+  function dirty(){if(!ready)return;clearTimeout(tm);tm=setTimeout(()=>{flush();window.dispatchEvent(new Event('gx:bus'))},600)}
+  function register(id,cfg){
+    ad=cfg||{};
+    const go=()=>{
+      loadedAt=Date.now();
+      // ilk açılış: henüz yayın yoksa yayınla (yapıştırılmış bir çıktının üstüne açılışta yazmaz)
+      setTimeout(()=>{if(!bus().pub[ME])flush();ready=true;if(ad.onReady)try{ad.onReady()}catch(e){}window.dispatchEvent(new Event('gx:bus'))},350);
+    };
+    if(document.readyState==='complete')go();else window.addEventListener('load',go);
+  }
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function setVal(sel,v){const el=document.querySelector(sel);if(!el)return false;el.value=v;el.dispatchEvent(new Event('input',{bubbles:true}));return true}
+  function txt(sel){const el=document.querySelector(sel);return el?el.textContent.trim():''}
+  /* Önizle ve al: modülün kendi içe aktarma akışını açar (uygulama kullanıcıda) */
+  function pullUI(ups){
+    ups=ups||stale(ME);if(!ups.length||!ad||!ad.ta)return false;
+    if(ad.tab&&location.hash!=='#'+ad.tab)location.hash=ad.tab;
+    setVal(ad.ta,upText(ups));
+    const b=document.querySelector(ad.btn);if(b)b.click();
+    markSeen(ME,ups);
+    setTimeout(()=>{const el=document.querySelector(ad.msg)||document.querySelector(ad.ta);if(el)el.scrollIntoView({block:'center',behavior:'smooth'})},120);
+    return true;
+  }
+  /* Otomatik al (ana sayfadaki zincir güncellemesi ve M6): önizlemeyi kendisi onaylar */
+  async function autoImport(ups){
+    ups=(ups||UP[ME]||[]).filter(u=>bus().pub[u]);
+    if(!ups.length)return {ok:false,msg:'Önceki modül verisi yok'};
+    if(ad.auto){const r=ad.auto(upText(ups));markSeen(ME,ups);await sleep(250);flush();return {ok:true,msg:r||'alındı',ups}}
+    setVal(ad.ta,upText(ups));const b=document.querySelector(ad.btn);if(b)b.click();await sleep(250);
+    let msg=txt(ad.msg);
+    if(ad.apply){const a=document.querySelector(ad.apply);if(a){a.click();await sleep(250);msg=txt(ad.msg)||msg}}
+    markSeen(ME,ups);flush();
+    return {ok:true,msg:msg||'alındı',ups};
+  }
+  async function restore(text){
+    const el=document.querySelector('#bkTxt'),b=document.querySelector('#bkIn');
+    if(!el||!b)return {ok:false,msg:'Bu modülde geri yükleme alanı yok'};
+    el.value=text;b.click();await sleep(300);flush(true);
+    return {ok:true,msg:txt('#bkMsg')||'geri yüklendi'};
+  }
+
+  /* ---------- toplu yedek ---------- */
+  function appBackup(){
+    const keys={};
+    for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^galapagos_/.test(k)||k===APP)continue;
+      let v=read(k);
+      if(k==='galapagos_m1_v1'&&v&&v.settings){v=JSON.parse(JSON.stringify(v));delete v.settings.geminiKey}
+      keys[k]=v}
+    return {schema:'galapagos.app.backup.v1',exported_at:new Date().toISOString(),app:'Galapagos',keys};
+  }
+  function snapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^galapagos_/.test(k)&&k!==APP)o[k]=localStorage.getItem(k)}return o}
+  function restoreSnapshot(o){
+    const cur=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^galapagos_/.test(k)&&k!==APP)cur.push(k)}
+    cur.forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>localStorage.setItem(k,v));
+  }
+  function applyAppBackup(j){
+    const gk=(read('galapagos_m1_v1')||{}).settings?.geminiKey;
+    Object.entries(j.keys||{}).forEach(([k,v])=>{if(!/^galapagos_/.test(k)||k===APP||v==null)return;
+      if(k==='galapagos_m1_v1'&&gk&&v.settings&&!v.settings.geminiKey)v.settings.geminiKey=gk;
+      write(k,v)});
+  }
+
+  return {MODS,UP,byId,ME,AUTO,bus,app,setApp,hash,extractObjects,classify,publish,stale,markSeen,upText,
+    register,dirty,flush,pullUI,autoImport,restore,appBackup,snapshot,restoreSnapshot,applyAppBackup,read,write,
+    get adapter(){return ad},get ready(){return ready},sleep};
+})();
+window.GX=GX;
+
+</script>
+<script>
+/* Galapagos · kabuk: yan menü, "Önizle ve al" şeridi, service worker */
+(()=>{
+  const G=window.GX;if(!G||G.AUTO||window.top!==window)return; // gizli çerçevede (zincir güncellemesi) arayüz yok
+  const ME=G.ME,esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const tf=t=>{const d=new Date(t);return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})};
+  const ICON={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    m1:'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>',m2:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.5a3 3 0 0 1 0 6M21 20c0-2.6-1.6-4.8-4-5.6"/>',
+    m3:'<path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/>',m4:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',
+    m5:'<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',m6:'<path d="M12 3v18M5 8h14M7 8l-3 7h6zM17 8l-3 7h6z"/>'};
+  const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]||''}</svg>`;
+  const items=[{id:'home',file:'index.html',n:'Ana sayfa',s:'Ana sayfa'}].concat(G.MODS);
+
+  function dot(id){if(id==='home')return '';const st=G.stale(id);return st.length?`<i class="gx-dot" title="Önceki modülde değişiklik var"></i>`:''}
+  function sideHTML(){
+    return `<div class="gx-brand"><span class="gx-logo">G</span><div><b>Galapagos</b><small>Bar fizibilite</small></div></div>
+    <nav class="gx-nav" aria-label="Modüller">${items.map((m,i)=>`<a href="${m.file}" class="${m.id===ME?'on':''}"${m.id===ME?' aria-current="page"':''}>${svg(m.id)}<span>${i?`<em>${i}</em>`:''}${esc(m.n)}</span>${dot(m.id)}</a>`).join('')}</nav>
+    <div class="gx-sfoot"><a href="index.html#yedek">Tüm verileri yedekle</a><small>Veriler sadece bu tarayıcıda kalır.</small></div>`;
+  }
+  function build(){
+    document.body.classList.add('gx');
+    const side=document.createElement('aside');side.className='gx-side';side.id='gxSide';side.innerHTML=sideHTML();
+    const ov=document.createElement('div');ov.className='gx-ov';ov.addEventListener('click',close);
+    document.body.prepend(ov);document.body.prepend(side);
+    // ☰ başlıkta
+    const hdr=document.querySelector('header.top');
+    if(hdr){const b=document.createElement('button');b.type='button';b.className='gx-burger';b.setAttribute('aria-label','Menüyü aç');b.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';b.addEventListener('click',open);hdr.prepend(b);hdr.classList.add('gx-hdr')}
+    // alt sekme çubuğunun başına "Menü"
+    const nav=document.querySelector('nav.tabs');
+    if(nav){const a=document.createElement('a');a.href='#';a.className='gx-tabmenu';a.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Modüller';a.addEventListener('click',e=>{e.preventDefault();open()});nav.prepend(a);
+      const n=nav.querySelectorAll('a').length;nav.style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;nav.classList.add('gx-n'+n)}
+    // şerit
+    if(ME!=='home'&&ME!=='m1'){const ban=document.createElement('div');ban.className='gx-ban';ban.id='gxBan';ban.hidden=true;
+      if(hdr)hdr.after(ban);else document.body.prepend(ban)}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  }
+  function open(){document.body.classList.add('gx-open');const f=document.querySelector('.gx-nav a');if(f)f.focus()}
+  function close(){document.body.classList.remove('gx-open')}
+  function refresh(){
+    const side=document.getElementById('gxSide');if(side){const nav=side.querySelector('.gx-nav');const t=document.createElement('div');t.innerHTML=sideHTML();nav.replaceWith(t.querySelector('.gx-nav'))}
+    const ban=document.getElementById('gxBan');if(!ban)return;
+    if(ME==='m6'){ban.hidden=true;return}
+    const st=G.stale(ME),b=G.bus();
+    if(!st.length||!G.adapter||!G.adapter.ta){ban.hidden=true;return}
+    ban.hidden=false;
+    ban.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg><div><b>${st.map(u=>`Modül ${u.slice(1)}`).join(' + ')} değişti</b><small>${st.map(u=>`${G.byId(u).s}: ${tf(b.pub[u].at)}`).join(' · ')}</small></div><div class="gx-bb"><button type="button" class="gx-take">Önizle ve al</button><button type="button" class="gx-skip">Yoksay</button></div>`;
+    ban.querySelector('.gx-take').onclick=()=>{G.pullUI(st);refresh()};
+    ban.querySelector('.gx-skip').onclick=()=>{G.markSeen(ME,st);refresh()};
+  }
+  function start(){build();refresh();
+    window.addEventListener('gx:bus',refresh);
+    window.addEventListener('storage',e=>{if(!e.key||/^galapagos_bus/.test(e.key)){refresh();if(ME==='m6'&&G.adapter&&G.adapter.pull)G.adapter.pull()}});
+    sw();
+  }
+  /* ---------- service worker (sadece http/https) ---------- */
+  function toast(html,btn,fn){let t=document.getElementById('gxToast');if(!t){t=document.createElement('div');t.id='gxToast';t.className='gx-toast';document.body.append(t)}
+    t.innerHTML=`<span>${html}</span>${btn?`<button type="button">${btn}</button>`:''}`;t.classList.add('on');if(btn)t.querySelector('button').onclick=fn;}
+  function sw(){
+    if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      const ask=w=>toast('Yeni sürüm hazır.','Yenile',()=>w.postMessage('skip'));
+      if(reg.waiting&&navigator.serviceWorker.controller)ask(reg.waiting);
+      reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)ask(w)})});
+      setInterval(()=>reg.update().catch(()=>{}),60*60*1000);
+    }).catch(()=>{});
+    let done=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(done)return;done=true;location.reload()});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  window.GXShell={refresh,toast,open,close};
+})();
+
+</script>
+</head>
+<body>
+<header class="top"><h1>Ciro, RevPASH &amp; Hedef</h1><p class="sub">Galapagos · Modül 3 · 5.000 € kenara koymak için gereken matematik</p></header>
+<main>
+  <section class="view" id="v-hedef">
+    <div id="storeWarn"></div>
+    <div class="kpis" aria-live="polite">
+      <div class="kpi" id="k1"><b>–</b><span>Gereken ciro / ay</span></div>
+      <div class="kpi" id="k2"><b>–</b><span>Gece başı misafir</span></div>
+      <div class="kpi" id="k3"><b>–</b><span>Plan birikimi / ay</span></div>
+      <div class="kpi" id="k4"><b>–</b><span>Prime cost</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Hedef motoru</h2>
+          <div id="tgtForm"></div>
+          <p class="lead" id="lead"></p>
+          <div class="wf">
+            <div class="wfl"><span>Gereken net ciro, nereye gidiyor</span><span id="wfR"></span></div>
+            <div class="wfb" id="wfb"></div>
+            <div class="wfl"><span>Planın (doluluk varsayımlarınla)</span><span id="wfP"></span></div>
+            <div class="wfp" id="wfp"></div>
+            <div class="leg" id="wfLeg"></div>
+          </div>
+          <div class="out" id="o_tgt" style="margin-top:14px"></div>
+        </div>
+        <div class="card">
+          <h2>Üç senaryo + hedef</h2>
+          <p class="note">Kötü ay: doluluk ×0,7, içki ×0,9, batch firesi ×2, teras yok. İyi ay: Cuma–Cumartesi %95, teras açık, içki ×1,1. Ayarlar Giderler sekmesinde.</p>
+          <div class="scroll"><table class="t" id="scTbl"></table></div>
+        </div>
+        <div class="card">
+          <h2>Başa baş noktası</h2>
+          <div class="scroll"><table class="t" id="beTbl"></table></div>
+          <p class="note">Kâr başa başı: vergi öncesi kâr 0. Yaşam başa başı: yaşam maaşın, sağlık sigortan ve kredi anaparası çıkıyor, birikim 0.</p>
+        </div>
+        <div class="card">
+          <div class="fh" style="flex-wrap:wrap"><h2 style="margin:0">12 ay nakit</h2><div class="seg" role="group" aria-label="12 ay tablosu cirosu"><button type="button" data-tbl="plan">Plan</button><button type="button" data-tbl="target">Hedef</button></div></div>
+          <div class="mo" id="moChart" aria-label="Aylık birikim"></div>
+          <div style="height:22px"></div>
+          <div class="scroll"><table class="t" id="moTbl"></table></div>
+          <p class="note">Vergi yıllık hesaplanıp aylara eşit bölünür (Vorauszahlung gibi). Kredi taksiti 1. yılın gerçek faiz/anapara dağılımıyla.</p>
+        </div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Alarmlar</h3><ul class="al" id="al"></ul></div>
+        <details class="sec" open><summary>Plan: aylık kâr-zarar<span class="sv" id="sv_pl"></span></summary><div class="in"><div class="out" id="o_pl"></div></div></details>
+        <details class="sec"><summary>Modül 4 &amp; 5'e aktar<span class="sv">JSON</span></summary><div class="in"><p class="hint">Aylık özet, senaryolar, başa baş ve 12 aylık tablo.</p><div class="btns"><button class="btn pri" type="button" id="exCopy">Kopyala</button><button class="btn" type="button" id="exDl">İndir (.json)</button></div><textarea class="code" id="exTxt" readonly spellcheck="false" style="margin-top:10px"></textarea></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-menu">
+    <div class="grid">
+      <div id="mixForm"></div>
+      <div class="side">
+        <div class="card"><h3>Misafir başı ekonomi</h3><div class="out" id="o_guest"></div></div>
+        <div class="card"><h3>Kâra katkı (Deckungsbeitrag)</h3><p class="note">Planlanan ayda her kategorinin bıraktığı net katkı (net fiyat − mal).</p><div class="mi" id="dbBars" style="margin-top:8px"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-gider">
+    <details class="sec" id="profSec" style="margin-top:12px"><summary>Galapagos varsayılan profili<span class="sv" id="sv_prof"></span></summary><div class="in" id="profBox"></div></details>
+    <div class="card">
+      <h2>Modül 1, 2 &amp; 4'ten al</h2>
+      <p class="src" id="srcLine"></p>
+      <label class="lb" for="impTxt">JSON'ları yapıştır: Modül 1, 2 ve 4 çıktıları tek kutuya birlikte olabilir</label>
+      <textarea class="code" id="impTxt" spellcheck="false"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="impIn">İçe al</button><label class="btn" for="impFile">Dosyadan al</label><input type="file" id="impFile" accept=".json,application/json" hidden></div>
+      <p class="note" id="impMsg" aria-live="polite"></p>
+      <div id="impDiff"></div>
+    </div>
+    <div id="costForm"></div>
+    <div class="card">
+      <h2>Yedekle &amp; içe aktar</h2>
+      <div class="btns"><button class="btn" type="button" id="bkOut">Yedek oluştur</button><button class="btn" type="button" id="bkCopy">Kopyala</button><button class="btn" type="button" id="bkDl">İndir (.json)</button></div>
+      <label class="lb" for="bkTxt">Modül 3 yedek JSON</label>
+      <textarea class="code" id="bkTxt" spellcheck="false"></textarea>
+      <div class="btns"><button class="btn pri" type="button" id="bkIn">Metinden geri yükle</button><label class="btn" for="bkFile">Dosyadan geri yükle</label><input type="file" id="bkFile" accept=".json,application/json" hidden><button class="btn dan" type="button" id="wipe">Varsayılana sıfırla</button></div>
+      <p class="note" id="bkMsg"></p>
+    </div>
+  </section>
+
+  <section class="view" id="v-rehber">
+    <div class="card guide" style="margin-top:12px">
+      <h2>Nasıl kullanılır &amp; ne işe yarar?</h2>
+      <p>Bu araç soruyu tersinden sorar: "Ayda 5.000 € kenara koymak istiyorum. Kira, personel, mal, kredi, vergi ve kendi maaşım çıktıktan sonra bunun için kaç misafir, kaç kokteyl, ne kadar ciro lazım? Mekânım buna yetiyor mu?" Menüdeki her fiyatı veya oranı değiştirdiğinde cevap anında güncellenir.</p>
+      <h3>Dört adımda</h3>
+      <ol>
+        <li><b>Veriyi al:</b> Giderler → Modül 1, 2 ve 4 JSON'larını tek kutuya birlikte yapıştırabilirsin (koltuk, teras, kira, personel, açılış saatleri, doluluk, kredi). Önce her modül ayrı başlıkla bir değişiklik listesi çıkar; işaretlediklerin uygulanır. Elle de girebilirsin.</li>
+        <li><b>Menüyü kur:</b> fiyat, pour cost ve satış payı. Misafir davranışını (oturma süresi, içki sayısı) gün gün gir.</li>
+        <li><b>Giderleri doldur:</b> sabit giderler, kredi, ekipman, vergi modu.</li>
+        <li><b>Hedef'e bak:</b> gereken ciro, gece başı misafir, kapasite yetiyor mu, kötü ayda ne oluyor, 12 ayda kasa nerede eksiye düşüyor.</li>
+      </ol>
+      <h3>Galapagos varsayılan profili</h3>
+      <p>Giderler sekmesinin en üstünde. Beş sabit varsayımı tek dokunuşla ayarlar: aylık net birikim hedefi 5.000 €, yaşam maaşı (Unternehmerlohn) 3.000 €, kendi sağlık sigortan 1.261 € (GKV azamisi, Modül 5 ile aynı), Modül 1/2 ciro varsayımı 29.000 € ve Pazar kapalı. Uygulamadan önce farkları ve hedef ciroya etkisini gösterir; "Geri al" çalışır. Menüne, satış karmana, sabit giderlerine ve kredine dokunmaz. Yeni kurulum bu profille başlar.</p>
+      <p><b>Pazar kapalıyken</b> bu modül ciroyu gece sayısından hesapladığı için plan cirosu düşer (Modül 2 ise aylık ciroyu sabit tutup diğer günlere dağıtır). Aradaki farkı Modül 6 gösterir; gerçekçi olan buradaki rakamdır.</p>
+      <h3>Modüller arası öncelik</h3>
+      <ul>
+        <li>Koltuk, tabure, teras ve kira: doğrudan Modül 1 verisi kazanır. Sadece Modül 2 yapıştırılırsa içindeki Modül 1 kopyası kullanılır; oradaki kira brüt olabileceği için işaretsiz gelir.</li>
+        <li>Personel maliyeti, Unternehmerlohn, açılış günleri, saatler, doluluk ve barmen/servis sayısı Modül 2'den gelir. Modül 2'de kapalı olan gün burada da kapanır.</li>
+        <li>Kredi planı ve AfA Modül 4'ten gelir. Eksik alanlarda mevcut değer kalır ve hangisinin eksik olduğu yazılır.</li>
+      </ul>
+      <h3>Sayı yazımı</h3>
+      <p>Fiyat, pour cost, pay, oturma süresi gibi alanlarda virgül ve nokta aynı (<code>14,5</code> = <code>14.5</code>). Kira, ciro, maaş, sigorta, birikim, sabit gider ve kredi tutarlarında <code>1.350</code> = 1350 ve <code>33.511</code> = 33511 okunur. Mantıksız değerler sınırlanır (yüzdeler 0–100, faiz en fazla %25, oturma süresi 0,25–8 saat).</p>
+      <h3>Metrikler ne demek?</h3>
+      <dl>
+        <dt>Brüt ve net ciro (%19 / %7 MwSt)</dt><dd>Menüdeki fiyat KDV dahildir. İçeceklerde %19, yiyecekte 2026'dan beri kalıcı %7 KDV var. Senin paran net ciro: 14,50 € kokteylden 12,18 € kalır. Kombi pakette (içki + tabak) fiyatın %15'i içecek, %85'i yiyecek sayılabilir; bu yüzden kombi vergi açısından avantajlı.</dd>
+        <dt>Pour cost (mal maliyeti %)</dt><dd>Bir içkinin malzeme maliyeti ÷ net fiyatı. Brüt fiyattan hesaplarsan marjın olduğundan iyi görünür.</dd>
+        <dt>Schwund, batch firesi, ikram</dt><dd>Dökülen, fazla ölçülen, ikram edilen, raf ömrü dolup atılan malzeme. Satılmadığı için ciro getirmez ama mal maliyetini büyütür. Uygulama mal maliyetini bu oranlarla çarpar.</dd>
+        <dt>Wareneinsatz ve Rohertrag</dt><dd>Wareneinsatz: o ay kullanılan malın maliyeti (fire dahil). Rohertrag (brüt kâr): net ciro − Wareneinsatz. Diğer tüm giderler bu paradan ödenir.</dd>
+        <dt>Deckungsbeitrag (katkı payı)</dt><dd>Bir ürünün net fiyatı − mal maliyeti. Yüksek pour cost'lu ama pahalı bir kokteyl, düşük pour cost'lu ucuz bir shottan daha fazla katkı bırakabilir. Menü kararlarını yüzdeye değil bu €'ya göre ver.</dd>
+        <dt>RevPAC (kişi başı adisyon)</dt><dd>Bir misafirin bir ziyarette bıraktığı net ciro. İçki sayısı × ortalama net fiyat + yiyecek.</dd>
+        <dt>Oturma süresi ve devir hızı (seat turnover)</dt><dd>Bir misafir ortalama kaç saat kalır. Bir koltuk bir gecede kaç misafir ağırlar = koltuk-saat ÷ oturma süresi.</dd>
+        <dt>RevPASH</dt><dd>Revenue per available seat hour: net ciro ÷ (koltuk × açık saat). Bir koltuğun bir saatte getirdiği para. Kira ve personeli koltuk-saate bölünce neye ihtiyacın olduğunu gösterir.</dd>
+        <dt>Prime cost</dt><dd>Wareneinsatz + personel (senin maaşın dahil) ÷ net ciro. İşletmenin kontrol edebildiği iki büyük gider. Hedef %55'in altı, %60 üstü kırmızı.</dd>
+        <dt>EBT (vergi öncesi kâr)</dt><dd>Net ciro − tüm giderler (kredi faizi ve amortisman dahil). Şahıs şirketinde senin maaşın gider değildir; bu kârdan çıkar ve vergilenir.</dd>
+        <dt>Amortisman (AfA)</dt><dd>Ekipman bedeli yıllara bölünüp gider yazılır. Vergiyi azaltır ama her ay cebinden para çıkmaz.</dd>
+        <dt>Kredi: faiz ve anapara</dt><dd>Taksitin sadece faiz kısmı gider sayılır. Anapara vergi sonrası paradan ödenir. Bu yüzden kâr ile kasaya kalan para farklıdır.</dd>
+        <dt>Vergi modu</dt><dd>Basit mod: kârın sabit bir yüzdesi. Detaylı mod: 2026 gelir vergisi tarifesi (eşinin geliriyle ortak beyan opsiyonu), Soli, Chemnitz Gewerbesteuer (%450 çarpan, 24.500 € muafiyet) ve gelir vergisinden mahsup. Yaklaşıktır.</dd>
+        <dt>Nakit birikim</dt><dd>Vergi öncesi kâr − vergi + amortisman − kredi anaparası − yaşam maaşın − sağlık sigortan. Hedef motoru bunun 5.000 €'ya ulaştığı ciroyu bulur.</dd>
+        <dt>Başa baş noktası</dt><dd>Kâr başa başı: vergi öncesi kârın sıfır olduğu ciro. Yaşam başa başı: hiç biriktirmeden yaşam maaşın ve kredi anaparan çıkıyor. İkisi de gece başı misafir olarak gösterilir.</dd>
+        <dt>Kapasite kullanımı</dt><dd>Gereken misafir ÷ mevcut koltuk ve oturma süresiyle bir gecede ağırlayabileceğin gerçekçi azami misafir. %85 üstü zor, %100 üstü fiziksel olarak imkânsız.</dd>
+        <dt>Mevsim endeksi</dt><dd>Her ayın ortalama aya göre cirosu. Ortalama yeterli olsa bile Ocak–Şubat kasayı eksiye düşürebilir; 12 ay grafiği bunu gösterir.</dd>
+      </dl>
+      <h3>Alarm renkleri</h3>
+      <ul>
+        <li><b style="color:var(--r)">Kırmızı:</b> hedef fiziksel kapasiteyi aşıyor, hedefte ek personel gerekiyor, plan yaşam maaşını bile çıkarmıyor, kasa yıl içinde eksiye düşüyor, prime cost %60 üstü.</li>
+        <li><b style="color:var(--y)">Sarı:</b> hedefe yaklaşıyorsun ama eksik var, kapasite %85 üstü, prime cost %55–60, kötü ayda zarar.</li>
+        <li><b style="color:var(--sm)">Bilgi:</b> varsayımlar arasında çelişki, fiyat testi önerisi.</li>
+      </ul>
+      <h3>Sınırlar</h3>
+      <p>Planlama aracıdır; Steuerberater'ın yerine geçmez. Vergi detaylı modu 2026 tarifesiyle yaklaşık hesaplar. Veriler yalnızca bu tarayıcıda; Giderler → Yedek oluştur ile sakla.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sekmeler">
+  <a href="#hedef" data-tab="hedef"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>Hedef</a>
+  <a href="#menu" data-tab="menu"><svg viewBox="0 0 24 24"><path d="M5 4h14l-5 7v6l2 3H8l2-3v-6z"/></svg>Menü</a>
+  <a href="#gider" data-tab="gider"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Giderler</a>
+  <a href="#rehber" data-tab="rehber"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg>Rehber</a>
+</nav>
+<div id="toast" role="status"><span id="toastT"></span><button type="button" id="toastU" hidden>Geri al</button></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const SKEY='galapagos_m3_v1';
+let canStore=true;
+const W=52/12,SD=[3,4,5,6];
+const DAYN=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],DAYL=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>(Number.isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>(n<0?'−':'')+nf(Math.abs(Math.round(n)))+' €';
+const fT=h=>{const m=Math.round((((h%24)+24)%24)*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const toH=s=>{const p=String(s||'').split(':').map(Number);if(!Number.isFinite(p[0]))return null;const h=p[0]+(p[1]||0)/60;return h<6?h+24:h};
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split('.');const l=ks.pop();ks.reduce((a,k)=>a[k],o)[l]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+function defaults(){return {
+  v:{name:'',seats:40,stools:10,terrace:12,rentNet:1830,m1Rev:29000,src:'manuel (örnek değerler)'},
+  staff:{cost:4324,fixed:2481,variable:1843,ul:3000,src:'manuel (Modül 2 varsayılanı)'},
+  days:{3:{on:true,open:18,close:25,ps:20,pe:23,occ:35,dwell:1.75,stand:0,bar:1,srv:1},4:{on:true,open:18,close:27,ps:21,pe:25,occ:75,dwell:2.25,stand:10,bar:2,srv:1},5:{on:true,open:18,close:27,ps:21,pe:25,occ:90,dwell:2.25,stand:10,bar:2,srv:1},6:{on:false,open:16,close:24,ps:19,pe:22,occ:40,dwell:1.75,stand:0,bar:1,srv:1}},
+  mix:[{n:'İmza kokteyl',p:14.5,pc:22,sh:35,ck:true},{n:'Klasik / Sour',p:13,pc:20,sh:20,ck:true},{n:'Spritz / Highball',p:11,pc:18,sh:15,ck:true},{n:'Shot',p:4,pc:25,sh:8,ck:false},{n:'Bira / Şarap',p:5.5,pc:30,sh:10,ck:false},{n:'Alkolsüz',p:7.5,pc:15,sh:5,ck:false}],
+  food:{p:7,pc:30,attach:30},kombi:{on:true,p:16,pc:24,rate:40},dpg:2.4,
+  fixed:[['Elektrik / gaz',450],['GEMA + ticari müzik servisi',120],['Sigortalar',150],['Steuerberater',300],['POS / TSE',60],['Pazarlama',300],['Temizlik / çöp',150],['Onarım rezervi',200],['Diğer',150]].map(([n,a])=>({n,a})),
+  loss:{schwund:3,batch:2,ikram:1},card:{share:80,fee:1.2},loan:{amt:60000,rate:7,years:7},equip:{amt:35000,years:5},
+  tax:{mode:'simple',rate:33,spouse:0,heb:450,kv:1261},target:5000,
+  cap:{barCap:78,srvCap:28,extraCost:21,terUse:60},sc:{badOcc:70,badDrinks:90,badWaste:200,goodOcc:95,goodDrinks:110},
+  idx:[70,75,90,95,110,110,110,110,105,100,100,125],tbl:'plan'};}
+let st=null;
+function merge(x){const d=defaults();const o=Object.assign(d,x||{});['v','staff','food','kombi','loss','card','loan','equip','tax','cap','sc'].forEach(k=>o[k]=Object.assign(defaults()[k],(x||{})[k]||{}));o.days=Object.assign(defaults().days,(x||{}).days||{});return o}
+function load(){let raw=null;try{raw=localStorage.getItem(SKEY)}catch(e){canStore=false}try{st=merge(raw?JSON.parse(raw):null)}catch(e){st=defaults()}}
+function save(){GX.dirty();try{localStorage.setItem(SKEY,JSON.stringify(st));canStore=true}catch(e){canStore=false}}
+
+function guestEcon(dm=1,wasteX=1){
+  const D=st.dpg*dm,a=st.food.attach/100,k=st.kombi.on?st.kombi.rate/100:0,kU=a*k,pU=a*(1-k),dU=Math.max(0,D-kU);
+  const sum=st.mix.reduce((s,i)=>s+Math.max(0,+i.sh||0),0)||1;
+  let gross=0,net=0,cogs=0,ck=0;const rows=[];
+  st.mix.forEach(i=>{const u=dU*Math.max(0,+i.sh||0)/sum,g=u*i.p,n=g/1.19,c=n*i.pc/100;gross+=g;net+=n;cogs+=c;if(i.ck)ck+=u;rows.push({n:i.n,u,unitNet:i.p/1.19,unitCogs:i.p/1.19*i.pc/100,net:n,cogs:c})});
+  {const g=pU*st.food.p,n=g/1.07,c=n*st.food.pc/100;gross+=g;net+=n;cogs+=c;rows.push({n:'Aperitivo tabağı',u:pU,unitNet:st.food.p/1.07,unitCogs:st.food.p/1.07*st.food.pc/100,net:n,cogs:c})}
+  if(st.kombi.on){const kn=st.kombi.p*0.15/1.19+st.kombi.p*0.85/1.07,g=kU*st.kombi.p,n=kU*kn,c=n*st.kombi.pc/100;gross+=g;net+=n;cogs+=c;ck+=kU;rows.push({n:'Kombi (Spritz + tabak)',u:kU,unitNet:kn,unitCogs:kn*st.kombi.pc/100,net:n,cogs:c})}
+  const loss=(st.loss.schwund+st.loss.batch*wasteX+st.loss.ikram)/100,cogsEff=cogs*(1+loss);
+  return {D,gross,net,cogs,cogsEff,ck,rows,cogsRate:net?cogsEff/net:0,rawRate:net?cogs/net:0,grossRate:net?gross/net:1.19};
+}
+function prof(D){const H=Math.max(0,D.close-D.open);let fs=0,pk=0;for(let t=D.open;t<D.close-1e-9;t+=0.5){const m=t+0.25,inP=m>=D.ps&&m<D.pe,f=inP?1:(m<D.open+1||m>=D.close-1)?0.5:0.75;fs+=f*0.5;if(inP)pk+=0.5}return {H,avgF:H?fs/H:0,pkH:pk}}
+function nights(o={}){
+  const out=[];let G=0,cap=0,hours=0,extraCost=0,extraN=0;
+  SD.forEach(d=>{const D=st.days[d];if(!D.on)return;const P=prof(D),m=o.occMul||1;
+    const seats=(+st.v.seats||0)+(o.terr?(+st.v.terrace||0)*st.cap.terUse/100:0);
+    const occ=((o.occOv&&o.occOv[d]!=null)?o.occOv[d]:D.occ)*m/100,stand=D.stand*m;
+    const g=D.dwell>0?(seats*occ*P.H*P.avgF+stand*P.pkH)/D.dwell:0;
+    const c=D.dwell>0?(seats*P.H*P.avgF+D.stand*P.pkH)/D.dwell:0;
+    const stools=Math.min(+st.v.stools||0,+st.v.seats||0),peakG=seats*occ+stand,tblG=seats*occ*(seats?(seats-stools)/seats:0);
+    const dph=st.dpg*(o.dm||1)/Math.max(0.25,D.dwell);
+    const needBar=Math.max(1,Math.ceil(peakG*dph/st.cap.barCap-1e-9)),needSrv=Math.ceil(tblG/st.cap.srvCap-1e-9);
+    const ex=Math.max(0,needBar-D.bar)+Math.max(0,needSrv-D.srv);
+    extraN+=ex;extraCost+=ex*(P.pkH+1)*st.cap.extraCost*W;
+    out.push({d,H:P.H,pkH:P.pkH,g,c,peakG,occ,needBar,needSrv,ex});G+=g;cap+=c;hours+=P.H});
+  return {days:out,G,cap,hours,n:out.length,extraCost,extraN};
+}
+function loanSched(){if(Array.isArray(st.loan.ovr)&&st.loan.ovr.length===12){const m=st.loan.ovr.map(x=>({int:+x.int||0,pr:+x.pr||0}));const ai=m.reduce((a,x)=>a+x.int,0)/12,ap=m.reduce((a,x)=>a+x.pr,0)/12;return {A:ai+ap,m,int:ai,pr:ap,ovr:true}}const L=st.loan,r=L.rate/1200,n=Math.max(1,Math.round(L.years*12));const A=L.amt>0?(r?L.amt*r/(1-Math.pow(1+r,-n)):L.amt/n):0;let bal=L.amt;const m=[];for(let i=0;i<12;i++){const it=bal*r,pr=Math.min(bal,A-it);bal-=pr;m.push({int:it,pr})}return {A,m,int:m.reduce((a,x)=>a+x.int,0)/12,pr:m.reduce((a,x)=>a+x.pr,0)/12}}
+function estT(x){x=Math.floor(Math.max(0,x));if(x<=12348)return 0;if(x<=17799){const y=(x-12348)/1e4;return (914.51*y+1400)*y}if(x<=69878){const z=(x-17799)/1e4;return (173.10*z+2397)*z+1034.87}if(x<=277825)return 0.42*x-11135.63;return 0.45*x-19470.38}
+function taxYear(G){
+  const t=st.tax;if(G<=0)return 0;
+  if(t.mode==='simple')return G*t.rate/100;
+  const zvE=Math.max(0,G-t.kv*12),sp=Math.max(0,+t.spouse||0);
+  const tot=sp>0?2*estT((zvE+sp)/2):estT(zvE),base=sp>0?2*estT(sp/2):0;
+  const ertrag=Math.max(0,Math.floor((G-24500)/100)*100),mb=ertrag*0.035,gst=mb*t.heb/100;
+  const credit=Math.min(4*mb,gst,Math.max(0,tot-base));
+  const FG=sp>0?40700:20350,soli=e=>e>FG?Math.min(0.055*e,0.119*(e-FG)):0;
+  const after=tot-credit;
+  return Math.max(0,(after-base)+(soli(after)-soli(base))+gst);
+}
+function money(R,E,extra,LS,taxOverride){
+  const cogs=R*E.cogsRate,card=R*E.grossRate*st.card.share/100*st.card.fee/100;
+  const staff=(+st.staff.cost||0)+extra,rent=+st.v.rentNet||0,other=st.fixed.reduce((a,f)=>a+(+f.a||0),0);
+  const afa=st.equip.mo!=null?+st.equip.mo:(st.equip.years>0?st.equip.amt/st.equip.years/12:0),int=LS?LS.int:0,prin=LS?LS.pr:0;
+  const ebt=R-cogs-card-staff-rent-other-int-afa;
+  const tax=taxOverride!=null?taxOverride:taxYear(ebt*12)/12;
+  const ul=+st.staff.ul||0,kv=+st.tax.kv||0;
+  const savings=ebt-tax+afa-prin-ul-kv;
+  return {R,gross:R*E.grossRate,cogs,card,staff,extra,rent,other,int,prin,afa,ebt,tax,ul,kv,savings,roh:R-cogs,prime:R?(cogs+staff+ul)/R*100:0};
+}
+function solve(f,lo=0,hi=400000){if(f(hi)<0)return null;if(f(lo)>=0)return lo;for(let i=0;i<60;i++){const m=(lo+hi)/2;if(f(m)>=0)hi=m;else lo=m}return hi}
+
+function calc(){
+  const s=st,al=[],A=(lv,t)=>al.push({lv,t});
+  const E=guestEcon(),LS=loanSched(),N=nights();
+  const R1=N.G*W*E.net;
+  const atR=R=>{const m=R1?R/R1:0;const n=nights({occMul:m});return money(R,E,n.extraCost,LS)};
+  const plan=money(R1,E,N.extraCost,LS);
+  const Rt=R1?solve(R=>atR(R).savings-s.target):null;
+  const tgt=Rt!=null?atR(Rt):null,tN=Rt!=null&&R1?nights({occMul:Rt/R1}):null;
+  const beE=R1?solve(R=>atR(R).ebt):null,beL=R1?solve(R=>atR(R).savings):null;
+  const nightsM=N.n*W,seatH=(+s.v.seats||0)*N.hours*W;
+  const per=R=>{const gM=E.net?R/E.net:0;return {gM,gN:nightsM?gM/nightsM:0,revN:nightsM?R/nightsM:0,ckN:nightsM?gM/nightsM*E.ck:0,drN:nightsM?gM/nightsM*E.D:0,cap:N.cap*W?gM/(N.cap*W)*100:0,revpash:seatH?R/seatH:0,turn:(+s.v.seats&&nightsM)?gM/nightsM/s.v.seats:0}};
+  // scenarios
+  const scen=(o,label)=>{const e=guestEcon(o.dm||1,o.wasteX||1),n=nights(o),R=n.G*W*e.net;const m=money(R,e,n.extraCost,LS);const g=e.net?R/e.net/nightsM:0;return Object.assign(m,{label,gN:g,revpac:e.net,cap:n.cap*W?R/e.net/(n.cap*W)*100:0})};
+  const bad=scen({occMul:s.sc.badOcc/100,dm:s.sc.badDrinks/100,wasteX:s.sc.badWaste/100},'Kötü ay');
+  const base=scen({},'Baz (plan)');
+  const good=scen({occOv:{4:s.sc.goodOcc,5:s.sc.goodOcc},terr:true,dm:s.sc.goodDrinks/100},'İyi ay');
+  // 12 months
+  const Rsel=s.tbl==='target'&&Rt!=null?Rt:R1,mean=s.idx.reduce((a,x)=>a+(+x||0),0)/12||1;
+  const months=s.idx.map((x,i)=>{const R=Rsel*(+x||0)/mean;const n=R1?nights({occMul:R/R1}):{extraCost:0};const m=money(R,E,n.extraCost,{int:LS.m[i].int,pr:LS.m[i].pr},0);return Object.assign(m,{i,idx:+x||0})});
+  const yTax=taxYear(months.reduce((a,m)=>a+m.ebt,0))/12;let cum=0;
+  months.forEach(m=>{m.tax=yTax;m.savings=m.ebt-yTax+m.afa-m.prin-m.ul-m.kv;cum+=m.savings;m.cum=cum});
+  const minCum=Math.min(...months.map(m=>m.cum)),minM=months.find(m=>m.cum===minCum);
+  // alarms
+  if(!R1)A('r','Açık gün yok veya koltuk sayısı 0: Menü sekmesinde günleri kontrol et.');
+  if(Rt==null&&R1)A('r','Bu gider yapısıyla hedefe hiçbir ciroda ulaşılamıyor.');
+  if(tgt){const p=per(Rt);
+    if(p.cap>100)A('r',`Hedef için gece başı ${nf(p.gN)} misafir gerekiyor: mevcut koltuk ve oturma süresiyle fiziksel kapasitenin %${nf(p.cap)}'i. Fiyat, içki sayısı veya açık gün artmalı.`);
+    else if(p.cap>85)A('y',`Hedef kapasitenin %${nf(p.cap)}'ini kullanıyor: her gece neredeyse dolu olmalısın.`);
+    if(tN&&tN.extraN>0)A('r',`Hedef ciroda pikte ${tN.extraN} ek personel gerekiyor (${tN.days.filter(x=>x.ex).map(x=>DAYN[x.d]).join(', ')}): +${eur(tN.extraCost)}/ay, hesaba eklendi.`);}
+  if(plan.savings<0)A('r',`Plan senaryosunda ayda ${eur(-plan.savings)} eksik: yaşam maaşın ve kredi anaparası çıkmıyor.`);
+  else if(plan.savings<s.target)A('y',`Plan ayda ${eur(plan.savings)} biriktiriyor; hedefe ${eur(s.target-plan.savings)} eksik.`);
+  else A('ok',`Plan, doluluk varsayımların gerçekleşirse ayda ${eur(plan.savings)} biriktiriyor (hedef ${eur(s.target)}).`);
+  if(N.extraN>0)A('r',`Plan doluluğunda pikte ${N.extraN} ek personel gerekiyor: +${eur(N.extraCost)}/ay.`);
+  if(plan.prime>60)A('r',`Prime cost %${nf(plan.prime,1)}: %60 üstü.`);else if(plan.prime>55)A('y',`Prime cost %${nf(plan.prime,1)}: hedef %55 altı.`);
+  if(E.cogsRate>0.25)A('y',`Fire dahil mal maliyeti %${nf(E.cogsRate*100,1)}: %25 üstü. Pour cost veya Schwund'u gözden geçir.`);
+  if(minCum<0)A('r',`12 ayda kasa ${MON[minM.i]} sonunda ${eur(minCum)}'ya iniyor: en az ${eur(-minCum)} nakit rezerv gerekir.`);
+  if(bad.savings<0)A('y',`Kötü ayda ${eur(-bad.savings)} eksik. Üst üste 3 kötü ay için ${eur(-bad.savings*3)} rezerv düşün.`);
+  if(s.v.m1Rev&&R1&&Math.abs(R1-s.v.m1Rev)/s.v.m1Rev>0.25)A('i',`Doluluk ve oturma varsayımların ayda ${eur(R1)} net ciro ediyor; Modül 1/2'de ${eur(s.v.m1Rev)} varsaymıştın. Hangisi gerçekçi? Doluluğu düşürüp hedefi tekrar kontrol et.`);
+  const avgCk=s.mix.filter(i=>i.ck).reduce((a,i,_,arr)=>a+i.p/arr.length,0);
+  if(avgCk>=13.5)A('i',`Kokteyl ortalaması ${nf(avgCk,2)} €. Chemnitz fiyat testi: Menü'de fiyatı 1 € düşür, gereken misafirin ne kadar arttığına bak.`);
+  const ord={r:0,y:1,ok:2,i:3};al.sort((a,b)=>ord[a.lv]-ord[b.lv]);
+  return {E,LS,N,R1,plan,Rt,tgt,tN,beE,beL,per,bad,base,good,months,minCum,al,nightsM,seatH};
+}
+
+const F=(k,label,min,max,step,unit,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="${k}"><em>${unit}</em></span></div>${max!=null?`<input id="r_${id}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label}">`:''}${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const TG=(k,label,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="tog"><label for="b_${id}">${label}${hint?`<span class="hint" style="display:block">${hint}</span>`:''}</label><input type="checkbox" class="sw" id="b_${id}" data-k="${k}" data-t="b"></div>`};
+const R=(l,v,cls='',big)=>`<div class="row${big?' big':''}"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+const SEC=(t,body,open,sv='')=>`<details class="sec"${open?' open':''}><summary>${t}<span class="sv">${sv}</span></summary><div class="in">${body}</div></details>`;
+function paint(r){const p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--f',Math.max(0,Math.min(100,p))+'%')}
+function fillInputs(root){$$('[data-k]',root).forEach(el=>{const v=getP(st,el.dataset.k);if(el.dataset.t==='b')el.checked=!!v;else if(el.type==='time')el.value=fT(v);else el.value=el.classList.contains('num')?fmtIn(v):(v??'')});$$('input[type=range]',root).forEach(paint)}
+
+function renderStatic(){
+  $('#tgtForm').innerHTML=F('target','Aylık net birikim hedefi',0,15000,250,'€','Yaşam maaşın, sağlık sigortan, vergi ve kredi anaparası çıktıktan sonra kenara kalan.');
+  $('#mixForm').innerHTML=`<div class="card" style="margin-top:12px"><h2>Menü &amp; satış karması</h2><p class="note">Fiyatlar KDV dahil (menüdeki fiyat). Pour cost net fiyata göre. Satış payları içecekler arasında; toplam otomatik %100'e oranlanır <span id="shSum"></span>.</p></div>`+
+    st.mix.map((i,k)=>`<div class="card pc"><label class="lb" for="mn_${k}" style="margin-top:0">Kategori</label><input id="mn_${k}" type="text" data-k="mix.${k}.n" data-t="s">${F(`mix.${k}.p`,'Brüt fiyat',2,20,0.5,'€')}${F(`mix.${k}.pc`,'Pour cost',5,50,1,'%')}${F(`mix.${k}.sh`,'Satış payı',0,60,1,'%')}${TG(`mix.${k}.ck`,'Kokteyl sayılır','Gece başı kokteyl sayısına girer.')}<div class="out" id="mo_${k}"></div></div>`).join('')+
+    `<div class="card pc" style="border-left-color:var(--sand)"><h3>Aperitivo tabağı (%7 KDV)</h3>${F('food.p','Brüt fiyat',2,20,0.5,'€')}${F('food.pc','Mal maliyeti',5,60,1,'%')}${F('food.attach','Yiyecek alan misafir',0,100,5,'%','Bu oran tabak + kombi toplamıdır.')}<div class="out" id="mo_food"></div></div>
+    <div class="card pc" style="border-left-color:var(--sand)"><h3>Kombi paket</h3>${TG('kombi.on','Spritz + tabak paketi açık','%15 içecek (%19), %85 yiyecek (%7) pauschal bölüşüm.')}${F('kombi.p','Brüt fiyat',5,30,0.5,'€')}${F('kombi.pc','Mal maliyeti',5,60,1,'%')}${F('kombi.rate','Yiyecek alanların kombi seçme oranı',0,100,5,'%')}<div class="out" id="mo_kombi"></div></div>
+    <div class="card"><h2>Misafir davranışı</h2>${F('dpg','Ziyaret başına içki',1,5,0.1,'içki')}</div>`+
+    SD.map(d=>`<div class="card"><div class="fh"><h3 style="margin:0">${DAYL[d]}</h3><input type="checkbox" class="sw" data-k="days.${d}.on" data-t="b" aria-label="${DAYL[d]} açık"></div>
+      <div class="dayset"><div><label class="lb">Açılış</label><input type="time" step="900" data-k="days.${d}.open"></div><div><label class="lb">Kapanış</label><input type="time" step="900" data-k="days.${d}.close"></div><div><label class="lb">Pik başı</label><input type="time" step="900" data-k="days.${d}.ps"></div><div><label class="lb">Pik sonu</label><input type="time" step="900" data-k="days.${d}.pe"></div></div>
+      ${F(`days.${d}.occ`,'Pikte doluluk',0,100,5,'%','İlk ve son saatte yarısı, pik dışında %75\'i.')}${F(`days.${d}.dwell`,'Oturma süresi',0.5,4,0.25,'saat')}${F(`days.${d}.stand`,'Pikte ayakta misafir',0,40,1,'kişi')}${F(`days.${d}.bar`,'Planlı barmen (pik)',0,4,1,'kişi','Modül 2\'den gelir.')}${F(`days.${d}.srv`,'Planlı servis (pik)',0,4,1,'kişi')}<div class="out" id="do_${d}"></div></div>`).join('');
+  fillInputs($('#mixForm'));fillInputs($('#tgtForm'));
+  $('#costForm').innerHTML=
+    SEC('Mekân, kira &amp; personel',F('v.seats','Oturma kapasitesi (iç)',0,120,1,'koltuk')+F('v.stools','Bunun bar taburesi',0,30,1,'tabure')+F('v.terrace','Teras koltuğu',0,60,1,'koltuk')+F('v.rentNet','Warmmiete (net, KDV hariç)',0,6000,10,'€/ay','KDV\'li kirada %19 Vorsteuer olarak geri alınır.')+F('staff.cost','Personel maliyeti (sen hariç)',0,20000,50,'€/ay','Modül 2\'den gelir.')+F('staff.ul','Yaşam maaşın (Unternehmerlohn)',0,8000,50,'€/ay')+F('tax.kv','Kendi sağlık sigortan',0,1500,10,'€/ay','GKV azamisi 2026 ~1.261 €/ay (Modül 5).')+F('v.m1Rev','Modül 1/2 ciro varsayımı',5000,60000,500,'€/ay','Sadece karşılaştırma: plan cirosu bundan çok saparsa uyarı çıkar.'),true)+
+    SEC('Sabit giderler',st.fixed.map((f,i)=>`<div class="fld"><div class="fh"><input type="text" data-k="fixed.${i}.n" data-t="s" aria-label="Gider adı" style="flex:1"><span class="nu"><input class="num" type="text" inputmode="decimal" autocomplete="off" data-k="fixed.${i}.a" aria-label="Tutar"><em>€/ay</em></span><button class="btn dan" type="button" data-frm="${i}" aria-label="Sil" style="padding:10px 12px">×</button></div></div>`).join('')+`<div class="btns"><button class="btn" type="button" id="fAdd">+ Gider ekle</button></div><div class="out" id="o_fixed"></div>`,true)+
+    SEC('Kayıp &amp; ödeme',F('loss.schwund','Schwund (dökülme, fazla ölçü)',0,10,0.5,'%','Mal maliyetine eklenir.')+F('loss.batch','Batch firesi',0,10,0.5,'%')+F('loss.ikram','İkram / personel içkisi',0,10,0.5,'%')+F('card.share','Kartla ödeme payı',0,100,5,'%')+F('card.fee','Ortalama kart komisyonu',0,3,0.05,'%','Brüt tutar üzerinden.'))+
+    SEC('Kredi &amp; amortisman',F('loan.amt','Kredi tutarı',0,200000,1000,'€')+F('loan.rate','Faiz',0,15,0.1,'%')+F('loan.years','Vade',1,15,1,'yıl')+F('equip.amt','Ekipman yatırımı',0,150000,1000,'€')+F('equip.years','Amortisman süresi',1,15,1,'yıl')+`<div class="out" id="o_loan"></div>`)+
+    SEC('Vergi',`<div class="fld"><div class="fh"><span>Mod</span><div class="seg" role="group" aria-label="Vergi modu"><button type="button" data-tax="simple">Basit</button><button type="button" data-tax="detail">Detaylı</button></div></div></div>`+(st.tax.mode==='simple'?F('tax.rate','Kâr üzerinden vergi',0,50,1,'%','Gelir + Gewerbesteuer + Soli için kaba oran.'):F('tax.spouse','Eşinin yıllık vergiye tabi geliri',0,100000,500,'€','0 = tek başına beyan. Doluysa ortak beyan (splitting) ve sadece barın eklediği vergi.')+F('tax.heb','Gewerbesteuer çarpanı (Chemnitz)',200,600,10,'%'))+`<div class="out" id="o_tax"></div>`)+
+    SEC('Kapasite &amp; senaryolar',F('cap.barCap','Barmen kapasitesi (batch)',30,120,1,'içki/s')+F('cap.srvCap','Servis kapasitesi',10,40,1,'misafir')+F('cap.extraCost','Ek personel saat maliyeti',14,40,0.5,'€/s','İşveren maliyeti, SFN dahil.')+F('cap.terUse','Teras kullanım katsayısı',0,100,5,'%')+F('sc.badOcc','Kötü ay doluluk çarpanı',30,100,5,'%')+F('sc.badDrinks','Kötü ay içki çarpanı',50,100,5,'%')+F('sc.badWaste','Kötü ay batch firesi çarpanı',100,400,25,'%')+F('sc.goodOcc','İyi ay Cuma–Cumartesi doluluk',50,100,5,'%')+F('sc.goodDrinks','İyi ay içki çarpanı',100,150,5,'%'))+
+    SEC('Mevsimsellik (ortalama ay = 100)',`<div class="idx">${MON.map((m,i)=>`<label>${m}<input class="num" type="text" inputmode="decimal" autocomplete="off" data-k="idx.${i}"></label>`).join('')}</div><p class="note" id="idxNote"></p>`);
+  fillInputs($('#costForm'));
+  $$('[data-tax]').forEach(b=>b.classList.toggle('on',b.dataset.tax===st.tax.mode));
+  $$('[data-tbl]').forEach(b=>b.classList.toggle('on',b.dataset.tbl===st.tbl));
+}
+
+const WF=[['cogs','Mal (fire dahil)','#b8855f'],['card','Kart komisyonu','#8c90b4'],['staff','Personel','#80a493'],['rent','Kira','#6f8ea3'],['other','Diğer sabit','#a084ab'],['int','Kredi faizi','#9c7f5e'],['prin','Kredi anapara','#c3cb74'],['tax','Vergi','#cf7f6a'],['live','Yaşam + sigorta','#adb862'],['savings','Birikim','#dcc69b']];
+/* ---------- Güvenli sayı (Modül 1 ve 2 ile aynı fonksiyon) ---------- */
+// Nokta varsayılan olarak ONDALIK; binlik kuralı yalnızca büyük tutar alanlarında.
+const BIGK=new Set(['v.rentNet','v.m1Rev','staff.cost','staff.fixed','staff.variable','staff.ul','tax.kv','tax.spouse','target','loan.amt','equip.amt']);
+const isBig=k=>BIGK.has(k)||/^fixed\.\d+\.a$/.test(k);
+function hard(k){
+  if(/^mix\.\d+\.p$/.test(k)||k==='food.p'||k==='kombi.p')return [0,100];
+  if(/\.(occ|pc|sh|attach|rate|share|terUse)$/.test(k)||k.startsWith('loss.'))return k==='loan.rate'?[0,25]:[0,100];
+  if(/^days\.\d\.dwell$/.test(k))return [0.25,8];
+  if(/^days\.\d\.(bar|srv)$/.test(k))return [0,20];
+  if(/^days\.\d\.stand$/.test(k))return [0,500];
+  if(k==='dpg')return [0.1,20];
+  if(k==='card.fee')return [0,10];
+  if(k==='loan.years'||k==='equip.years')return [1,30];
+  if(k==='tax.heb')return [0,900];
+  if(k==='cap.extraCost')return [0,200];
+  if(k==='cap.barCap'||k==='cap.srvCap')return [1,1000];
+  if(k.startsWith('sc.'))return [0,500];
+  if(k.startsWith('idx.'))return [0,300];
+  if(/^v\.(seats|stools|terrace)$/.test(k))return [0,2000];
+  return [0,1e9];
+}
+const clampK=(k,v)=>{const [a,b]=hard(k);return Math.min(b,Math.max(a,v))};
+const num=v=>{const x=parseNum(v,true);return Number.isFinite(x)?x:null};
+
+/* ---------- Galapagos varsayılan profili ---------- */
+const PROFILE=[
+  ['target','Aylık net birikim hedefi',5000,'e'],
+  ['staff.ul','Yaşam maaşın (Unternehmerlohn)',3000,'e'],
+  ['tax.kv','Kendi sağlık sigortan',1261,'e'],
+  ['v.m1Rev','Modül 1/2 ciro varsayımı',29000,'e'],
+  ['days.6.on','Pazar','kapalı','day']
+];
+const profVal=(k,v)=>k==='days.6.on'?false:v;
+function profRows(){return PROFILE.map(([k,l,v,t])=>{const cur=getP(st,k),val=profVal(k,v);return {k,l,t,cur,val,same:cur===val}})}
+function withSt(s,fn){const keep=st;st=s;try{return fn()}finally{st=keep}}
+function renderProfile(){
+  const box=$('#profBox');if(!box)return;
+  const rows=profRows(),diff=rows.filter(r=>!r.same);
+  const show=(r,v)=>r.t==='day'?(v===false?'kapalı':'açık'):eur(+v);
+  let impact='';
+  if(diff.length){
+    const s2=clone(st);diff.forEach(r=>setP(s2,r.k,r.val));
+    const a=C||calc(),b=withSt(s2,()=>calc());
+    impact=`<p class="note">Etkisi: hedef ciro ${a.Rt!=null?eur(a.Rt):'ulaşılamıyor'} → <b>${b.Rt!=null?eur(b.Rt):'ulaşılamıyor'}</b> · plan cirosu ${eur(a.R1)} → ${eur(b.R1)} · plan birikimi ${eur(a.plan.savings)} → ${eur(b.plan.savings)}</p>`;
+  }
+  box.innerHTML=`<p class="note">Menüne, satış karmana, sabit giderlerine ve kredine dokunmaz; sadece bu ${PROFILE.length} değeri ayarlar.</p>
+  <ul class="pl">${rows.map(r=>`<li class="${r.same?'same':''}"><div class="plh"><span>${esc(r.l)}</span>${r.same?'<small>aynı</small>':''}</div><div class="pv"><span class="old">${show(r,r.cur)}</span><span class="ar">→</span><span class="new">${show(r,r.val)}</span></div></li>`).join('')}</ul>
+  ${impact}
+  <div class="btns">${diff.length?`<button class="btn pri" type="button" id="profApply">Profili uygula (${diff.length} değişiklik)</button>`:'<span class="note" style="margin:0">Profil zaten uygulanmış.</span>'}</div>`;
+  const sv=$('#sv_prof');if(sv)sv.textContent=diff.length?`${diff.length} fark`:'uygulandı';
+}
+function applyProfile(){
+  const keep=clone(st),diff=profRows().filter(r=>!r.same);if(!diff.length)return;
+  diff.forEach(r=>setP(st,r.k,r.val));
+  save();renderStatic();renderOut();
+  toast(`Profil uygulandı: ${diff.map(r=>r.l).join(', ')}`,()=>{st=keep;save();renderStatic();renderOut()});
+}
+
+/* ---------- Çoklu JSON alımı (önizlemeli) ---------- */
+function extractObjects(t){
+  const s=String(t||''),out=[];let depth=0,start=-1,inStr=false,esc2=false;
+  for(let i=0;i<s.length;i++){
+    const ch=s[i];
+    if(inStr){if(esc2)esc2=false;else if(ch==='\\')esc2=true;else if(ch==='"')inStr=false;continue}
+    if(ch==='"'){if(depth>0)inStr=true;continue}
+    if(ch==='{'){if(depth===0)start=i;depth++}
+    else if(ch==='}'&&depth>0){depth--;if(depth===0&&start>-1){try{out.push(JSON.parse(s.slice(start,i+1)))}catch(e){}start=-1}}
+  }
+  return out;
+}
+const kindOf=j=>j.schema==='galapagos.kurulum.v1'||j.schema==='galapagos.m3.loan_afa.v1'?'m4':j.schema==='galapagos.personel.v1'?'m2':(j.schema==='galapagos.mekan.v1'||j.total_seats!=null)?'m1':
+  j.schema==='galapagos.ciro.backup.v1'?'bk3':j.schema==='galapagos.ciro.v1'?'self':Array.isArray(j.venues)?'bk1':j.schema&&/backup/.test(j.schema)?'bk':'?';
+const MODT={m1:'Modül 1 · Mekân & Kapasite',m2:'Modül 2 · Personel & Vardiya',m4:'Modül 4 · Kurulum & KfW'};
+const dayTxt=x=>x.on?`açık ${fT(x.open)}–${fT(x.close)} · %${nf(x.occ)} · ${x.bar} barmen / ${x.srv} servis`:'kapalı';
+let pend=null;
+function importJSON(t){
+  const msg=$('#impMsg');pend=null;renderPend();
+  const objs=extractObjects(t);
+  if(!objs.length){msg.textContent='JSON bulunamadı. Modül çıktısındaki { … } metninin tamamını yapıştır.';return}
+  const N=x=>{const n=parseNum(x,false);return Number.isFinite(n)?n:null};
+  const groups=[],skipped=[];
+  const byKind={};objs.forEach(j=>{const k=kindOf(j);(byKind[k]=byKind[k]||[]).push(j)});
+  Object.entries(byKind).forEach(([k,list])=>{
+    if(k==='bk3')skipped.push('Modül 3 yedeği → aşağıdaki "Yedekle & içe aktar" bölümünü kullan.');
+    else if(k==='self')skipped.push('Bu Modül 3\'ün kendi çıktısı; içe alınacak bir şey yok.');
+    else if(k==='bk1'||k==='bk')skipped.push('Yedek dosyası tanındı ama alınmaz: modülün "aktar" çıktısını yapıştır.');
+    else if(k==='?')skipped.push(`${list.length} tanınmayan JSON atlandı.`);
+    else if(list.length>1)skipped.push(`${MODT[k]} için ${list.length} JSON var; sonuncusu kullanıldı.`);
+  });
+  const m1=(byKind.m1||[]).slice(-1)[0],m2=(byKind.m2||[]).slice(-1)[0],m4=(byKind.m4||[]).slice(-1)[0];
+  const row=(rows,o)=>{const same=o.same!=null?o.same:(o.t==='s'?String(o.cur??'')===String(o.val??''):+o.cur===+o.val);rows.push(Object.assign({same,on:!same&&!o.flag},o))};
+  if(m1){
+    const e=m1.extra||{},rows=[],info=[];
+    if(m1.venue_name)row(rows,{k:'v.name',l:'Mekân adı',t:'s',cur:st.v.name,val:String(m1.venue_name)});
+    [['v.seats','Oturma (iç)',m1.total_seats],['v.stools','Bar taburesi',m1.bar_stools],['v.terrace','Teras koltuğu',m1.terrace_seats]].forEach(([k,l,x])=>{const v=N(x);if(v==null)info.push(`${l} yok; mevcut ${nf(getP(st,k))} kaldı.`);else row(rows,{k,l,t:'n',cur:getP(st,k),val:v,flag:k==='v.seats'&&v<=0?'Modül 1\'de oturma 0.':k==='v.stools'&&v>N(m1.total_seats)?'Tabure oturmadan fazla.':''})});
+    const rn=N(e.warmmiete_netto);
+    if(rn!=null)row(rows,{k:'v.rentNet',l:'Warmmiete (net)',t:'e',cur:st.v.rentNet,val:rn});
+    else if(N(m1.warmmiete)!=null)row(rows,{k:'v.rentNet',l:'Warmmiete (net)',t:'e',cur:st.v.rentNet,val:N(m1.warmmiete),flag:'Sadece brüt Warmmiete var; KDV\'liyse net değil. Kontrol et.'});
+    else info.push(`Kira yok; mevcut ${eur(st.v.rentNet)} kaldı.`);
+    const rv=N(e.expected_revenue);if(rv!=null)row(rows,{k:'v.m1Rev',l:'Modül 1 ciro varsayımı',t:'e',cur:st.v.m1Rev,val:rv});else info.push(`Ciro yok; mevcut ${eur(st.v.m1Rev)} kaldı.`);
+    if(e.terrace&&e.terrace.usage_pct!=null)row(rows,{k:'cap.terUse',l:'Teras kullanım katsayısı',t:'p',cur:st.cap.terUse,val:N(e.terrace.usage_pct)});
+    if(e.direct_competitors!=null)info.push(`Bilgi: ${e.competition_radius_m||'?'} m içinde ${e.direct_competitors} doğrudan rakip (Modül 3'te kullanılmaz).`);
+    groups.push({m:'m1',rows,info,src:'Modül 1'});
+  }
+  if(m2){
+    const rows=[],info=[];
+    [['staff.cost','Personel maliyeti (sen hariç)','monthly_staff_cost'],['staff.fixed','Bunun sabiti (Voll/Teilzeit)','monthly_fixed_staff_cost'],['staff.variable','Bunun değişkeni','monthly_variable_staff_cost'],['staff.ul','Unternehmerlohn','unternehmerlohn']].forEach(([k,l,f])=>{const v=N(m2[f]);if(v==null)info.push(`Modül 2'de ${l} yok; mevcut ${eur(getP(st,k))} kaldı.`);else row(rows,{k,l,t:'e',cur:getP(st,k),val:v})});
+    const daily=Array.isArray(m2.daily)?m2.daily:[];
+    if(!daily.length)info.push('Modül 2\'de gün listesi yok; açılış saatleri ve doluluk aynı kaldı.');
+    SD.forEach(d=>{const D=daily.find(x=>x.day_index===d);if(!D)return;const x=st.days[d],nx=clone(x);
+      nx.on=!!D.open;if(D.open){nx.open=toH(D.open);nx.close=toH(D.close);if(nx.close<=nx.open)nx.close+=24;const o=N(D.occupancy_pct);if(o)nx.occ=o}
+      const h=D.hourly||[];if(h.length){nx.bar=Math.max(...h.map(y=>y.bartenders||0));nx.srv=Math.max(...h.map(y=>y.servers||0))}
+      row(rows,{k:'days.'+d,l:DAYL[d],t:'day',cur:dayTxt(x),val:dayTxt(nx),same:dayTxt(x)===dayTxt(nx),obj:nx});
+    });
+    const rv=N(m2.expected_revenue);
+    if(rv!=null&&!m1)row(rows,{k:'v.m1Rev',l:'Modül 1/2 ciro varsayımı',t:'e',cur:st.v.m1Rev,val:rv});
+    const f1=m2.from_module1;
+    if(f1&&!m1){
+      [['v.seats','Oturma (iç)',f1.total_seats],['v.stools','Bar taburesi',f1.bar_stools],['v.terrace','Teras koltuğu',f1.terrace_seats]].forEach(([k,l,x])=>{const v=N(x);if(v!=null)row(rows,{k,l:l+' (Modül 2 kopyası)',t:'n',cur:getP(st,k),val:v})});
+      const w=N(f1.warmmiete);if(w)row(rows,{k:'v.rentNet',l:'Warmmiete (Modül 2 kopyası)',t:'e',cur:st.v.rentNet,val:w,flag:'Modül 2\'deki kira brüt (KDV dahil olabilir). Net kira için Modül 1\'i de yapıştır.'});
+    }else if(f1&&m1)info.push('Koltuk, tabure, teras ve kira: Modül 1 öncelikli, Modül 2\'deki kopya kullanılmadı.');
+    groups.push({m:'m2',rows,info,src:'Modül 2'});
+  }
+  if(m4){
+    const b=m4.schema==='galapagos.kurulum.v1'?m4.module3_block:m4,rows=[],info=[];
+    if(!b||!Array.isArray(b.months12))info.push('Modül 4 çıktısında kredi bloğu (module3_block) yok.');
+    else{
+      row(rows,{k:'loan.ovr',l:'Kredi planı (ilk 12 işletme ayı)',t:'s',cur:st.loan.ovr?'Modül 4':'kendi hesabı',val:'Modül 4 (ödemesiz dönem dahil)',same:false,m4:b});
+      const la=N(b.loan_amount);if(la!=null)row(rows,{k:'loan.amt',l:'Kredi tutarı',t:'e',cur:st.loan.amt,val:la});
+      const af=N(b.monthly_afa);if(af!=null)row(rows,{k:'equip.mo',l:'Aylık AfA',t:'e',cur:st.equip.mo??(st.equip.amt/st.equip.years/12),val:af});
+      const eb=N(b.equipment_basis);if(eb!=null)row(rows,{k:'equip.amt',l:'Ekipman yatırımı',t:'e',cur:st.equip.amt,val:eb});
+    }
+    groups.push({m:'m4',rows,info,src:'Modül 4'});
+  }
+  if(!groups.length){msg.textContent=skipped.join(' ')||'Tanınan modül JSON\'u yok.';return}
+  pend={groups,skipped};
+  const n=groups.reduce((a,g)=>a+g.rows.filter(r=>!r.same).length,0);
+  msg.textContent=`${groups.map(g=>g.src).join(' + ')} okundu: ${n} değişiklik. Kontrol et ve uygula. Menü ve sabit giderlerin değişmez.`;
+  renderPend();
+}
+const fmtR=(v,t)=>v==null||v===''?'–':t==='e'?eur(+v):t==='n'?nf(+v):t==='p'?'%'+nf(+v):String(v);
+function renderPend(){
+  const box=$('#impDiff');if(!box)return;
+  if(!pend){box.innerHTML='';return}
+  let gi=0;
+  box.innerHTML=pend.groups.map((g,G)=>`<h3 class="grp">${MODT[g.m]}</h3>${g.rows.length?`<ul class="pl">${g.rows.map((r,i)=>`<li class="${r.flag?'flag':''}${r.same?' same':''}"><label><input type="checkbox" data-pg="${G}.${i}"${r.on?' checked':''}${r.same?' disabled':''}><span>${esc(r.l)}${r.same?' <small>aynı</small>':''}</span></label><div class="pv"><span class="old">${esc(fmtR(r.cur,r.t))}</span><span class="ar">→</span><span class="new">${esc(fmtR(r.val,r.t))}</span></div>${r.flag?`<p class="fl">${esc(r.flag)}</p>`:''}</li>`).join('')}</ul>`:''}${g.info.map(t=>`<p class="note">${esc(t)}</p>`).join('')}`).join('')+
+  (pend.skipped.length?pend.skipped.map(t=>`<p class="note" style="color:var(--y)">${esc(t)}</p>`).join(''):'')+
+  `<div class="btns"><button class="btn pri" type="button" id="pdApply">Seçilenleri uygula (${pend.groups.reduce((a,g)=>a+g.rows.filter(r=>r.on).length,0)})</button><button class="btn" type="button" id="pdCancel">Vazgeç</button></div>`;
+}
+function applyPend(){
+  if(!pend)return;
+  const keep=clone(st),done=[];
+  pend.groups.forEach(g=>{
+    const sel=g.rows.filter(r=>r.on);if(!sel.length)return;
+    sel.forEach(r=>{
+      if(r.k==='loan.ovr'){st.loan.ovr=r.m4.months12}
+      else if(r.k==='equip.mo'){st.equip.mo=r.val}
+      else if(r.t==='day'){st.days[r.k.split('.')[1]]=Object.assign(st.days[r.k.split('.')[1]],r.obj)}
+      else setP(st,r.k,r.val);
+    });
+    if(g.m==='m1'&&sel.some(r=>r.k.startsWith('v.')))st.v.src='Modül 1';
+    if(g.m==='m2'){if(sel.some(r=>r.k.startsWith('staff.')))st.staff.src='Modül 2';if(sel.some(r=>r.k.startsWith('v.')&&r.l.includes('kopyası'))&&st.v.src!=='Modül 1')st.v.src='Modül 2 (Modül 1 kopyası)'}
+    done.push(`${g.src}: ${sel.length}`);
+  });
+  if(!done.length){toast('Seçili alan yok');return}
+  pend=null;save();renderStatic();renderOut();renderPend();
+  $('#impMsg').textContent=`Uygulandı (${done.join(' · ')}). Menü ve sabit giderler aynı kaldı.`;
+  toast('İçe alındı',()=>{st=keep;save();renderStatic();renderOut()});
+}
+
+let C=null;
+function renderOut(){
+  C=calc();const s=st,E=C.E;
+  const p=C.Rt!=null?C.per(C.Rt):null,pp=C.per(C.R1);
+  const sc=C.plan.savings<0?'r':C.plan.savings<s.target?'y':'g',pc=C.plan.prime>60?'r':C.plan.prime>55?'y':'g';
+  [['k1',C.Rt!=null?eur(C.Rt):'yok',p&&p.cap>100?'r':''],['k2',p?nf(p.gN):'–',p&&p.cap>100?'r':p&&p.cap>85?'y':''],['k3',eur(C.plan.savings),sc],['k4','%'+nf(C.plan.prime,1),pc]].forEach(([k,t,c])=>{const e=$('#'+k);e.className='kpi'+(c?' '+c:'');e.querySelector('b').textContent=t});
+  if(C.tgt){
+    const gap=C.Rt-C.R1;
+    $('#lead').innerHTML=`Ayda ${eur(s.target)} biriktirmek için ayda <em>${eur(C.Rt)}</em> net ciro, açık gece başına <em>${nf(p.gN)} misafir</em> gerekiyor. Planın ${eur(C.R1)}: ${gap>0?`${eur(gap)} eksik.`:`${eur(-gap)} fazlası var.`}`;
+    const t=C.tgt,segs={cogs:t.cogs,card:t.card,staff:t.staff,rent:t.rent,other:t.other,int:t.int,prin:t.prin,tax:t.tax,live:t.ul+t.kv,savings:Math.max(0,t.savings)};
+    const mx=Math.max(C.Rt,C.R1)||1;
+    $('#wfb').innerHTML=WF.map(([k,l,c])=>`<i style="width:${segs[k]/mx*100}%;background:${c}" title="${l}"></i>`).join('');
+    $('#wfp').innerHTML=`<i style="width:${C.R1/mx*100}%"></i><span class="mk" style="left:calc(${Math.min(100,C.Rt/mx*100)}% - 1px)" title="Hedef"></span>`;
+    $('#wfR').textContent=eur(C.Rt);$('#wfP').textContent=eur(C.R1);
+    $('#wfLeg').innerHTML=WF.map(([k,l,c])=>`<span><span><i class="dot" style="background:${c}"></i>${l}</span><b>${eur(segs[k])}</b></span>`).join('');
+    $('#o_tgt').innerHTML=R('Gereken net ciro / ay',eur(C.Rt),'',1)+R('Brüt (KDV dahil) / ay',eur(C.tgt.gross))+R('Gece başı net ciro',eur(p.revN))+R('Gece başı misafir',`${nf(p.gN)} (plan ${nf(pp.gN)})`,p.gN>pp.gN?'y':'g')+R('Gece başı kokteyl',nf(p.ckN))+R('Gece başı toplam içki',nf(p.drN))+R('Gereken doluluk / plan',`×${nf(C.R1?C.Rt/C.R1:0,2)}`)+R('Kapasite kullanımı','%'+nf(p.cap),p.cap>100?'r':p.cap>85?'y':'g')+R('Koltuk devir hızı / gece',nf(p.turn,2)+'×')+R('RevPASH',nf(p.revpash,2)+' €')+R('Ek personel (hedefte)',C.tN&&C.tN.extraN?`${C.tN.extraN} kişi · ${eur(C.tN.extraCost)}`:'yok',C.tN&&C.tN.extraN?'r':'g')+R('Vergi öncesi kâr (EBT)',eur(C.tgt.ebt))+R('Vergi',eur(C.tgt.tax));
+  }else{$('#lead').textContent='Bu gider yapısıyla hedefe ulaşan bir ciro bulunamadı.';['#wfb','#wfp','#wfLeg','#o_tgt'].forEach(x=>$(x).innerHTML='');$('#wfR').textContent='';$('#wfP').textContent=''}
+  const cols=[C.bad,C.base,C.good].concat(C.tgt?[Object.assign({},C.tgt,{label:'Hedef',gN:p.gN,revpac:E.net,cap:p.cap})]:[]);
+  const rowsS=[['Net ciro / ay',x=>eur(x.R)],['Gece başı misafir',x=>nf(x.gN)],['Kişi başı net adisyon',x=>nf(x.revpac,2)+' €'],['Rohertrag',x=>eur(x.roh)],['Prime cost',x=>'%'+nf(x.prime,1),x=>x.prime>60?'r':x.prime>55?'y':'g'],['EBT',x=>eur(x.ebt),x=>x.ebt<0?'r':''],['Vergi',x=>eur(x.tax)],['Birikim / ay',x=>eur(x.savings),x=>x.savings<0?'r':x.savings<s.target?'y':'g'],['Kapasite',x=>'%'+nf(x.cap),x=>x.cap>100?'r':x.cap>85?'y':'']];
+  $('#scTbl').innerHTML=`<thead><tr><th></th>${cols.map(c=>`<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rowsS.map(([l,f,c])=>`<tr><td>${l}</td>${cols.map(x=>`<td class="${c?c(x):''}">${f(x)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  const be=[['Kâr başa başı (EBT = 0)',C.beE],['Yaşam başa başı (birikim = 0)',C.beL],['Hedef ('+eur(s.target)+')',C.Rt]];
+  $('#beTbl').innerHTML=`<thead><tr><th></th><th>Ciro / ay</th><th>Ciro / gece</th><th>Misafir / gece</th></tr></thead><tbody>${be.map(([l,Rv])=>{if(Rv==null)return `<tr><td>${l}</td><td colspan="3">ulaşılamıyor</td></tr>`;const q=C.per(Rv);return `<tr><td>${l}</td><td>${eur(Rv)}</td><td>${eur(q.revN)}</td><td class="${q.gN>pp.gN?'y':'g'}">${nf(q.gN)}</td></tr>`}).join('')}<tr><td>Plan</td><td>${eur(C.R1)}</td><td>${eur(pp.revN)}</td><td>${nf(pp.gN)}</td></tr></tbody>`;
+  // months
+  const ms=C.months,ext=Math.max(1,...ms.map(m=>Math.abs(m.savings)));
+  const hasNeg=ms.some(m=>m.savings<0),zb=hasNeg?40:0,posH=95-zb,negH=zb-5;
+  $('#moChart').innerHTML=ms.map(m=>{const h=Math.abs(m.savings)/ext*(m.savings>=0?posH:negH);return `<div><span class="zero" style="bottom:${zb}%"></span><i style="${m.savings>=0?`bottom:${zb}%`:`top:${100-zb}%`};height:${h}%;background:${m.savings>=0?'var(--sand)':'var(--r)'}" title="${MON[m.i]} ${eur(m.savings)}"></i><span>${MON[m.i].slice(0,1)}</span></div>`}).join('');
+  $('#moTbl').innerHTML=`<thead><tr><th>Ay</th><th>Endeks</th><th>Net ciro</th><th>Prime</th><th>EBT</th><th>Birikim</th><th>Kümülatif</th></tr></thead><tbody>${ms.map(m=>`<tr><td>${MON[m.i]}</td><td>${m.idx}</td><td>${eur(m.R)}</td><td class="${m.prime>60?'r':m.prime>55?'y':''}">%${nf(m.prime)}</td><td class="${m.ebt<0?'r':''}">${eur(m.ebt)}</td><td class="${m.savings<0?'r':m.savings<s.target?'y':'g'}">${eur(m.savings)}</td><td class="${m.cum<0?'r':''}">${eur(m.cum)}</td></tr>`).join('')}<tr><td>Yıl</td><td></td><td>${eur(ms.reduce((a,m)=>a+m.R,0))}</td><td></td><td>${eur(ms.reduce((a,m)=>a+m.ebt,0))}</td><td>${eur(ms.reduce((a,m)=>a+m.savings,0))}</td><td></td></tr></tbody>`;
+  $$('[data-tbl]').forEach(b=>{b.classList.toggle('on',b.dataset.tbl===st.tbl);b.setAttribute('aria-pressed',b.dataset.tbl===st.tbl)});
+  $('#al').innerHTML=C.al.map(a=>`<li class="${a.lv}">${a.t}</li>`).join('');
+  const P=C.plan;
+  $('#sv_pl').textContent=eur(P.savings)+' birikim';
+  $('#o_pl').innerHTML=R('Net ciro (plan)',eur(P.R),'',1)+R('Brüt ciro (KDV dahil)',eur(P.gross))+R('Mal (fire dahil)',`${eur(P.cogs)} · %${nf(E.cogsRate*100,1)}`)+R('Rohertrag',eur(P.roh))+R('Personel',eur(P.staff))+R('Kira (net)',eur(P.rent))+R('Diğer sabit',eur(P.other))+R('Kart komisyonu',eur(P.card))+R('Kredi faizi',eur(P.int))+R('Amortisman (AfA)',eur(P.afa))+R('Vergi öncesi kâr (EBT)',eur(P.ebt),P.ebt<0?'r':'',1)+R(`Vergi (${st.tax.mode==='simple'?'%'+st.tax.rate:'detaylı'})`,eur(P.tax))+R('+ AfA (nakit değil)',eur(P.afa))+R('− Kredi anapara',eur(P.prin))+R('− Yaşam maaşın',eur(P.ul))+R('− Sağlık sigortan',eur(P.kv))+R('Kenara kalan',eur(P.savings),sc,1)+R('Prime cost','%'+nf(P.prime,1),pc)+R('RevPASH',nf(pp.revpash,2)+' €')+R('Koltuk devir hızı / gece',nf(pp.turn,2)+'×');
+  // menu outputs
+  const gM=C.R1&&E.net?C.R1/E.net:0;
+  st.mix.forEach((i,k)=>{const e=$('#mo_'+k);if(!e)return;const r=E.rows[k],net=i.p/1.19,c=net*i.pc/100;e.innerHTML=R('Net fiyat',nf(net,2)+' €')+R('Mal maliyeti',nf(c,2)+' €')+R('Katkı payı / adet',nf(net-c,2)+' €','g')+R('Adet / ay (plan)',nf(r.u*gM))});
+  const rf=E.rows.find(r=>r.n==='Aperitivo tabağı'),rk=E.rows.find(r=>r.n.startsWith('Kombi'));
+  if($('#mo_food'))$('#mo_food').innerHTML=R('Net fiyat',nf(rf.unitNet,2)+' €')+R('Katkı payı / adet',nf(rf.unitNet-rf.unitCogs,2)+' €','g')+R('Adet / ay (plan)',nf(rf.u*gM));
+  if($('#mo_kombi'))$('#mo_kombi').innerHTML=st.kombi.on?R('Net (%15 × %19 + %85 × %7)',nf(rk.unitNet,2)+' €')+R('Ayrı satılsaydı net',nf(((st.mix[2]||{p:11}).p)/1.19+st.food.p/1.07,2)+' €')+R('Katkı payı / adet',nf(rk.unitNet-rk.unitCogs,2)+' €','g')+R('Adet / ay (plan)',nf(rk.u*gM)):R('Kombi','kapalı');
+  const shs=st.mix.reduce((a,i)=>a+(+i.sh||0),0);if($('#shSum'))$('#shSum').textContent=`(şu an %${nf(shs)})`;
+  $('#o_guest').innerHTML=R('Ziyaret başına içki',nf(E.D,1))+R('Brüt adisyon',nf(E.gross,2)+' €')+R('Net adisyon (RevPAC)',nf(E.net,2)+' €','',1)+R('KDV payı',nf(E.gross-E.net,2)+' €')+R('Mal maliyeti (net)','%'+nf(E.rawRate*100,1))+R('Fire dahil','%'+nf(E.cogsRate*100,1),E.cogsRate>0.25?'y':'g')+R('Misafir başı kokteyl',nf(E.ck,2))+R('Misafir / ay (plan)',nf(gM))+R('Misafir / gece (plan)',nf(pp.gN));
+  const dbs=E.rows.map(r=>({n:r.n,v:(r.net-r.cogs)*gM})).sort((a,b)=>b.v-a.v),mxd=Math.max(1,...dbs.map(x=>x.v)),tot=dbs.reduce((a,x)=>a+x.v,0)||1;
+  $('#dbBars').innerHTML=dbs.map(x=>`<span title="${esc(x.n)}">%${nf(x.v/tot*100)}</span><div><div class="b"><i style="width:${x.v/mxd*100}%"></i></div><small class="note" style="margin:0">${esc(x.n)}</small></div><b>${eur(x.v)}</b>`).join('');
+  C.N.days.forEach(x=>{const e=$('#do_'+x.d);if(e)e.innerHTML=R('Açık saat',nf(x.H,2).replace(/,00$/,'')+' s')+R('Misafir / gece (plan)',nf(x.g),'',1)+R('Azami (pikte %100)',nf(x.c))+R('Pikte misafir',nf(x.peakG))+R('Gereken barmen / servis',`${x.needBar} / ${x.needSrv}`,x.ex?'r':'g')+R('Ciro / gece',eur(x.g*E.net))});
+  SD.forEach(d=>{if(!st.days[d].on){const e=$('#do_'+d);if(e)e.innerHTML=R('Durum','kapalı')}});
+  if($('#o_fixed'))$('#o_fixed').innerHTML=R('Sabit giderler toplamı',eur(P.other),'',1)+R('+ Kira (net)',eur(P.rent))+R('+ Personel',eur(P.staff))+R('Tüm sabit (kredi hariç)',eur(P.other+P.rent+P.staff));
+  if($('#o_loan'))$('#o_loan').innerHTML=(C.LS.ovr||st.equip.mo!=null?`<p class="note">${C.LS.ovr?'Kredi: Modül 4\'ten (ilk 12 işletme ayı, ödemesiz dönem dahil). ':''}${st.equip.mo!=null?'AfA: Modül 4\'ten. ':''}<button class="btn" type="button" id="clrM4" style="margin-top:6px">Modül 4 değerlerini kaldır</button></p>`:'')+R('Aylık taksit (ort.)',eur(C.LS.A),'',1)+R('1. yıl ort. faiz (gider)',eur(C.LS.int))+R('1. yıl ort. anapara (vergi sonrası)',eur(C.LS.pr))+R('Amortisman / ay',eur(P.afa));
+  if($('#o_tax'))$('#o_tax').innerHTML=R('Yıllık EBT (plan)',eur(P.ebt*12))+R('Yıllık vergi',eur(P.tax*12),'',1)+R('Efektif oran',P.ebt>0?'%'+nf(P.tax/P.ebt*100,1):'–')+(st.tax.mode==='detail'?`<p class="note">2026 tarifesi (Grundfreibetrag 12.348 €), Soli, Gewerbesteuer (24.500 € muafiyet, %3,5 × çarpan) ve gelir vergisinden mahsup (4,0 × Messbetrag). Sağlık sigortası tamamen düşülür varsayılır.</p>`:'');
+  const mean=st.idx.reduce((a,x)=>a+(+x||0),0)/12;if($('#idxNote'))$('#idxNote').textContent=`Ortalama ${nf(mean,1)}. 100 değilse uygulama ortalamaya göre oranlar; yıllık ciro planla aynı kalır.`;
+  $('#srcLine').textContent=`Mekân: ${st.v.src}${st.v.name?' · '+st.v.name:''} · Personel: ${st.staff.src}`;
+  $('#exTxt').value=JSON.stringify(exportObj(),null,2);
+  renderProfile();
+  $('#storeWarn').innerHTML=canStore?'':'<div class="banner">Tarayıcı kaydı kapalı: veriler sayfa kapanınca silinir. Giderler\'den yedek al.</div>';
+}
+
+function exportObj(){
+  const c=C,P=c.plan,pp=c.per(c.R1),q=c.Rt!=null?c.per(c.Rt):null,r=x=>Math.round(x);
+  const sumM=m=>({net_revenue:r(m.R),gross_revenue:r(m.gross),wareneinsatz:r(m.cogs),rohertrag:r(m.roh),prime_cost_pct:+m.prime.toFixed(1),staff_cost:r(m.staff),fixed_costs:r(m.staff+m.rent+m.other+m.int+m.afa),variable_costs:r(m.cogs+m.card),ebt:r(m.ebt),tax:r(m.tax),loan_principal:r(m.prin),cash_savings:r(m.savings)});
+  const be=x=>{if(x==null)return null;const v=c.per(x);return {monthly_net_revenue:r(x),nightly_net_revenue:r(v.revN),nightly_guests:+v.gN.toFixed(1)}};
+  return {schema:'galapagos.ciro.v1',module:'ciro_revpash_hedef',exported_at:new Date().toISOString(),venue_name:st.v.name,target_savings:st.target,
+    plan:Object.assign(sumM(P),{card_fees:r(P.card),rent_net:r(P.rent),other_fixed:r(P.other),interest:r(P.int),afa:r(P.afa),unternehmerlohn:r(P.ul),own_health_insurance:r(P.kv),guests_per_month:r(pp.gM),guests_per_night:+pp.gN.toFixed(1),revpac_net:+c.E.net.toFixed(2),revpash:+pp.revpash.toFixed(2),seat_turnover:+pp.turn.toFixed(2)}),
+    target:c.tgt?Object.assign(sumM(c.tgt),{required_monthly_net_revenue:r(c.Rt),guests_per_night:+q.gN.toFixed(1),cocktails_per_night:+q.ckN.toFixed(1),capacity_use_pct:+q.cap.toFixed(1),extra_staff_cost:r(c.tgt.extra)}):null,
+    break_even:{ebt_zero:be(c.beE),life_costs:be(c.beL)},
+    scenarios:{bad:sumM(c.bad),base:sumM(c.base),good:sumM(c.good)},
+    months:c.months.map(m=>Object.assign({month:MON[m.i],index:m.idx},sumM(m),{interest:r(m.int),cumulative_cash:r(m.cum)})),
+    loan:{amount:st.loan.amt,rate_pct:st.loan.rate,years:st.loan.years,monthly_payment:r(c.LS.A),interest_y1_avg:r(c.LS.int),principal_y1_avg:r(c.LS.pr)},
+    assumptions:{vat_drinks:19,vat_food:7,kombi_split:'15/85',drinks_per_visit:st.dpg,food_attach_pct:st.food.attach,cogs_rate_incl_loss_pct:+(c.E.cogsRate*100).toFixed(1),card_share_pct:st.card.share,card_fee_pct:st.card.fee,tax_mode:st.tax.mode,tax_rate_pct:st.tax.rate,seats:st.v.seats,terrace_seats:st.v.terrace,season_index:st.idx}};
+}
+
+let tTimer,undoFn=null;
+function toast(t,undo){$('#toastT').textContent=t;undoFn=undo||null;$('#toastU').hidden=!undo;const el=$('#toast');el.style.display='flex';clearTimeout(tTimer);tTimer=setTimeout(()=>{el.style.display='none';undoFn=null},undo?6000:2600)}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Kopyalandı')}catch(e){toast('Kopyalama engellendi: metni seçip kopyala')}}
+function download(name,text){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('İndirme başlatıldı (engellenirse Kopyala kullan)')}catch(e){toast('İndirme engellendi: Kopyala kullan')}}
+function all(){save();renderOut()}
+function go(tab){const t=['hedef','menu','gider','rehber'].includes(tab)?tab:'hedef';$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+t));$$('nav.tabs a').forEach(a=>{const on=a.dataset.tab===t;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
+
+function restore(t){const msg=$('#bkMsg');try{const j=JSON.parse(t);if(j.schema!=='galapagos.ciro.backup.v1'||!j.state){msg.textContent='Bu bir Modül 3 yedeği değil.';return}const keep=st;st=merge(j.state);save();renderStatic();renderOut();msg.textContent='Geri yüklendi.';toast('Yedek yüklendi',()=>{st=keep;save();renderStatic();renderOut()})}catch(e){msg.textContent='JSON okunamadı: '+e.message}}
+
+document.addEventListener('input',e=>{
+  const el=e.target;if(!el.dataset.k)return;
+  const k=el.dataset.k;let v;
+  if(el.dataset.t==='b')v=el.checked;else if(el.dataset.t==='s')v=el.value;else if(el.type==='time'){v=toH(el.value);if(v==null)return}else{v=el.type==='range'?parseFloat(el.value):parseNum(el.value,!isBig(k));if(!Number.isFinite(v))return;v=clampK(k,v)}
+  setP(st,k,v);
+  $$(`[data-k="${k}"]`).forEach(o=>{if(o===el)return;if(o.type==='time')o.value=fT(v);else if(o.type!=='checkbox')o.value=o.type==='range'?v:fmtIn(v);if(o.type==='range')paint(o)});
+  all();
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tbl){st.tbl=d.tbl;all();return}
+  if(d.tax){st.tax.mode=d.tax;save();renderStatic();renderOut();return}
+  if(d.frm!=null){const i=+d.frm,f=st.fixed[i];st.fixed.splice(i,1);save();renderStatic();renderOut();toast(`"${f.n}" silindi`,()=>{st.fixed.splice(i,0,f);save();renderStatic();renderOut()});return}
+  switch(b.id){
+    case 'clrM4':delete st.loan.ovr;st.equip.mo=null;save();renderStatic();renderOut();toast('Modül 4 değerleri kaldırıldı');break;
+    case 'fAdd':st.fixed.push({n:'Yeni gider',a:0});save();renderStatic();renderOut();break;
+    case 'exCopy':copyText($('#exTxt').value);break;
+    case 'exDl':download('modul3-ciro-hedef.json',$('#exTxt').value);break;
+    case 'impIn':importJSON($('#impTxt').value);break;
+    case 'pdApply':applyPend();break;
+    case 'pdCancel':pend=null;renderPend();$('#impMsg').textContent='Vazgeçildi; hiçbir şey değişmedi.';break;
+    case 'profApply':applyProfile();break;
+    case 'bkOut':$('#bkTxt').value=JSON.stringify({schema:'galapagos.ciro.backup.v1',exported_at:new Date().toISOString(),state:st},null,2);$('#bkMsg').textContent='Yedek hazır.';break;
+    case 'bkCopy':if(!$('#bkTxt').value)$('#bkOut').click();copyText($('#bkTxt').value);break;
+    case 'bkDl':if(!$('#bkTxt').value)$('#bkOut').click();download(`galapagos-modul3-yedek-${new Date().toISOString().slice(0,10)}.json`,$('#bkTxt').value);break;
+    case 'bkIn':restore($('#bkTxt').value);break;
+    case 'wipe':if(b.dataset.arm){const keep=st;st=defaults();save();renderStatic();renderOut();delete b.dataset.arm;b.textContent='Varsayılana sıfırla';toast('Sıfırlandı',()=>{st=keep;save();renderStatic();renderOut()})}else{b.dataset.arm='1';b.textContent='Emin misin? Tekrar dokun';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.textContent='Varsayılana sıfırla'}},4000)}break;
+    case 'toastU':if(undoFn){undoFn();undoFn=null;$('#toast').style.display='none'}break;
+  }
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.pg!=null&&pend){const [g,i]=el.dataset.pg.split('.').map(Number);pend.groups[g].rows[i].on=el.checked;const b=$('#pdApply');if(b)b.textContent=`Seçilenleri uygula (${pend.groups.reduce((a,x)=>a+x.rows.filter(r=>r.on).length,0)})`;return}
+  if(el.classList.contains('num')&&el.type==='text'&&el.dataset.k)el.value=fmtIn(getP(st,el.dataset.k));
+});
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>{$('#impTxt').value=t;importJSON(t)});e.target.value=''});
+$('#bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(restore);e.target.value=''});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+load();renderStatic();renderOut();go(location.hash.slice(1));
+}
+</script>
+<script>/* Galapagos veri köprüsü */
+GX.register('m3',{ta:'#impTxt',btn:'#impIn',msg:'#impMsg',tab:'gider',apply:'#pdApply'});
+</script>
+</body>
+</html>

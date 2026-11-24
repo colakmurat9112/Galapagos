@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>parseNum testi</title>
+<style>body{font:15px/1.5 system-ui,sans-serif;background:#0f1411;color:#f1e8d7;margin:16px}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #304036;padding:6px;text-align:left}.ok{color:#95c67f}.no{color:#ec6c52;font-weight:700}</style>
+<script src="../shared/core.js"></script></head>
+<body><h1>parseNum · ortak sayı kuralı</h1><p id="sum"></p><table><thead><tr><th>Giriş</th><th>Alan</th><th>Beklenen</th><th>Sonuç</th></tr></thead><tbody id="t"></tbody></table>
+<script>
+// [giriş, ondalık alan mı (dec), beklenen]
+const C=[['1.450',false,1450],['1.450',true,1.45],['12.500',false,12500],['12.500 €',false,12500],['7,5',true,7.5],['7.5',true,7.5],['7.5',false,7.5],
+['1.234,56',false,1234.56],['1.234,56',true,1234.56],['1,234.56',false,1234.56],['1.234.567',true,1234567],['1 250',false,1250],['1 250',false,1250],
+['−5',true,-5],['-5',true,-5],['29000',false,29000],['29.000',false,29000],['0,15 %',true,0.15],['ca. 3.800 €/Monat',false,3800],['abc',false,NaN],['',false,NaN],[null,false,NaN],[42,false,42],
+['108,8',false,108.8],['1.197',false,1197],['1.250,50',false,1250.5],['1.250',true,1.25],["1'250",false,1250],['12.',false,12],['0.5',false,0.5]];
+let ok=0;document.getElementById('t').innerHTML=C.map(([x,d,e])=>{const r=parseNum(x,d),g=Number.isNaN(e)?Number.isNaN(r):Math.abs(r-e)<1e-9;if(g)ok++;return `<tr><td>${JSON.stringify(x)}</td><td>${d?'ondalık':'büyük tutar'}</td><td>${e}</td><td class="${g?'ok':'no'}">${r}${g?' ✓':' ✕'}</td></tr>`}).join('');
+document.getElementById('sum').innerHTML=`<b class="${ok===C.length?'ok':'no'}">${ok}/${C.length} geçti</b>`;window.PN_RESULT={ok,total:C.length};
+</script></body></html>

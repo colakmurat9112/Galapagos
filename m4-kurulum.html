@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos Kurulum & Nakit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool with a bar handbook's warmth, same family as Modül 1–3
+   IDEA the founder's cash ledger from lease signing to month 12: every euro in, every euro out, the tin never empty
+   PICTURE a month-by-month cash line from build phase to the first year, with the low point, the 3-month safety line and the bad-case line
+   COLOUR deep smoke-green night ground, beige ink, olive lead, sand for cash, amber/coral alarms
+   TYPE Fraunces 600 display + DM Sans text
+   LAYOUT phone: sticky KPI strip, cash chart, sources/uses, alarms; >=900px: chart + tables left, alarms + export right */
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sm:#80a493;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 4px}
+h1{font:600 clamp(28px,5vw,40px)/1.05 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2,h3{font:600 20px/1.2 var(--disp);margin:0 0 8px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0}
+main{max-width:1240px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.view{display:none}
+.view.on{display:block}
+.kpis{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0 8px;border-bottom:1px solid var(--line);margin-top:6px}
+.kpi b{display:block;font:600 clamp(18px,5.2vw,30px)/1.1 var(--disp);white-space:nowrap}
+.kpi span{display:block;font-size:13px;line-height:1.2;color:var(--mute)}
+.kpi.y b{color:var(--y)}
+.kpi.r b{color:var(--r)}
+.kpi.g b{color:var(--ok)}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:78px}}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.lead{font:600 clamp(20px,4vw,27px)/1.2 var(--disp);margin:4px 0 8px;text-wrap:balance}
+.lead em{font-style:normal;color:var(--sand)}
+.lead em.r{color:var(--r)}
+.fig{position:relative;height:300px;margin-top:6px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.fig text{font:13px var(--txt);fill:var(--mute);paint-order:stroke;stroke:var(--p);stroke-width:4px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute);margin-top:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;flex:none}
+.vs{display:flex;align-items:flex-end;gap:2px;height:44px;margin-top:6px}
+.vs i{flex:1;background:var(--sm);border-radius:2px 2px 0 0;opacity:.8}
+.su{margin-top:8px}
+.su .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.sb{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--line)}
+.sb i{display:block;height:100%}
+.sl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:4px 14px;font-size:14px;margin-top:8px}
+.sl span{display:flex;justify-content:space-between;gap:8px}
+.sl b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.al{list-style:none;margin:0;padding:0}
+.al li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.al li:first-child{border-top:0}
+.al li::before{content:'';width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mute)}
+.al li.r::before{background:var(--r)}
+.al li.y::before{background:var(--y)}
+.al li.i::before{background:var(--sm)}
+.al li.ok::before{background:var(--ok)}
+details.sec{background:var(--p);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 19px/1.2 var(--disp);min-height:54px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'+';font:400 22px var(--txt);color:var(--mute);flex:none}
+details.sec[open]>summary::after{content:'–'}
+.sv{font:500 14px var(--txt);color:var(--sand);white-space:nowrap;margin-left:auto}
+.in{padding:0 14px 14px}
+.fld{padding:10px 0;border-top:1px solid var(--line)}
+.fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fh label{font-size:15px}
+.nu{display:flex;align-items:center;gap:6px;flex:none}
+.nu em{font-style:normal;color:var(--mute);font-size:14px;min-width:2.4em;white-space:nowrap}
+input.num{width:6.6em;font:500 16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:right;min-height:44px;font-variant-numeric:tabular-nums}
+input[type=text],input[type=month],textarea,select{width:100%;font:16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input[type=month]{width:auto;min-width:10em}
+textarea{min-height:90px;resize:vertical}
+textarea.code{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:150px}
+label.lb{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ol);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:4px 0 0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--ol) var(--f,50%),var(--line) var(--f,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--sand);border:3px solid var(--bg);margin-top:-11px;box-shadow:0 0 0 1px var(--ol)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--ol)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--sand);border:3px solid var(--bg)}
+.hint{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-height:54px}
+.sw{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.sw:checked{background:var(--ol)}
+.sw:checked::after{transform:translateX(22px)}
+.out{margin-top:8px;background:var(--p2);border-radius:10px;padding:4px 12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-top:1px dashed var(--line);font-size:15px}
+.row:first-child{border-top:0}
+.row b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.row.big b{font:600 20px var(--disp);color:var(--sand)}
+.row b.y{color:var(--y)}
+.row b.r{color:var(--r)}
+.row b.g{color:var(--ok)}
+.btn{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--ol);color:#141a10;border-color:var(--ol)}
+.btn.dan{color:var(--r)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.seg button{min-height:44px;padding:0 14px;background:var(--p2);color:var(--mute);border:0;border-left:1px solid var(--line);font:500 15px var(--txt);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--ol);color:#141a10}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th,.t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t th:first-child,.t td:first-child{text-align:left;color:var(--mute);position:sticky;left:0;background:var(--p)}
+.t thead th{font:600 15px var(--disp);color:var(--ink)}
+.t td.r{color:var(--r)}
+.t td.y{color:var(--y)}
+.t td.g{color:var(--ok)}
+.it{border-left:4px solid var(--ol)}
+.it .top{display:flex;gap:8px;align-items:center}
+.it .top input[type=text]{flex:1}
+.ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:0 10px}
+.ig label{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+.ig input.num{width:100%}
+.rp{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.5em,1fr));gap:8px}
+.rp label{display:flex;flex-direction:column;font-size:14px;color:var(--mute);gap:4px}
+.rp input.num{width:100%}
+.guide{max-width:760px}
+.saha{max-width:860px}
+.saha h4{font:600 16px var(--disp);color:var(--sand);margin:16px 0 6px}
+.saha p,.saha li{font-size:15px}
+.saha ul,.saha ol{padding-left:20px;margin:6px 0}
+.saha li{margin:4px 0}
+.saha a{color:var(--sand)}
+.pbar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
+.pbar i{display:block;height:100%;background:var(--ol);border-radius:6px}
+.ckl label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:15px;cursor:pointer}
+.ckl input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--ol)}
+.ckl input:checked+span{color:var(--mute);text-decoration:line-through}
+ol.qa{padding-left:20px}
+ol.qa li{margin:8px 0}
+ol.qa li span{display:block;font-size:14px;color:var(--ink);margin-top:2px}
+ol.qa li span.g{color:var(--ok)}ol.qa li span.y{color:var(--y)}ol.qa li span.r{color:var(--r)}
+.cmpT td,.cmpT th{white-space:normal!important;text-align:left!important;min-width:7em;font-size:13px;vertical-align:top}
+.glink{display:inline-flex;align-items:center;min-height:40px;color:var(--sand);font-size:14px;text-decoration:none;margin:6px 12px 0 0}
+.glink::after{content:' →'}
+.saha textarea{min-height:90px}
+.guide h3{margin-top:18px}
+.guide dt{font-weight:700;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.src{font-size:14px;color:var(--sand);margin:4px 0}
+.banner{background:#3a2a14;color:var(--sand);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--p);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--mute);text-decoration:none;font-size:13px;min-height:58px}
+nav.tabs a.on{color:var(--sand)}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:15px;display:none;gap:12px;align-items:center;z-index:20;max-width:calc(100% - 32px)}
+#toast button{background:transparent;border:0;color:#3d5a2a;font:700 15px var(--txt);cursor:pointer;min-height:36px}
+@media(max-width:600px){.t{font-size:13px}.t th,.t td{padding:6px 5px}.fig{height:260px}}
+@media(prefers-reduced-motion:reduce){.sw::after{transition:none}}
+</style>
+<meta name="gx-module" content="m4">
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="shared/shell.css">
+<script src="shared/core.js"></script>
+<script src="shared/shell.js" defer></script>
+</head>
+<body>
+<header class="top"><h1>Kurulum Bütçesi &amp; Nakit Kalkanı</h1><p class="sub">Galapagos · Modül 4 · kira imzasından açılışın 12. ayına kadar kasa</p></header>
+<main>
+  <section class="view" id="v-nakit">
+    <div id="storeWarn"></div>
+    <div class="kpis" aria-live="polite">
+      <div class="kpi" id="k1"><b>–</b><span>Toplam yatırım</span></div>
+      <div class="kpi" id="k2"><b>–</b><span>Açılışta kasa</span></div>
+      <div class="kpi" id="k3"><b>–</b><span>En dip nokta</span></div>
+      <div class="kpi" id="k4"><b>–</b><span>Özsermaye oranı</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Kasa, ay ay</h2>
+          <p class="lead" id="lead"></p>
+          <div class="fig" id="fig"><svg id="chart" role="img" aria-label="Aylık kasa bakiyesi"></svg></div>
+          <div class="leg"><span><i class="dot" style="background:var(--sand)"></i>Kasa (baz)</span><span><i class="dot" style="background:var(--r)"></i>Kötü senaryo</span><span><i class="dot" style="background:var(--y)"></i>3 aylık sabit gider çizgisi</span><span><i class="dot" style="background:color-mix(in srgb,var(--ol) 25%,transparent)"></i>Tadilat dönemi</span></div>
+          <p class="note" style="margin-top:12px">Finanzamt'tan beklenen KDV iadesi (Vorsteuer-Loch), ay sonu <span id="vatPeak"></span></p>
+          <div class="vs" id="vatBars" aria-label="Bekleyen KDV iadesi"></div>
+          <p class="note">Kötü senaryo: KDV iadesi <span id="badDelay"></span> ay gecikir, ilk 6 ayın ciro eğrisi <span id="badRampL"></span> ile çarpılır.</p>
+        </div>
+        <div class="card">
+          <h2>Para nereden geliyor, nereye gidiyor</h2>
+          <div class="su" id="su"></div>
+        </div>
+        <details class="sec"><summary>Ay ay nakit tablosu<span class="sv" id="sv_tbl"></span></summary><div class="in"><div class="scroll"><table class="t" id="cashTbl"></table></div></div></details>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Alarmlar</h3><ul class="al" id="al"></ul><a class="glink" href="#rehber" data-g="other">Gecikme yastığı</a><a class="glink" href="#rehber" data-g="kfw">Bankada sorulacaklar</a></div>
+        <details class="sec" open><summary>Nakit kalkanı<span class="sv" id="sv_rw"></span></summary><div class="in"><div class="out" id="o_rw"></div></div></details>
+        <details class="sec"><summary>Modül 5 &amp; 6'ya aktar<span class="sv">JSON</span></summary><div class="in"><p class="hint">Toplam yatırım, özsermaye oranı, kredi tablosu, AfA, en dip ay ve runway. İçinde Modül 3'e geri yüklenebilen "kredi + AfA" bloğu var (Modül 3 → Giderler → İçe al).</p><div class="btns"><button class="btn pri" type="button" id="exCopy">Kopyala</button><button class="btn" type="button" id="exDl">İndir (.json)</button></div><textarea class="code" id="exTxt" readonly spellcheck="false" style="margin-top:10px"></textarea></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-kurulum">
+    <div class="grid">
+      <div>
+        <div class="card" style="margin-top:12px"><h2>Kurulum kalemleri (CAPEX)</h2><p class="note">Tutarlar net (KDV hariç). Müzayede kalemlerinde Aufgeld (komisyon) eklenir. Ödeme ayı = tadilatın kaçıncı ayında ödendiği.</p></div>
+        <div class="card" style="padding:6px 14px"><a class="glink" href="#rehber" data-g="auction">Müzayede &amp; PL/CZ alım</a><a class="glink" href="#rehber" data-g="equip">Ekipman koruma şartları</a></div>
+        <div id="capexForm"></div>
+        <div class="btns" style="margin-bottom:12px"><button class="btn pri" type="button" id="addItem">+ Kalem ekle</button></div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Bütçe özeti</h3><div class="out" id="o_capex"></div></div>
+        <div class="card"><h3>Amortisman (AfA)</h3><div class="out" id="o_afa"></div></div>
+        <div id="startForm"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-kredi">
+    <div class="grid">
+      <div><div class="card" style="margin-top:12px;padding:6px 14px"><a class="glink" href="#rehber" data-g="kfw">KfW &amp; banka rehberi</a><a class="glink" href="#rehber" data-g="sab">SAB başvurusu</a><a class="glink" href="#rehber" data-g="schufa">SCHUFA &amp; belgeler</a></div><div id="loanForm"></div></div>
+      <div class="side">
+        <div class="card"><h3>Kredi geri ödeme planı</h3><div class="scroll"><table class="t" id="loanTbl"></table></div><details style="margin-top:10px"><summary class="note" style="cursor:pointer;min-height:44px;display:flex;align-items:center">Ay ay tüm taksitler</summary><div class="scroll"><table class="t" id="loanFull"></table></div></details></div>
+        <div class="card">
+          <h2>Modül 1 &amp; 3'ten al</h2>
+          <p class="src" id="srcLine"></p>
+          <label class="lb" for="impTxt">JSON'u yapıştır (Modül 1 "Modül 2'ye aktar" veya Modül 3 "Modül 4 &amp; 5'e aktar")</label>
+          <textarea class="code" id="impTxt" spellcheck="false"></textarea>
+          <div class="btns"><button class="btn pri" type="button" id="impIn">İçe al</button><label class="btn" for="impFile">Dosyadan al</label><input type="file" id="impFile" accept=".json,application/json" hidden></div>
+          <p class="note" id="impMsg"></p>
+        </div>
+        <div class="card">
+          <h2>Yedekle</h2>
+          <div class="btns"><button class="btn" type="button" id="bkOut">Yedek oluştur</button><button class="btn" type="button" id="bkCopy">Kopyala</button><button class="btn" type="button" id="bkDl">İndir (.json)</button></div>
+          <label class="lb" for="bkTxt">Modül 4 yedek JSON</label>
+          <textarea class="code" id="bkTxt" spellcheck="false"></textarea>
+          <div class="btns"><button class="btn pri" type="button" id="bkIn">Metinden geri yükle</button><label class="btn" for="bkFile">Dosyadan geri yükle</label><input type="file" id="bkFile" accept=".json,application/json" hidden><button class="btn dan" type="button" id="wipe">Varsayılana sıfırla</button></div>
+          <p class="note" id="bkMsg"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-rehber">
+    <div class="card saha" style="margin-top:12px">
+      <h2>Hayat Kurtaran Saha Rehberi</h2>
+      <p class="note">Bankada, SAB'da, müzayedede ve kira masasında işine yarayacak her şey. Almanca terimler <b>kalın</b>: oralarda bu kelimeyi kullan. Kontrol listelerini tikle; ilerleme bu tarayıcıda kalır.</p>
+      <div id="gProg"></div>
+    </div>
+    <div id="gBox" class="saha"></div>
+    <div class="card guide">
+      <h2>Nasıl kullanılır &amp; ne işe yarar?</h2>
+      <p>Bu araç tek bir şeyi önlemek için var: tüm parayı tadilata gömüp açılışın 3. ayında kasanın boşalması. Kira imzasından açılıştan sonraki 12. aya kadar her ay kasaya ne girdiğini, ne çıktığını ve kasanın en dibe ne zaman vurduğunu gösterir.</p>
+      <h3>Dört adımda</h3>
+      <ol>
+        <li><b>Veriyi al:</b> Kredi &amp; Veri → Modül 1 (Kaution, Ablöse, kira, Sondernutzung) ve Modül 3 (hedef ciro, giderler, mevsim) JSON'larını yapıştır.</li>
+        <li><b>Takvimi ve krediyi gir:</b> kredi onayı, kira imzası, tadilat süresi, kirasız ay, işten ayrılma, KfW ve SAB koşulları.</li>
+        <li><b>Kurulum kalemlerini düzelt:</b> her kalemin tutarı, nereden alındığı (yeni, müzayede, özel satıcı, AB, leasing) ve amortisman süresi.</li>
+        <li><b>Nakit'e bak:</b> en dip ay, açılıştaki kasa, kötü senaryo. Sonra Modül 5'e aktar ve kredi + AfA bloğunu Modül 3'e geri yükle.</li>
+      </ol>
+      <h3>Metrikler ne demek?</h3>
+      <dl>
+        <dt>CAPEX (kurulum yatırımı)</dt><dd>Bir kere yapılan harcamalar: tadilat, tezgâh, ekipman, POS, ilk stok, mimar ve izinler. Yıllara yayılarak gider yazılır (amortisman).</dd>
+        <dt>OPEX (işletme gideri)</dt><dd>Her ay tekrar eden giderler: kira, personel, mal, enerji, leasing, kredi faizi. Açılıştan sonra kasadan her ay çıkar.</dd>
+        <dt>Rezerv (Puffer)</dt><dd>Öngörülemeyen giderler için kalemlerin üstüne eklenen pay. Gastronomi tadilatında aşım neredeyse kuraldır; uygulama varsayılan olarak rezervin tamamını harcanmış sayar.</dd>
+        <dt>Vorsteuer-Loch (KDV boşluğu)</dt><dd>Kurulumda ödediğin %19 KDV'yi Finanzamt sonra geri verir, ama 1–3 ay sonra. O arada para kasadan çıkmış olur. Grafiğin altındaki çubuklar ay sonunda Finanzamt'tan beklediğin tutarı gösterir. Vergi numaranı (Fragebogen zur steuerlichen Erfassung) kira imzasından önce al.</dd>
+        <dt>Müzayede, özel satıcı, AB, leasing</dt><dd>Müzayede: çekiç fiyatı + Aufgeld + KDV (KDV geri alınır). Özel satıcı: KDV yok ama geri de alınmaz. AB'den firma alımı: KDV'yi kendin beyan edip aynı anda düşersin (Reverse Charge), kasaya yük yok; önce USt-IdNr gerekir. Leasing: kurulumda para çıkmaz, açılıştan sonra aylık gider olur.</dd>
+        <dt>Kaution: nakit mi, kefalet mi?</dt><dd>Nakit ödersen 3 aylık kira kasadan çıkar ve yıllarca bağlı kalır. Banka kefaleti (Mietkautionsbürgschaft) veya kefalet sigortasıyla para kasada kalır, karşılığında yıllık küçük bir ücret ödersin.</dd>
+        <dt>Tilgungsfreie Zeit (ödemesiz dönem)</dt><dd>KfW kredisinde ilk 1–2 yıl sadece faiz ödenir. Kasayı korur ama bittiği ay taksit birden yükselir; uygulama o ayı ayrıca gösterir. KfW'de anapara normalde çeyreklik eşit taksitlerle ödenir; burada aylığa bölünmüştür.</dd>
+        <dt>Özsermaye oranı</dt><dd>Kendi paran ÷ toplam finansman. Bankalar gastronomide genelde %15–30 görmek ister. StartGeld'de zorunlu değil ama ikna eder.</dd>
+        <dt>Açılışta kasa ve en dip nokta (Tiefpunkt)</dt><dd>Açılış günü kasada kalan para ve ilk 12 ayda kasanın gördüğü en düşük seviye. Ciro yavaş yükseldiği için dip genelde açılıştan sonraki 2–4. ayda gelir.</dd>
+        <dt>Runway (nakit dayanma süresi)</dt><dd>Hiç ciro olmasa açılıştaki kasa kaç ay sabit giderleri, kredi taksitini ve senin maaşını karşılar. Kötü bir başlangıçta ne kadar nefesin olduğunu gösterir.</dd>
+        <dt>Ramp-up</dt><dd>Açılıştan sonra cironun hedefe tırmanması: varsayılan %40, 55, 70, 80, 90, 100. Üstüne mevsim endeksi uygulanır.</dd>
+        <dt>AfA (amortisman) ve GWG</dt><dd>Tadilat ve tezgâh 10 yılda, ekipman 5–7 yılda, POS 3 yılda gider yazılır. Net 800 €'yu aşmayan her parça (bardak, sous-vide, iSi) GWG olarak ilk yıl tamamen gider yazılabilir; bu ilk yılın vergisini düşürür. Açılış öncesi kuruluş, pazarlama ve eğitim giderleri de ilk yılın gideridir.</dd>
+        <dt>Vergi karşılığı</dt><dd>Açılış öncesi giderler ilk yılın kârından düşülür. Uygulama vergiyi birikmiş kâr üzerinden ayırır, yani zararlı aylar vergiyi azaltır.</dd>
+      </dl>
+      <h3>Kritik kurallar</h3>
+      <ul>
+        <li><b>Önce kredi başvurusu, sonra imza.</b> KfW ve SAB kredilerinde başvuru projeye başlamadan önce Hausbank'a yapılmalı. Kira sözleşmesini veya ekipman alımını başvurudan önce imzalarsan kredi hakkını kaybedebilirsin.</li>
+        <li><b>KfW garantisi bankayı korur, seni değil.</b> %80 Haftungsfreistellung bankanın riskini azaltır. Borcun yine %100 sende kalır.</li>
+        <li><b>Bedava danışmanlık:</b> Saksonya'da kuruluş öncesi danışmanlık %100 destekleniyor (kuruluşta en fazla 2.000 €). İş planını bir danışmana kontrol ettirmek bankanın kapısını açar.</li>
+        <li><b>SAB Mikrodarlehen:</b> 30.000 €'ya kadar, en az %20 öz katkı, tam zamanlı (Haupterwerb) kuruluş şartı, başvuru işe başlamadan önce. StartGeld ile genelde birleştirilebilir; yukarıdaki Saha Rehberi (b) bölümüne bak.</li>
+        <li><b>Kiracı yatırımları:</b> kira bitince geri söküm (Rückbau) şartı olabilir; sözleşmede kontrol et.</li>
+      </ul>
+      <h3>Sınırlar</h3>
+      <p>Planlama aracıdır; banka ve Steuerberater yerine geçmez. Faiz oranları ve KfW koşulları değişir; başvurudan önce Merkblatt'ı kontrol et. Veriler yalnızca bu tarayıcıda; Kredi &amp; Veri → Yedek oluştur.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sekmeler">
+  <a href="#nakit" data-tab="nakit"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>Nakit</a>
+  <a href="#kurulum" data-tab="kurulum"><svg viewBox="0 0 24 24"><path d="M14 6l4 4-9 9H5v-4z"/><path d="M12 8l4 4"/></svg>Kurulum</a>
+  <a href="#kredi" data-tab="kredi"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Kredi &amp; Veri</a>
+  <a href="#rehber" data-tab="rehber"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg>Rehber</a>
+</nav>
+<div id="toast" role="status"><span id="toastT"></span><button type="button" id="toastU" hidden>Geri al</button></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const SKEY='galapagos_m4_v1';
+let canStore=true;
+const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>(Number.isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>(n<0?'−':'')+nf(Math.abs(Math.round(n)))+' €';
+const kE=n=>(n<0?'−':'')+nf(Math.abs(n)/1000,Math.abs(n)<10000?1:0)+'k';
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split('.');const l=ks.pop();ks.reduce((a,k)=>a[k],o)[l]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const ym=s=>{const p=String(s||'').split('-').map(Number);return Number.isFinite(p[0])&&Number.isFinite(p[1])?p[0]*12+p[1]-1:null};
+const ymS=i=>`${Math.floor(i/12)}-${String(i%12+1).padStart(2,'0')}`;
+const ymL=i=>`${MON[i%12]} ${String(Math.floor(i/12)).slice(2)}`;
+const SRC={new:'Yeni (%19 KDV)',auction:'Müzayede (+Aufgeld, %19 KDV)',private:'Özel satıcı (KDV yok)',eu:'AB firması (Reverse Charge)',novat:'KDV’siz gider (maaş, harç)',lease:'Leasing (aylık)'};
+const AFA={bau:'Tadilat / sabit yapı',eq5:'Ekipman (5 yıl)',eq7:'Ekipman (7 yıl)',pos:'POS / IT (3 yıl)',gwg:'GWG (≤800 € parça, hemen)',exp:'Gider (hemen)',stock:'Stok (amortisman yok)'};
+
+function defaults(){return {
+  tl:{loan:'2029-02',lease:'2029-03',build:3,free:2,quit:2,living:1500,livingRes:3000},
+  fund:{equity:20000,kfw:62000,kfwRate:6.5,kfwYears:10,kfwFree:2,sabOn:false,sab:15000,sabRate:4,sabYears:6,sabFree:1,other:0},
+  start:{kaution:6534,kmode:'cash',aval:2.5,abloese:0,makler:0,warmB:2178,warmN:1830,sondern:0,src:'manuel (Modül 1 örnek B)'},
+  capex:[['DIY tadilat (boya, Ytong, kireç sıva, zemin, makrome)',6000,'new',0,0,'bau',1],['Bar tezgâhı + arka bar',8000,'new',0,0,'bau',2],['Elektrik / su ustası',7000,'new',0,0,'bau',1],['Işık + ses',4000,'new',0,0,'eq5',2],['Buz makinesi',3500,'auction',18,0,'eq7',2],['Bulaşık makinesi',0,'lease',0,89,'eq7',3],['Soğutucular + dondurucu',4000,'auction',18,0,'eq7',2],['2. el ekipman (özel satıcı)',2000,'private',0,0,'eq7',2],['Küçük miksoloji ekipmanı',1500,'new',0,0,'gwg',3],['Bardak / züccaciye',3000,'new',0,0,'gwg',3],['TSE POS',1800,'new',0,0,'pos',3],['İlk stok',5000,'new',0,0,'stock',3],['Mimar + Nutzungsänderung + Brandschutz',6000,'new',0,0,'bau',1],['Kuruluş / avukat',1500,'new',0,0,'exp',1],['Açılış pazarlama',2000,'new',0,0,'exp',3],['Açılış öncesi personel eğitimi',1500,'novat',0,0,'exp',3]].map(([n,a,src,ag,lm,afa,m])=>({n,a,src,ag,lm,afa,m})),
+  buf:20,bufUse:100,vat:{delay:2,bad:3},
+  op:{rev:29381,cogs:23.1,card:1.13,staff:4972,rent:1830,other:1880,ul:3000,kv:500,tax:33,idx:[70,75,90,95,110,110,110,110,105,100,100,125],src:'manuel (Modül 3 hedefi)'},
+  ramp:[40,55,70,80,90,100],badRamp:85,ul0:2000,ulMonths:3,afaY:{bau:10,eq5:5,eq7:7,pos:3},
+  chk:{},cl:{rate:7.5,years:10},story:'7–8 yıl lüks otelcilik, miksoloji ve bar/mutfak operasyonu; 2 yıl supervisor/şef olarak sipariş, stok ve personel planlaması. Mayıs 2026\'dan beri Chemnitz\'te barmen (süresiz sözleşme): günlük Abrechnung ve siparişler bende. Kendi kokteyl maliyet/kâr uygulamamı geliştirdim.'};}
+let st=null;
+function merge(x){const d=defaults();x=x||{};const o=Object.assign(d,x);['tl','fund','start','vat','op','afaY','cl','chk'].forEach(k=>o[k]=Object.assign(defaults()[k],x[k]||{}));return o}
+function load(){let raw=null;try{raw=localStorage.getItem(SKEY)}catch(e){canStore=false}try{st=merge(raw?JSON.parse(raw):null)}catch(e){st=defaults()}}
+function save(){GX.dirty();try{localStorage.setItem(SKEY,JSON.stringify(st));canStore=true}catch(e){canStore=false}}
+
+function loan(amt,rate,years,freeY){const n=Math.max(1,Math.round(years*12)),f=Math.min(n-1,Math.max(0,Math.round(freeY*12))),r=rate/1200,p=amt/(n-f);let b=amt;const rows=[];for(let k=0;k<n;k++){const it=b*r,pr=k<f?0:Math.min(b,p);b-=pr;rows.push({k,it,pr,bal:b})}return {rows,n,f,p}}
+function capexCalc(){
+  let net=0,ag=0,vat=0,gross=0,lease=0;const afa={bau:0,eq5:0,eq7:0,pos:0,gwg:0,exp:0,stock:0};
+  st.capex.forEach(i=>{const a=+i.a||0;if(i.src==='lease'){lease+=+i.lm||0;return}const base=a*(1+(i.src==='auction'?(+i.ag||0)/100:0));const v=['new','auction'].includes(i.src)?base*0.19:0;net+=a;ag+=base-a;vat+=v;gross+=base+v;afa[i.afa]=(afa[i.afa]||0)+base});
+  const basis=net+ag,bufAmt=basis*st.buf/100,bufUsed=bufAmt*st.bufUse/100;
+  const Y=st.afaY,yearly=afa.bau/Y.bau+afa.eq5/Y.eq5+afa.eq7/Y.eq7+afa.pos/Y.pos;
+  return {net,ag,vat,gross,lease,basis,bufAmt,bufUsed,afa,yearly,immediate:afa.gwg+afa.exp,total:basis+bufAmt};
+}
+function sim(bad){
+  const s=st,T0=ym(s.tl.lease)??ym('2029-03'),B=Math.max(1,Math.round(s.tl.build)),H=B+12;
+  const delay=Math.max(0,Math.round(bad?s.vat.bad:s.vat.delay)),rm=bad?s.badRamp/100:1;
+  const cap=capexCalc(),K=loan(s.fund.kfw,s.fund.kfwRate,s.fund.kfwYears,s.fund.kfwFree),S=s.fund.sabOn?loan(s.fund.sab,s.fund.sabRate,s.fund.sabYears,s.fund.sabFree):null;
+  const mean=s.op.idx.reduce((a,x)=>a+(+x||0),0)/12||1,afaM=cap.yearly/12,avalM=s.start.kmode==='buerg'?s.start.kaution*s.start.aval/100/12:0;
+  const ref={},rows=[],bk={capex:0,buf:0,kaution:0,abl:0,makler:0,rent:0,living:0,loan:0,aval:0,vat:0};
+  let cash=0,vatOut=0,cumEBT=0,taxCum=0;
+  for(let t=0;t<H;t++){
+    let flow=0,vat=0,ebt=0;const r={t,ym:T0+t,ph:t<B?'build':'open',rev:0,ebtOp:0};
+    if(t===0){flow+=s.fund.equity+s.fund.kfw+(S?s.fund.sab:0)+s.fund.other;
+      if(s.start.kmode==='cash'){flow-=s.start.kaution;bk.kaution+=s.start.kaution}
+      const ab=s.start.abloese;flow-=ab*1.19;vat+=ab*0.19;bk.abl+=ab;
+      const mk=s.start.makler/1.19;flow-=s.start.makler;vat+=mk*0.19;ebt-=mk;bk.makler+=mk;}
+    if(t<B){
+      s.capex.forEach(i=>{if(i.src==='lease')return;if(Math.min(B,Math.max(1,Math.round(+i.m||1)))-1!==t)return;const a=+i.a||0,base=a*(1+(i.src==='auction'?(+i.ag||0)/100:0)),v=['new','auction'].includes(i.src)?base*0.19:0;flow-=base+v;vat+=v;bk.capex+=base;if(i.afa==='gwg'||i.afa==='exp')ebt-=base});
+      const bu=cap.bufUsed/B;flow-=bu*1.19;vat+=bu*0.19;bk.buf+=bu;
+      if(t>=s.tl.free){flow-=s.start.warmB;vat+=s.start.warmB-s.start.warmN;ebt-=s.start.warmN;bk.rent+=s.start.warmN}
+      if(t+1>=s.tl.quit){flow-=s.tl.living;bk.living+=s.tl.living}
+    }
+    flow-=avalM;ebt-=avalM;if(t<B)bk.aval+=avalM;
+    const kr=K.rows[t]||{it:0,pr:0},sr=S&&S.rows[t]||{it:0,pr:0},it=kr.it+sr.it,pr=kr.pr+sr.pr;
+    flow-=it+pr;ebt-=it;r.int=it;r.pr=pr;if(t<B)bk.loan+=it+pr;
+    if(t>=B){const k=t-B,ramp=Math.min(100,(k<6?(+s.ramp[k]||0):100)*rm),idx=(+s.op.idx[(T0+t)%12]||0)/mean;
+      const rev=s.op.rev*idx*ramp/100,cogs=rev*s.op.cogs/100,card=rev*s.op.card/100,fix=s.op.staff+s.op.rent+s.op.other+cap.lease;
+      const sn=k===0?s.start.sondern:0;
+      flow+=rev-cogs-card-fix-sn;const eo=rev-cogs-card-fix-sn-afaM;ebt+=eo;
+      const draw=(k<s.ulMonths?s.ul0:s.op.ul)+s.op.kv;flow-=draw;
+      Object.assign(r,{rev,ramp,cogs,card,fix,draw,ebtOp:eo})}
+    cumEBT+=ebt;const tc=Math.max(0,cumEBT)*s.op.tax/100,tax=tc-taxCum;taxCum=tc;flow-=tax;
+    flow-=vat;vatOut+=vat;if(vat)ref[t+delay]=(ref[t+delay]||0)+vat;
+    const back=ref[t]||0;flow+=back;vatOut-=back;
+    if(t<B)bk.vat=vatOut;
+    cash+=flow;Object.assign(r,{flow,vat,back,vatOut,tax,ebt,cash});rows.push(r);
+  }
+  const open=rows[B-1].cash,opRows=rows.slice(B);
+  let minR=rows[0];rows.forEach(x=>{if(x.cash<minR.cash)minR=x});
+  const fixM=s.op.staff+s.op.rent+s.op.other+cap.lease+avalM;
+  const burn=fixM+(rows[B]?rows[B].int+rows[B].pr:0)+s.ul0+s.op.kv;
+  return {rows,B,T0,H,open,minR,opRows,fixM,burn,runway:burn>0?Math.max(0,open/burn):99,K,S,cap,bk,avalM,afaM,vatPeak:Math.max(...rows.map(x=>x.vatOut))};
+}
+
+function calc(){
+  const s=st,b=sim(false),w=sim(true),c=b.cap,al=[],A=(lv,t)=>al.push({lv,t});
+  const fin=s.fund.equity+s.fund.kfw+(s.fund.sabOn?s.fund.sab:0)+s.fund.other,eqR=fin?s.fund.equity/fin*100:0;
+  const lm=ym(s.tl.loan),le=ym(s.tl.lease);
+  if(lm!=null&&le!=null&&le<lm)A('r',`Kira imzası (${ymL(le)}) kredi onayından (${ymL(lm)}) önce. KfW ve SAB'da başvuru projeye başlamadan önce yapılmalı: önce Hausbank başvurusu, sonra imza.`);
+  else A('i','Sıra doğru: önce Hausbank başvurusu ve onay, sonra kira ve ekipman sözleşmeleri.');
+  const thr=3*b.fixM;
+  if(b.minR.cash<0)A('r',`Kasa ${ymL(b.minR.ym)} sonunda ${eur(b.minR.cash)}'ya düşüyor. En az ${eur(-b.minR.cash)} ek finansman veya daha az yatırım gerekiyor.`);
+  else if(b.minR.cash<thr)A('y',`En dip nokta ${ymL(b.minR.ym)}: ${eur(b.minR.cash)}. 3 aylık sabit gider (${eur(thr)}) altında.`);
+  else A('ok',`En dip nokta ${ymL(b.minR.ym)}: ${eur(b.minR.cash)}, 3 aylık sabit giderin (${eur(thr)}) üstünde.`);
+  if(w.minR.cash<0)A('r',`Kötü senaryoda kasa ${ymL(w.minR.ym)} sonunda ${eur(w.minR.cash)}.`);else if(w.minR.cash<thr)A('y',`Kötü senaryoda dip ${eur(w.minR.cash)} (${ymL(w.minR.ym)}), güvenlik çizgisinin altında.`);
+  A('i',`KDV boşluğu en fazla ${eur(b.vatPeak)}. Bu para ${s.vat.delay} ay sonra Finanzamt'tan döner; vergi numarasını kira imzasından önce al.`);
+  if(s.start.kmode==='cash')A('i',`Kaution'u kefaletle (Mietkautionsbürgschaft) verirsen kasada ${eur(s.start.kaution)} fazla kalır; maliyeti yılda yaklaşık ${eur(s.start.kaution*s.start.aval/100)}.`);
+  else A('i',`Kaution kefaletle: ${eur(s.start.kaution)} kasada kalıyor, yıllık ücret ${eur(s.start.kaution*s.start.aval/100)}.`);
+  const kf=b.K.f;if(kf>0&&kf<b.K.n){const before=b.K.rows[kf-1].it,after=b.K.rows[kf].it+b.K.rows[kf].pr;A('i',`KfW ödemesiz dönemi ${ymL(b.T0+kf)}'de bitiyor: aylık taksit ${eur(before)} → ${eur(after)}.`)}
+  if(eqR<15)A('y',`Özsermaye oranı %${nf(eqR,1)}: bankalar gastronomide genelde %15–30 görmek ister.`);
+  if(s.fund.kfw>200000)A('r','StartGeld en fazla 200.000 €.');
+  if(s.fund.sabOn&&s.fund.sab>30000)A('y','SAB Mikrodarlehen en fazla 30.000 €.');
+  const liv=b.bk.living;if(liv>s.tl.livingRes)A('y',`Tadilat dönemi yaşam masrafı ${eur(liv)}, ayırdığın ${eur(s.tl.livingRes)}'dan fazla.`);
+  if(s.buf<15)A('y',`Rezerv %${s.buf}: gastronomi tadilatında %15–20 önerilir.`);
+  const om=(b.T0+b.B)%12;if([10,11,0,1].includes(om))A('y',`Açılış ${MON[om]}: zayıf sezonda açılış, ramp-up mevsim düşüşüyle üst üste biniyor.`);
+  const lossM=b.opRows.filter(x=>x.ebtOp<0).length;if(lossM)A('i',`İlk 12 ayın ${lossM} ayı zararlı (ramp-up + mevsim).`);
+  if(c.immediate>0)A('i',`GWG ve açılış öncesi giderler (${eur(c.immediate)}) ilk yıl tamamen gider yazılır; ilk yılın vergisini düşürür.`);
+  A('i','Saksonya\'da kuruluş öncesi danışmanlık %100 destekli (kuruluşta en fazla 2.000 €): iş planını bankaya gitmeden kontrol ettir.');
+  const ord={r:0,y:1,ok:2,i:3};al.sort((x,y)=>ord[x.lv]-ord[y.lv]);
+  return {b,w,c,fin,eqR,al,thr};
+}
+
+const F=(k,label,min,max,step,unit,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="${k}"><em>${unit}</em></span></div>${max!=null?`<input id="r_${id}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label}">`:''}${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const TG=(k,label,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="tog"><label for="b_${id}">${label}${hint?`<span class="hint" style="display:block">${hint}</span>`:''}</label><input type="checkbox" class="sw" id="b_${id}" data-k="${k}" data-t="b"></div>`};
+const MI=(k,label)=>`<div class="fld"><div class="fh"><label for="m_${k.replace(/\W/g,'_')}">${label}</label><input type="month" id="m_${k.replace(/\W/g,'_')}" data-k="${k}" data-t="s"></div></div>`;
+const R=(l,v,cls='',big)=>`<div class="row${big?' big':''}"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+const SEC=(t,body,open,sv='')=>`<details class="sec"${open?' open':''}><summary>${t}<span class="sv">${sv}</span></summary><div class="in">${body}</div></details>`;
+function paint(r){const p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--f',Math.max(0,Math.min(100,p))+'%')}
+function fillInputs(root){$$('[data-k]',root).forEach(el=>{const v=getP(st,el.dataset.k);if(el.dataset.t==='b')el.checked=!!v;else el.value=el.classList.contains('num')?fmtIn(v):(v??'')});$$('input[type=range]',root).forEach(paint)}
+
+function renderStatic(){
+  const B=Math.max(1,Math.round(st.tl.build));
+  $('#capexForm').innerHTML=st.capex.map((i,k)=>`<div class="card it"><div class="top"><input type="text" data-k="capex.${k}.n" data-t="s" aria-label="Kalem adı"><button class="btn dan" type="button" data-rm="${k}" aria-label="Sil" style="padding:10px 12px">×</button></div>
+    <div class="ig"><div><label for="ca_${k}">${i.src==='lease'?'Aylık leasing':'Net tutar'}</label><input id="ca_${k}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="capex.${k}.${i.src==='lease'?'lm':'a'}"></div>
+    <div><label for="cs_${k}">Kaynak</label><select id="cs_${k}" data-k="capex.${k}.src" data-t="s">${Object.entries(SRC).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></div>
+    ${i.src==='auction'?`<div><label for="cg_${k}">Aufgeld %</label><input id="cg_${k}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="capex.${k}.ag"></div>`:''}
+    <div><label for="cf_${k}">Amortisman</label><select id="cf_${k}" data-k="capex.${k}.afa" data-t="s">${Object.entries(AFA).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></div>
+    ${i.src==='lease'?'':`<div><label for="cm_${k}">Ödeme ayı</label><select id="cm_${k}" data-k="capex.${k}.m">${Array.from({length:B},(_,j)=>`<option value="${j+1}">Tadilat ${j+1}. ay</option>`).join('')}</select></div>`}</div><p class="note" id="ci_${k}"></p></div>`).join('');
+  fillInputs($('#capexForm'));
+  $('#startForm').innerHTML=SEC('Kaution, Ablöse &amp; kira',`<div class="fld"><div class="fh"><span>Kaution</span><div class="seg" role="group" aria-label="Kaution türü"><button type="button" data-km="cash">Nakit öde</button><button type="button" data-km="buerg">Kefalet</button></div></div></div>`+F('start.kaution','Kaution tutarı',0,20000,50,'€','Modül 1\'den gelir.')+(st.start.kmode==='buerg'?F('start.aval','Kefalet ücreti (Aval)',0,6,0.25,'%/yıl'):'')+F('start.abloese','Ablöse / devir (net)',0,60000,500,'€')+F('start.makler','Makler (KDV dahil)',0,10000,50,'€')+F('start.warmB','Warmmiete (KDV dahil)',0,6000,10,'€/ay')+F('start.warmN','Warmmiete (net)',0,6000,10,'€/ay','Fark KDV olarak geri alınır.')+F('start.sondern','Sondernutzung (teras) yıllık',0,5000,10,'€','Açılış ayında ödenir.'),true)+
+    SEC('Rezerv &amp; KDV iadesi',F('buf','Öngörülemeyen gider rezervi',0,40,1,'%')+F('bufUse','Rezervin harcanan kısmı',0,100,10,'%','Muhafazakâr: %100.')+F('vat.delay','KDV iadesi gecikmesi (baz)',0,6,1,'ay')+F('vat.bad','KDV iadesi gecikmesi (kötü)',0,6,1,'ay'),true);
+  fillInputs($('#startForm'));
+  $$('[data-km]').forEach(b=>b.classList.toggle('on',b.dataset.km===st.start.kmode));
+  $('#loanForm').innerHTML=SEC('Takvim',MI('tl.loan','Kredi onayı')+MI('tl.lease','Kira imzası')+F('tl.build','Tadilat süresi',1,9,1,'ay')+F('tl.free','Kirasız ay (Mietfreie Zeit)',0,9,1,'ay')+F('tl.quit','İşten ayrıldığın tadilat ayı',1,9,1,'. ay')+F('tl.living','Tadilat dönemi yaşam masrafı',0,4000,50,'€/ay')+F('tl.livingRes','Bunun için ayrılan özsermaye',0,20000,250,'€')+`<div class="out" id="o_tl"></div>`,true)+
+    SEC('Sermaye kaynakları',F('fund.equity','Özsermaye',0,100000,500,'€')+F('fund.kfw','KfW StartGeld',0,200000,1000,'€','Hausbank üzerinden; en fazla 200.000 €.')+F('fund.kfwRate','KfW faizi',0,15,0.1,'%')+F('fund.kfwYears','KfW vadesi',1,10,1,'yıl')+F('fund.kfwFree','KfW ödemesiz dönem',0,3,1,'yıl')+TG('fund.sabOn','SAB Mikrodarlehen','En fazla 30.000 €, Haupterwerb şartı.')+(st.fund.sabOn?F('fund.sab','SAB tutarı',0,30000,500,'€')+F('fund.sabRate','SAB faizi',0,10,0.1,'%')+F('fund.sabYears','SAB vadesi',1,6,1,'yıl')+F('fund.sabFree','SAB ödemesiz dönem',0,2,1,'yıl'):'')+F('fund.other','Aile / diğer destek',0,50000,500,'€')+`<div class="out" id="o_fund"></div>`,true)+
+    SEC('Açılış sonrası (Modül 3)',F('op.rev','Hedef aylık net ciro',0,80000,100,'€','Ortalama ay; mevsim endeksiyle çarpılır.')+`<p class="hint" style="margin-top:10px">Ramp-up: ilk 6 ayın hedefe oranı (%)</p><div class="rp">${st.ramp.map((x,i)=>`<label>${i+1}. ay<input class="num" type="text" inputmode="decimal" autocomplete="off" data-k="ramp.${i}"></label>`).join('')}</div>`+F('badRamp','Kötü senaryoda ramp-up çarpanı',50,100,5,'%')+F('ul0','İlk aylarda yaşam maaşın',0,5000,50,'€/ay')+F('ulMonths','Kaç ay',0,12,1,'ay')+F('op.ul','Sonra yaşam maaşın',0,8000,50,'€/ay')+F('op.kv','Kendi sağlık sigortan',0,1500,10,'€/ay')+F('op.cogs','Mal maliyeti (fire dahil)',10,40,0.1,'%')+F('op.card','Kart komisyonu (net cironun)',0,3,0.01,'%')+F('op.staff','Personel',0,20000,50,'€/ay')+F('op.rent','Kira (net)',0,6000,10,'€/ay')+F('op.other','Diğer sabit',0,10000,10,'€/ay')+F('op.tax','Vergi karşılığı',0,50,1,'%'))+
+    SEC('Amortisman süreleri',F('afaY.bau','Tadilat / sabit yapı',1,20,1,'yıl')+F('afaY.eq5','Ekipman (kısa)',1,15,1,'yıl')+F('afaY.eq7','Ekipman (uzun)',1,15,1,'yıl')+F('afaY.pos','POS / IT',1,10,1,'yıl'));
+  fillInputs($('#loanForm'));
+  renderGuideStatic();
+}
+
+/* ---------- Güvenli sayı (Modül 1–3 ile aynı fonksiyon) ---------- */
+const BIGK=new Set(['tl.living','tl.livingRes','fund.equity','fund.kfw','fund.sab','fund.other','start.kaution','start.abloese','start.makler','start.warmB','start.warmN','start.sondern','op.rev','op.staff','op.rent','op.other','op.ul','op.kv','ul0']);
+const isBig=k=>BIGK.has(k)||/^capex\.\d+\.(a|lm)$/.test(k);
+function hard(k){
+  if(/Rate$/.test(k)||k==='cl.rate')return [0,25];
+  if(/Years$/.test(k)||k==='cl.years')return [1,30];
+  if(/Free$/.test(k))return [0,5];
+  if(k.startsWith('op.idx.'))return [0,300];
+  if(k==='tl.build')return [1,24];
+  if(k==='tl.free'||k==='tl.quit'||k==='ulMonths')return [0,24];
+  if(k.startsWith('vat.'))return [0,12];
+  if(k.startsWith('afaY.'))return [1,50];
+  if(/^capex\.\d+\.m$/.test(k))return [1,24];
+  if(/^(ramp\.\d+|badRamp|buf|bufUse|start\.aval|op\.cogs|op\.card|op\.tax)$/.test(k)||/^capex\.\d+\.ag$/.test(k))return [0,100];
+  return [0,1e9];
+}
+const clampK=(k,v)=>{const [a,b]=hard(k);return Math.min(b,Math.max(a,v))};
+const num=v=>{const x=parseNum(v,true);return Number.isFinite(x)?x:null};
+function extractObjects(t){
+  const s=String(t||''),out=[];let depth=0,start=-1,inStr=false,bs=false;
+  for(let i=0;i<s.length;i++){const ch=s[i];
+    if(inStr){if(bs)bs=false;else if(ch==='\\')bs=true;else if(ch==='"')inStr=false;continue}
+    if(ch==='"'){if(depth>0)inStr=true;continue}
+    if(ch==='{'){if(depth===0)start=i;depth++}
+    else if(ch==='}'&&depth>0){depth--;if(depth===0&&start>-1){try{out.push(JSON.parse(s.slice(start,i+1)))}catch(e){}start=-1}}}
+  return out;
+}
+
+/* ---------- Hayat Kurtaran Saha Rehberi ---------- */
+const DE=(t,a)=>`<b>${t}</b>${a?` (${a})`:''}`;
+const LNK=(u,t)=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
+const GUIDE=[
+ {id:'kfw',t:'a) KfW & bankadan kredi',body:()=>`
+  <p>${DE('ERP-Gründerkredit – StartGeld','KfW programı 067')} bankanın sana verdiği, KfW'nin arkasında durduğu kuruluş kredisi. Parayı KfW değil, ${DE('Hausbank','senin bankan, burada Sparkasse')} verir; başvuru da bankada yapılır.</p>
+  <ul>
+   <li><b>Tutar:</b> proje başına en fazla 200.000 €; bunun en fazla 80.000 €'su ${DE('Betriebsmittel','işletme sermayesi: stok, ilk kiralar, maaş')}.</li>
+   <li><b>Vade:</b> 5 yıl (en fazla 1 yıl ödemesiz) veya 10 yıl (en fazla 2 yıl ödemesiz). ${DE('tilgungsfreie Anlaufjahre','ödemesiz yıllar')} boyunca sadece faiz ödersin, sonra borç eşit aylık anapara taksitleriyle kapanır.</li>
+   <li><b>Faiz:</b> tüm vade boyunca sabit; onay gününün oranı geçerli. Güncel oran: ${LNK('https://www.kfw.de/067','kfw.de/067')} → Konditionen.</li>
+   <li>${DE('80 % Haftungsfreistellung','bankanın riskinin %80\'ini KfW üstlenir')}: bankayı korur, seni değil. Borcun %100 sende kalır; banka yine ${DE('Sicherheiten','teminat')} isteyebilir.</li>
+   <li><b>Öz sermaye</b> resmi şart değil ama kredi değerlendirmesine girer. Banka pratikte %10–20 görmek ister.</li>
+   <li><b>Birleştirme:</b> aynı proje için başka KfW/ERP kredisiyle olmaz; SAB gibi başka destekle genelde olur. Hausbank'a yazılı teyit ettir.</li>
+   <li>${DE('Bereitstellungsprovision','kullanılmayan kredi için ücret')}: onaydan 6 ay sonra, çekilmemiş tutara ayda %0,15. Parayı geç çekersen bu kesinti işler.</li>
+  </ul>
+  <h4>Başvuru akışı</h4>
+  <ol>
+   <li>${DE('Gründungsberatung','kuruluş danışmanlığı')} + ${DE('Businessplan','iş planı')}: ${DE('Kapitalbedarfsplan','yatırım listesi')}, ${DE('Finanzierungsplan','paranın kaynağı')}, 3 yıllık ${DE('Rentabilitätsvorschau','kârlılık tahmini')}, 24 aylık ${DE('Liquiditätsplan','nakit akışı')}. Bu uygulamanın Modül 3, 4 ve 6 çıktıları tam bu tablolar.</li>
+   <li>Sparkasse'de ${DE('Existenzgründungsberater / Firmenkundenberater','kuruluş/kurumsal müşteri danışmanı')} ile randevu. İlk görüşmede dosyayı ver, ${DE('Konditionsanfrage','sadece koşul sorgusu')} istediğini söyle.</li>
+   <li>Banka ${DE('Kreditantrag','kredi başvurusu')} ve KfW formunu doldurur, kendi risk incelemesini yapar, KfW'ye iletir.</li>
+   <li>${DE('Kreditzusage','yazılı onay')} gelmeden kira sözleşmesi, ekipman siparişi veya tadilat sözleşmesi <b>imzalama</b>. Planlama ve danışmanlık genelde başlangıç sayılmaz; neyin ${DE('Vorhabensbeginn','projeye başlama')} sayıldığını bankadan yazılı iste.</li>
+   <li>${DE('Abruf','krediyi çekme')}: faturalarla. ${DE('Verwendungsnachweis','paranın nereye gittiğinin belgesi')} için her faturayı sakla.</li>
+  </ol>
+  <h4>Ödemesiz dönem bitince taksit sıçraması</h4>
+  <div id="gJump"></div>
+  <h4>Masada sorulacaklar (senin rakamlarınla)</h4>
+  <div id="gQA"></div>
+  <label class="lb" for="t_story">Deneyim / geçmiş cümlen (bankaya söyleyeceğin; düzenleyebilirsin)</label>
+  <textarea id="t_story" data-k="story" data-t="s" rows="4"></textarea>
+  <h4>KfW (senin adına) ↔ ortak tüketici kredisi (eşin ana başvuran)</h4>
+  <p class="note">Tüketici kredisi faizi örnektir; bankanın yazılı teklifiyle değiştir. Tutar KfW tutarıyla aynı alınır.</p>
+  <div class="two">${F('cl.rate','Tüketici kredisi faizi (örnek)',0,15,0.1,'%')}${F('cl.years','Tüketici kredisi vadesi',1,15,1,'yıl')}</div>
+  <div id="gCmp"></div>
+  <h4>Ret ve gecikme yememek için</h4>
+  <ul>
+   <li>Rakamlar modüller arasında tutarlı olsun (Modül 6'nın çapraz kontrolleri). Banka ilk tutarsızlıkta güveni kaybeder.</li>
+   <li>Öz sermayenin kaynağı belgeli olsun: aylık düzenli birikim gösteren ${DE('Kontoauszüge','hesap dökümleri')}. Son dakika büyük nakit yatırma soru getirir.</li>
+   <li>Tek bankaya bağlı kalma: Sparkasse ret derse ${DE('Volksbank / Raiffeisenbank','kooperatif bankalar')} ve ${DE('Bürgschaftsbank Sachsen','teminatı eksik olana kefalet veren kuruluş')} sor.</li>
+   <li>Ret gerekçesini yazılı iste; eksik belge mi, teminat mı, plan mı, bil.</li>
+  </ul>`,
+  checks:[['a1','Tabellarischer Lebenslauf (özgeçmiş) + Arbeitszeugnisse (iş referansları)'],['a2','Businessplan: konsept, hedef kitle, rakip analizi (Modül 1 OSM verisi)'],['a3','Kapitalbedarfsplan + Finanzierungsplan (Modül 4)'],['a4','Rentabilitätsvorschau 3 yıl + Liquiditätsplan 24 ay (Modül 3 + 4)'],['a5','Öz sermaye kanıtı: son 6–12 ayın Kontoauszüge'],['a6','Büyük kalemler için Kostenvoranschläge / Angebote (teklifler)'],['a7','Mietvertragsentwurf (imzasız taslak) + Bauamt ön görüşü / Bauvoranfrage'],['a8','Kimlik + Aufenthaltstitel kopyası, son 3 maaş bordrosu, SCHUFA-Datenkopie'],['a9','Bankadan yazılı: "Vorhabensbeginn" neyi kapsıyor, teminat ne isteniyor'],['a10','İkinci banka randevusu (yedek)']]},
+ {id:'sab',t:'b) SAB başvurusu (Saksonya)',body:()=>`
+  <p>${DE('SAB – Sächsische Aufbaubank','Saksonya\'nın kalkınma bankası')} kuruluşlar için ${DE('Mikrodarlehen (MKD)','küçük kuruluş kredisi')} verir. Program ${DE('FRL DFM','Darlehen für den Mittelstand')} yönergesine bağlı. Başvuru SAB'ın ${LNK('https://www.sab.sachsen.de','Förderportal')}'ından, doğrudan SAB'a yapılır.</p>
+  <ul>
+   <li><b>Tutar:</b> en fazla 30.000 €; toplam maliyetin en az %20'si ${DE('Eigenanteil','öz katkı')} olmalı.</li>
+   <li><b>Vade:</b> 6 yıla kadar; geri ödeme en geç 2. yılda başlar.</li>
+   <li>${DE('Haupterwerb','tam zamanlı, ana gelir')}: kuruluş ana işin olmalı. Barmenlik işini bırakma tarihin (Modül 4: tadilatın <span data-gv="quit"></span>. ayı) bununla uyumlu olsun.</li>
+   <li>İşletme ve ikamet Saksonya'da; ${DE('tragfähiges Unternehmenskonzept','ayakta durabilen iş planı')} ve ${DE('Rentabilitätsplanung','kârlılık planı')}. SAB sitesindeki doldurulabilir şablonları kullan.</li>
+   <li><b>Zamanlama:</b> kurucular başvuruyu ${DE('Geschäftsaufnahme','işe başlama')} öncesinde yapmalı. En güvenli sıra: SAB + KfW başvurusu → onaylar → kira imzası.</li>
+   <li>${DE('Gründungsberatung','kuruluş danışmanlığı')}: kuruluştan önce alınan danışmanlık Saksonya'da destekleniyor. İş planını bankaya gitmeden kontrol ettir.</li>
+   <li>KfW StartGeld ile aynı projede birleştirmek genelde mümkün; toplam devlet desteği (${DE('De-minimis / Beihilfe','AB devlet yardımı tavanı')}) hesabını SAB'a sor.</li>
+  </ul>
+  <p class="note">Kaynak: ${LNK('https://www.sab.sachsen.de','sab.sachsen.de')} · ${LNK('https://www.ihk.de/chemnitz','IHK Chemnitz → Starthilfe')}</p>`,
+  checks:[['b1','Gründungsberatung randevusu (IHK Chemnitz / SAB listesindeki danışman)'],['b2','SAB Unternehmenskonzept şablonu dolduruldu'],['b3','Rentabilitätsplanung şablonu dolduruldu'],['b4','Eigenanteil ≥ %20 belgelendi'],['b5','Haupterwerb planı: işten ayrılma tarihi belli'],['b6','Başvuru Geschäftsaufnahme ve kira imzasından ÖNCE gönderildi'],['b7','KfW + SAB birleşimi Hausbank ve SAB\'a yazılı soruldu']]},
+ {id:'schufa',t:'c) Kredi notu (SCHUFA) & belgeler',body:()=>`
+  <p>17 Mart 2026'dan beri yeni ${DE('SCHUFA-Score','kredi notu')} 100–999 puan, 12 açık kriterle hesaplanıyor. Bankalar en az 2026 sonuna kadar ağırlıkla eski skoru da kullanıyor.</p>
+  <table class="t"><thead><tr><th>Sınıf</th><th>Puan</th></tr></thead><tbody>
+   <tr><td>Hervorragend (mükemmel)</td><td class="g">776–999</td></tr><tr><td>Gut (iyi)</td><td class="g">709–775</td></tr><tr><td>Akzeptabel (kabul edilebilir)</td><td class="y">642–708</td></tr><tr><td>Ausreichend (yeterli)</td><td class="r">100–641</td></tr><tr><td>Ungenügend</td><td class="r">açık ödeme sorunu varsa skor yok</td></tr></tbody></table>
+  <p><b>Hedef:</b> en az 709 (iyi), ideali 776+. 705 "kabul edilebilir" bandındadır.</p>
+  <h4>Skoru en çok etkileyenler</h4>
+  <ul>
+   <li>${DE('Zahlungsstörungen','gecikmiş/ihtarlı ödemeler')}: en büyük ağırlık. Faturayı 100 gün içinde ödersen kayıt 18 ayda silinir.</li>
+   <li>Banka ilişkisinin ve en eski kredi kartının yaşı, adresinin yaşı: zamanla puan kazanır; sık taşınma kaybettirir.</li>
+   <li>Son 12 ayda bankalara ve bankalar dışına (telefon, "Kauf auf Rechnung", BNPL) yapılan ${DE('Anfragen','sorgular')} ve yeni ${DE('Ratenkredite','taksitli krediler')}: puan düşürür. Büyük başvurudan önceki 12 ayda yeni kart, telefon sözleşmesi, taksitli alışveriş açma.</li>
+   <li>Yeni kredi kartı uzun vadede puan getirir ama başvurusu 12 ay boyunca sorgu puanını düşürür. Karar vereceksen büyük başvurudan en az 12 ay önce ver.</li>
+   <li>Bankalara "${DE('Konditionsanfrage','koşul sorgusu')}" de; "${DE('Kreditanfrage','kredi sorgusu')}" skoru etkiler.</li>
+  </ul>
+  <h4>Belgeler ve ikamet</h4>
+  <ul>
+   <li>${DE('Aufenthaltstitel','oturum izni')}: bitiş tarihi kredi vadesinden önceyse bankalar vadeyi kısaltır veya ek güvence ister. ${DE('Niederlassungserlaubnis','süresiz oturum')} varsa bunu öne çıkar.</li>
+   <li>${DE('unbefristeter Arbeitsvertrag','süresiz iş sözleşmesi')} + ${DE('Probezeit','deneme süresi')} bitmiş: kişisel kredide en güçlü belge. İşten ayrılmadan önce başvur; kurucu olarak ilk yıllarda gelirin bankaya "belirsiz" görünür.</li>
+   <li>Son 3 ${DE('Gehaltsabrechnungen','maaş bordrosu')}, 3 aylık ${DE('Kontoauszüge','hesap dökümü')}, ${DE('Meldebescheinigung','adres kaydı')}, varsa ${DE('Steuerbescheid','vergi kararı')}.</li>
+   <li>Ücretsiz ${DE('SCHUFA-Datenkopie (Art. 15 DSGVO)','kayıt kopyası')} iste; hatalı kaydı yazılı itirazla düzelttir.</li>
+  </ul>
+  <p class="note">Kaynak: ${LNK('https://www.schufa.de','schufa.de')} · ${LNK('https://www.verbraucherzentrale.de','verbraucherzentrale.de')}</p>`,
+  checks:[['c1','Yeni SCHUFA skorunu ücretsiz hesapta gördüm (puan + 12 kriter)'],['c2','Datenkopie istendi, hatalar kontrol edildi'],['c3','Tüm faturalar otomatik ödemede (Lastschrift / Dauerauftrag)'],['c4','Başvurudan önceki 12 ayda yeni kredi/kart/BNPL yok'],['c5','Aufenthaltstitel bitiş tarihi ↔ kredi vadesi kontrol edildi'],['c6','Bordrolar, dökümler, Meldebescheinigung klasörde']]},
+ {id:'auction',t:'d) İkinci el, müzayede & kaynaklar',body:()=>`
+  <p>Kapanan işletmelerin ekipmanı ${DE('Betriebsauflösung / Geschäftsauflösung','işletme tasfiyesi')} veya ${DE('Insolvenzversteigerung','iflas müzayedesi')} ile satılır. Gastro-${DE('Rückbau','söküm')} ilanlarında bar tezgâhı, soğutucu ve buz makinesi paket çıkabilir.</p>
+  <h4>Nereye bakılır</h4>
+  <ul>
+   <li>Online müzayede evleri (örnek): ${LNK('https://www.restlos.com','Restlos')}, ${LNK('https://www.aurena.at','Aurena')}, ${LNK('https://www.surplex.com','Surplex')}, ${LNK('https://www.troostwijkauctions.com','Troostwijk')}, ${LNK('https://www.netbid.com','NetBid')}. "Gastronomie", "Bar", "Kühlung" filtreleri; 50–150 km çevre.</li>
+   <li>${LNK('https://www.kleinanzeigen.de','Kleinanzeigen')}: "Gastroauflösung", "Eiswürfelmaschine gewerblich", "Kühltheke", "Gläserspülmaschine", "Bartheke". Arama kaydı + bildirim aç.</li>
+   <li>Gastro ikinci el satıcıları: biraz pahalı ama ${DE('Gewährleistung','satıcı sorumluluğu, genelde 12 ay')} ve test edilmiş cihaz.</li>
+   <li>${DE('Insolvenzverwalter','iflas kayyumu')} ilanları ve yerel gastro kapanış haberleri: bazen müzayede öncesi toplu teklif kabul ederler.</li>
+  </ul>
+  <h4>Gizli maliyetler</h4>
+  <ul>
+   <li>${DE('Aufgeld','alıcı komisyonu')}: genelde %15–20, üstüne KDV. Modül 4'te müzayede kalemlerine otomatik eklenir.</li>
+   <li>${DE('Abholung','teslim alma')}: çoğu 1–3 günlük dar pencere; söküm (${DE('Demontage','')}) senin işin. Gecikirsen ceza veya hakkını kaybedersin.</li>
+   <li>Nakliye: ${DE('Spedition mit Hebebühne','kaldırma platformlu nakliye')} veya ağır parçada vinç/merdiven; sigorta. Elektrikçi bağlantı ücreti.</li>
+   <li>${DE('Gewährleistungsausschluss','garanti yok')}: müzayedede iade yok; arızalı çıkarsa tamir masrafı senin.</li>
+  </ul>
+  <h4>Almadan önce teknik kontrol</h4>
+  <ul>
+   <li>${DE('Typenschild','cihaz etiketi')}: yıl, gerilim (230 V / 400 V), güç (kW), ${DE('Kältemittel','soğutucu gaz')}. R290 / R600a tercih; eski R404A'lı cihazda dolum pahalı ve kısıtlı.</li>
+   <li>Çalışırken video iste: kompresör sesi, soğuma süresi, buz makinesinde pompa ve kireç; bulaşıkta ısıtıcı ve yumuşatıcı.</li>
+   <li>Kapı contaları, menteşe, paslanmaz yüzey, kondenser tozu.</li>
+   <li>Soğutucuyu taşıdıktan sonra dik koy ve üretici talimatına göre (genelde birkaç saat) bekleyip öyle çalıştır.</li>
+   <li>Kullanmadan önce ${DE('DGUV V3 Prüfung','elektrikli cihaz güvenlik testi')} yaptır; protokolü sigorta için sakla.</li>
+  </ul>
+  <h4>Polonya &amp; Çekya'dan alım</h4>
+  <ul>
+   <li>${DE('USt-IdNr','AB KDV numarası')} şart: satıcı firma senin numaranla ${DE('innergemeinschaftliche Lieferung','AB içi KDV\'siz teslim')} yapar. Faturada iki numara ve "reverse charge" ibaresi olur. Sen Almanya'da %19 ${DE('Erwerbsteuer','alım vergisi')} beyan edip aynı anda ${DE('Vorsteuer','indirilecek KDV')} olarak düşersin; net sıfır.</li>
+   <li>Numara yoksa Polonya %23, Çekya %21 KDV keser. Bu Alman beyannamende düşülmez; geri almak ancak ${DE('Vorsteuer-Vergütungsverfahren','BZSt üzerinden yurt dışı KDV iadesi')} ile, yavaş ve formel. USt-IdNr'yi ${DE('Fragebogen zur steuerlichen Erfassung','vergi kayıt formu')} ile erken iste.</li>
+   <li>${DE('Differenzbesteuerung','marj rejimi; PL "procedura marży", CZ "zvláštní režim"')}: satıcı ikinci el malı marj rejimiyle satarsa faturada KDV ayrı yazmaz. Sen Erwerbsteuer ödemezsin ama Vorsteuer de düşemezsin; fiyat son fiyattır. Teklifleri buna göre karşılaştır.</li>
+   <li>Özel kişiden veya icra (PL komornik, CZ dražba) satışından alımda KDV yok, garanti yok; makbuz ve ödeme dekontu sakla.</li>
+   <li>Ödeme banka havalesiyle, fatura işletme adına ve adresine. Satıcı ${DE('Gelangensbestätigung','malın Almanya\'ya ulaştığına dair imzalı belge')} isteyebilir; imzala, kopyasını sakla.</li>
+   <li><b>Fiş ve gerilim:</b> 230/400 V 50 Hz aynı. PL/CZ'de E tipi, Almanya'da F (Schuko) priz var; çoğu cihazda iki tipe uyan hibrit fiş (CEE 7/7) olur, değilse elektrikçi değiştirir. 400 V cihazlarda kırmızı CEE fiş aynı standart.</li>
+   <li>Kılavuz: Almanca veya İngilizce ${DE('Betriebsanleitung','kullanım kılavuzu')} iste; personel ${DE('Gefährdungsbeurteilung','risk değerlendirmesi')} için gerekir. CE işareti olmalı.</li>
+  </ul>`,
+  checks:[['d1','Müzayede siteleri + Kleinanzeigen arama bildirimi açık'],['d2','Her teklifte Aufgeld + KDV + nakliye + söküm toplandı'],['d3','Cihaz etiketi fotoğrafı ve çalışır video istendi'],['d4','Soğutucu gazı ve gerilim (230/400 V) kontrol edildi'],['d5','USt-IdNr alındı (AB alımından önce)'],['d6','Teslim alma tarihi ve nakliye ayarlandı'],['d7','DGUV V3 testi planlandı']]},
+ {id:'equip',t:'e) Kaliteli ekipman, maliyet düşürme & koruma',body:()=>`
+  <h4>Yaklaşım</h4>
+  <ul>
+   <li>${DE('gewerblich','ticari kullanıma uygun')} cihaz al. Ev tipi cihazı barda kullanırsan garanti geçersiz olur ve sigorta sorun çıkarabilir.</li>
+   <li>Yedek parça ve servis ağı olan Avrupa markaları uzun ömürlüdür (örnek: Winterhalter, Hobart bulaşık; Liebherr, Gram soğutma; Brema, Scotsman buz). 2. el alırken de yedek parça bulunurluğunu sor.</li>
+   <li><b>İş durduran cihazlar</b> (buz makinesi, bulaşık, soğutma, kasa) ya yeni ya garantili 2. el satıcıdan. Mobilya, dekor, raf, inox tezgâh müzayededen.</li>
+   <li>${DE('Eigenleistung','kendi işçiliğin')}: yıkım, boya, zemin, dekor, makrome senin. Elektrik, su ve gaz bağlantısı mutlaka ${DE('Fachbetrieb','yetkili usta')}; aksi halde sigorta ödemez, ${DE('Abnahme','kabul/kontrol')} geçmez.</li>
+   <li>Enerji: ticari soğutmada AB enerji etiketi var. Az tüketen soğutucu ve LED, 10 yılda alım fiyat farkını geçer.</li>
+  </ul>
+  <h4>Bozulma, ısınma ve sigorta riski için şartlar</h4>
+  <ul>
+   <li><b>Elektrik:</b> almadan önce elektrikçi binanın ${DE('Hausanschluss / Anschlussleistung','bina güç kapasitesi')} değerini kontrol etsin. Buz makinesi, bulaşık ve soğutma ayrı ${DE('Stromkreis','sigorta hattı')} üzerinde olsun; soğutucuları ayrı ${DE('FI-Schutzschalter','kaçak akım rölesi')} üzerine al ki başka bir arıza gece soğutmayı kesmesin.</li>
+   <li><b>Buz makinesi:</b> üreticinin ortam sıcaklığı aralığı (çoğu 10–32 °C), arka/yan hava boşluğu, ${DE('Wasserfilter','su/kireç filtresi')}, eğimli gider ve koku kesici; aylık temizlik, düzenli kireç çözme.</li>
+   <li><b>Tezgâh altı soğutucu:</b> kapalı dolaba gömülecekse ${DE('Frontbelüftung','önden havalandırmalı')} model seç; kondenseri ayda bir fırçala. Sıcak hava sıkışırsa kompresör yanar.</li>
+   <li><b>Bulaşık / bardak yıkama:</b> ${DE('Enthärtung','su yumuşatma')} veya ters ozmoz (lekesiz bardak), deterjan dozaj pompası, 400 V bağlantı kontrolü.</li>
+   <li><b>Işık ve ses:</b> amfi ve LED sürücüleri havalanan kabinde; ses kablosu ve priz yükü elektrikçiye hesaplatılsın.</li>
+   <li><b>Belgeler:</b> ${DE('Wartungsnachweise','bakım kayıtları')}, DGUV V3 protokolü, ${DE('Feuerlöscher','yangın söndürücü')} (2 yılda bir kontrol). Hasar anında sigorta bunları ister.</li>
+  </ul>`,
+  checks:[['e1','Elektrikçi bina güç kapasitesini kontrol etti'],['e2','Soğutma ayrı hat + ayrı FI üzerinde'],['e3','Buz makinesi: filtre, gider eğimi, hava boşluğu tamam'],['e4','Gömülü soğutucular önden havalandırmalı'],['e5','Bulaşıkta yumuşatıcı / RO ve dozaj pompası'],['e6','Bakım takvimi (aylık / 6 aylık / yıllık) yazıldı'],['e7','Yangın söndürücü + DGUV V3 protokolleri klasörde']]},
+ {id:'other',t:'f) Atlanan ama hayat kurtaran detaylar',body:()=>`
+  <h4>Kira sözleşmesi maddeleri</h4>
+  <ul>
+   <li>${DE('Rückbaupflicht','çıkışta eski hale getirme')}: tezgâh, havalandırma, WC dönüşümü sökülecek mi? Ya kaldır ya "${DE('Einbauten verbleiben','yapılan yatırımlar kalır')}" yazdır; yoksa çıkışta beş haneli söküm faturası.</li>
+   <li>${DE('Konkurrenzschutz','rekabet koruması')}: ev sahibi aynı binaya ikinci bar kiralamasın.</li>
+   <li>${DE('Nutzungszweck','kullanım amacı')}: "Bar / Schankwirtschaft mit Hintergrundmusik, Öffnungszeiten bis 03:00, Außenbewirtschaftung" açıkça yazsın. Dar tanım hem izinde hem ev sahibiyle sorun çıkarır.</li>
+   <li>Kira başlangıcı izne bağlansın: "${DE('aufschiebende Bedingung: Erteilung der Nutzungsänderung','izin çıkmazsa sözleşme yürürlüğe girmez')}". ${DE('mietfreie Zeit','kirasız dönem')} tadilat süresine yazılsın.</li>
+   <li>5+5 yıl opsiyon, ${DE('Indexmiete / Staffelmiete','enflasyona veya kademeli artış')} şartı, ${DE('Schriftform','yazılı şekil')} (uzun kirada şart; eksikse sözleşme erken feshedilebilir), ${DE('Nachmieter / Untervermietung','devir hakkı')}.</li>
+   <li>Kaution yerine ${DE('Mietkautionsbürgschaft','kefalet senedi')}: nakit bağlamaz ama yıllık ${DE('Avalprovision','kefalet ücreti')} öder (Modül 4: %<span data-gv="aval"></span>).</li>
+  </ul>
+  <h4>KDV, Steuernummer ve USt-IdNr zamanlaması</h4>
+  <ul>
+   <li>${DE('Gewerbeanmeldung','işletme kaydı')} sonrası hemen ELSTER'de ${DE('Fragebogen zur steuerlichen Erfassung','vergi kayıt formu')}. Formda USt-IdNr'yi de iste. ${DE('Steuernummer','vergi numarası')} birkaç hafta sürebilir; ilk büyük faturalardan önce bitsin.</li>
+   <li>Tadilat faturalarındaki KDV'yi ${DE('Umsatzsteuer-Voranmeldung','KDV beyannamesi')} ile geri alırsın; ilk büyük iadede Finanzamt kontrol (${DE('Umsatzsteuer-Nachschau','yerinde KDV kontrolü')}) yapabilir, bu da haftalar ekler. Modül 4'teki <span data-gv="vat"></span> aylık gecikme bunun için.</li>
+   <li>Kurucular için "ilk 2 yıl üç ayda bir beyan" istisnası 2026 sonunda bitiyor, uzatılıp uzatılmadığı belli değil. 2029 açılışında aylık beyan büyük ihtimalle zorunlu; bu aslında KDV iadesini hızlandırır.</li>
+   <li>Faturalar işletme adına ve adresine kesilsin; nakit yerine havale, makbuzları ve dekontları sakla.</li>
+  </ul>
+  <h4>Sigortalar</h4>
+  <ul>
+   <li>${DE('Betriebshaftpflicht','işletme sorumluluk')}: misafir kayar, bardak kırılır, komşuya su sızar. Zorunlu gibi düşün.</li>
+   <li>${DE('Inhalts- / Inventarversicherung','demirbaş: yangın, su, hırsızlık, fırtına')}: yeni değer üzerinden; müzayede cihazlarını da listele.</li>
+   <li>${DE('Glasversicherung','cam/vitrin')}, ${DE('Elektronikversicherung','POS, ses, ekipman')}, ${DE('Kühlgutversicherung','arızada bozulan stok')}.</li>
+   <li>${DE('Betriebsunterbrechungsversicherung','iş kesintisi')}: yangın veya su hasarında kapalı kaldığın aylarda kira, kredi ve maaş devam eder. Tek kişilik işletmede kritik.</li>
+  </ul>
+  <h4>İzin ve bildirim sırası</h4>
+  <ol>
+   <li>Bauamt ön görüşme / ${DE('Bauvoranfrage','ön izin sorgusu')} → kira taslağı (imzasız).</li>
+   <li>KfW + SAB başvurusu → onaylar → kira imzası (izin şartlı).</li>
+   <li>${DE('Nutzungsänderung','kullanım değişikliği izni')} + ${DE('Brandschutzkonzept','yangın konsepti')} (Bauamt; aylar sürebilir).</li>
+   <li>${DE('Gewerbeanmeldung','işletme kaydı')} → Fragebogen → Steuernummer + USt-IdNr.</li>
+   <li>${DE('Gaststättenanzeige','bar bildirimi, Ordnungsamt')}: açılıştan en geç 4 hafta önce. ${DE('Registrierung Lebensmittelbetrieb','gıda işletmesi kaydı, Lebensmittelüberwachung')}.</li>
+   <li>${DE('Infektionsschutzbelehrung','Gesundheitsamt hijyen eğitimi')}: sen ve personel, işe başlamadan.</li>
+   <li>${DE('Sondernutzungserlaubnis','kaldırım terası izni, Tiefbauamt')}: sezondan haftalar önce.</li>
+   <li>Personel varsa: ${DE('Betriebsnummer','Arbeitsagentur işveren numarası')}, ${DE('BGN-Anmeldung','meslek birliği')}, Minijob-Zentrale.</li>
+   <li>Kasa: TSE'li kasayı aldıktan sonra <b>1 ay içinde</b> ELSTER'den Finanzamt'a bildir.</li>
+   <li>${DE('GEMA','müzik telif lisansı')} + ticari müzik servisi: ilk müzik çalmadan önce. ${DE('Rundfunkbeitrag Betriebsstätte','işletme yayın ücreti')}.</li>
+  </ol>
+  <h4>Gecikmeye karşı nakit yastığı</h4>
+  <div id="gDelay"></div>`,
+  checks:[['f1','Kira: Rückbau, Konkurrenzschutz, Nutzungszweck, izin şartı, mietfreie Zeit kontrol edildi'],['f2','Kira taslağını avukat veya DEHOGA Sachsen\'e okuttum'],['f3','Fragebogen gönderildi, Steuernummer + USt-IdNr geldi'],['f4','Sigorta teklifleri: Haftpflicht, Inhalt, Glas, Elektronik, Betriebsunterbrechung'],['f5','Gaststättenanzeige + Lebensmittelbetrieb kaydı'],['f6','Infektionsschutzbelehrung (ben + personel)'],['f7','Sondernutzung başvurusu (teras)'],['f8','Kasa ELSTER bildirimi (1 ay içinde)'],['f9','GEMA + müzik servisi sözleşmesi'],['f10','2 aylık gecikme yastığı ayrıldı']]}
+];
+const GCHK=GUIDE.reduce((a,g)=>a+g.checks.length,0);
+function renderGuideStatic(){
+  const box=$('#gBox');if(!box)return;
+  const open=$$('details.gsec[open]',box).map(d=>d.id);
+  box.innerHTML=GUIDE.map(g=>`<details class="sec gsec" id="g_${g.id}"><summary>${g.t}<span class="sv" id="gsv_${g.id}"></span></summary><div class="in">${g.body()}
+    <h4>Kontrol listesi</h4><div class="ckl">${g.checks.map(([id,t])=>`<label><input type="checkbox" data-chk="${id}"${st.chk[id]?' checked':''}><span>${t}</span></label>`).join('')}</div></div></details>`).join('');
+  fillInputs(box);
+  open.forEach(id=>{const d=document.getElementById(id);if(d)d.open=true});
+  guideProgress();
+}
+function guideProgress(){
+  const done=Object.keys(st.chk||{}).filter(k=>st.chk[k]).length,pct=GCHK?done/GCHK*100:0;
+  const p=$('#gProg');if(p)p.innerHTML=`<div class="pbar"><i style="width:${pct}%"></i></div><p class="note">${done} / ${GCHK} madde tamam · <b>%${nf(pct)}</b></p>`;
+  GUIDE.forEach(g=>{const n=g.checks.filter(([id])=>st.chk[id]).length,e=$('#gsv_'+g.id);if(e)e.textContent=`${n}/${g.checks.length}`});
+}
+function kfwPlan(P,rate,years,free){
+  const r=rate/100/12,fm=free*12,n=Math.max(1,(years-free)*12),pr=P/n;let bal=P,int=0;const rows=[];
+  for(let i=0;i<fm;i++){const it=bal*r;int+=it;rows.push(it)}
+  for(let i=0;i<n;i++){const it=bal*r;int+=it;rows.push(it+pr);bal-=pr}
+  return {first:rows[0]||0,after:rows[fm]||0,int,rows};
+}
+function annuity(P,rate,years){const r=rate/100/12,n=Math.max(1,years*12);const A=r?P*r/(1-Math.pow(1+r,-n)):P/n;return {A,int:A*n-P}}
+function renderGuideDyn(){
+  if(!C)return;const b=C.b,F_=st.fund;
+  $$('[data-gv]').forEach(e=>{const k=e.dataset.gv;e.textContent=k==='quit'?st.tl.quit:k==='aval'?nf(st.start.aval,1):k==='vat'?st.vat.delay:''});
+  const K=kfwPlan(F_.kfw,F_.kfwRate,F_.kfwYears,F_.kfwFree),S=F_.sabOn?kfwPlan(F_.sab,F_.sabRate,F_.sabYears,F_.sabFree):null;
+  const j=$('#gJump');
+  if(j){const sabTxt=S?` + SAB ${eur(S.first)} → ${eur(S.after)}`:'';
+    j.innerHTML=`<div class="out">${R(`KfW ödemesiz ${F_.kfwFree} yıl: aylık`,eur(K.first))}${R('Ödemesiz dönem bitince: aylık',eur(K.after),K.after>K.first*2?'y':'',1)}${R('Sıçrama',`+${eur(K.after-K.first)} / ay (×${nf(K.after/Math.max(1,K.first),1)})`)}${S?R('SAB',`${eur(S.first)} → ${eur(S.after)}`):''}${R('Toplam faiz (KfW tüm vade)',eur(K.int))}</div>
+    <p class="note">Ödemesiz dönemin bittiği ay takvimine yaz. O aydan itibaren kasadan ${eur(K.after+(S?S.after:0))} çıkar${sabTxt?'':''}; Modül 3'ün 2. yıl planı bunu kaldırmalı.</p>`}
+  const q=$('#gQA');
+  if(q){
+    const rent=st.op.rev?(st.start.warmN/st.op.rev*100):0,ds=(K.after+(S?S.after:0))*12,dsR=st.op.rev?ds/(st.op.rev*12)*100:0;
+    const QA=[
+      ['Ne kadar öz sermaye koyuyorsun?',`${eur(F_.equity)} · toplam finansmanın <b>%${nf(C.eqR,1)}</b>.`,C.eqR>=15?'g':C.eqR>=10?'y':'r'],
+      ['Ne kadar kredi istiyorsun, neye?',`KfW ${eur(F_.kfw)}${F_.sabOn?` + SAB ${eur(F_.sab)}`:''}. Kurulum ${eur(C.c.net)} net, rezerv ${eur(C.c.bufAmt)}, KDV ön finansmanı ${eur(C.c.vat)}.`,''],
+      ['Açılış günü kasanda ne kalıyor?',eur(b.open),b.open>=C.thr?'g':b.open>=0?'y':'r'],
+      ['Kasa en dibe ne zaman, ne kadar iner?',`${ymL(b.minR.ym)}: <b>${eur(b.minR.cash)}</b> · kötü senaryoda ${ymL(C.w.minR.ym)}: ${eur(C.w.minR.cash)}`,b.minR.cash>=C.thr?'g':b.minR.cash>=0?'y':'r'],
+      ['Hiç ciro olmazsa kaç ay dayanırsın?',`<b>${nf(b.runway,1)} ay</b> (aylık yanma ${eur(b.burn)})`,b.runway>=3?'g':b.runway>=1.5?'y':'r'],
+      ['Ödemesiz dönem bitince taksiti nasıl ödersin?',`${eur(K.first)} → ${eur(K.after+(S?S.after:0))}/ay; yıllık borç servisi cironun %${nf(dsR,1)}'i.`,dsR<=10?'g':dsR<=15?'y':'r'],
+      ['Kira cironun yüzde kaçı?',`Net Warmmiete ${eur(st.start.warmN)} / ciro ${eur(st.op.rev)} = <b>%${nf(rent,1)}</b>`,rent<=10?'g':rent<=12?'y':'r'],
+      ['Deneyimin ne?',esc(st.story||'(aşağıdaki kutuya yaz)'),'']
+    ];
+    q.innerHTML=`<ol class="qa">${QA.map(([k,a,c])=>`<li><b>${k}</b><span class="${c}">${a}</span></li>`).join('')}</ol>`;
+  }
+  const cm=$('#gCmp');
+  if(cm){
+    const P=F_.kfw,A=annuity(P,st.cl.rate,st.cl.years),y3=K.rows[24]??K.after;
+    cm.innerHTML=`<div class="scroll"><table class="t cmpT"><thead><tr><th></th><th>KfW StartGeld</th><th>Ortak tüketici kr.</th></tr></thead><tbody>
+      <tr><td>Borçlu</td><td>Sen (işletme)</td><td>Eşin + sen, ${DE('gesamtschuldnerisch','ikiniz de borcun tamamından sorumlu')}</td></tr>
+      <tr><td>Tutar</td><td>${eur(P)}</td><td>${eur(P)}</td></tr>
+      <tr><td>Faiz</td><td>%${nf(F_.kfwRate,2)} sabit</td><td>%${nf(st.cl.rate,2)} (örnek)</td></tr>
+      <tr><td>Vade / ödemesiz</td><td>${F_.kfwYears} yıl / ${F_.kfwFree} yıl</td><td>${st.cl.years} yıl / yok</td></tr>
+      <tr><td>İlk ay taksit</td><td class="g">${eur(K.first)}</td><td>${eur(A.A)}</td></tr>
+      <tr><td>3. yıl taksit</td><td>${eur(y3)}</td><td>${eur(A.A)}</td></tr>
+      <tr><td>Toplam faiz</td><td>${eur(K.int)}</td><td>${eur(A.int)}</td></tr>
+      <tr><td>Bankanın güvencesi</td><td>%80 KfW + iş planı</td><td>Eşinin öğretmen maaşı</td></tr>
+      <tr><td>İş batarsa</td><td>Borç sende; ev bütçesi sınırlı etkilenir</td><td class="r">Borç ailenin maaşından ödenmeye devam eder</td></tr>
+      <tr><td>Kullanım amacı</td><td>Kuruluş için tasarlanmış</td><td class="y">Çoğu banka işletme kuruluşu için vermez veya sorar; amacı dürüst beyan et</td></tr>
+      <tr><td>Vergi</td><td>Faiz işletme gideri</td><td>Faiz ancak para belgeli şekilde işletmeye girdiyse gider</td></tr>
+      <tr><td>SCHUFA</td><td>Senin kaydında</td><td>İkinizin kaydında</td></tr></tbody></table></div>
+      <p class="note">Varsayılan kurgu değişmedi: Modül 4 KfW'yi senin adına hesaplıyor. Ortak kredi düşünülürse önce açılış nakdini (${eur(b.open)}) ve ilk 24 ayın farkını (${eur((A.A-K.first)*24)}) gör.</p>`;
+  }
+  const dl=$('#gDelay');
+  if(dl){
+    const debtM=K.first+(S?S.first:0),buildM=(st.start.warmB||0)+(+st.tl.living||0)+debtM;
+    const fixedM=(+st.op.staff||0)+(+st.op.rent||0)+(+st.op.other||0)+(+st.op.ul||0)+(+st.op.kv||0)+debtM;
+    const cushion=buildM+fixedM;
+    dl.innerHTML=`<div class="out">${R('Tadilat 1 ay uzarsa (kira + yaşam + kredi faizi)',eur(buildM))}${R('Açılış cirosu 1 ay gecikirse (tüm sabit + sen + kredi)',eur(fixedM))}${R('Önerilen gecikme yastığı (1 + 1 ay)',eur(cushion),'',1)}${R('Modül 4 rezervin',eur(C.c.bufAmt),C.c.bufAmt>=cushion?'g':'y')}${R('Açılışta kasa',eur(b.open),b.open>=cushion?'g':b.open>=0?'y':'r')}</div>
+    <p class="note">Rezerv bu yastığın altındaysa ya tadilat bütçesini kıs ya da SAB / kefaletle nakdi koru. Ev sahibiyle "izin gecikirse kira başlamaz" maddesi bu riskin yarısını siler.</p>`;
+  }
+}
+
+let C=null;
+function renderOut(){
+  C=calc();const s=st,b=C.b,w=C.w,c=C.c;
+  const oc=b.open<0?'r':b.open<C.thr?'y':'g',mc=b.minR.cash<0?'r':b.minR.cash<C.thr?'y':'g';
+  [['k1',eur(c.total),''],['k2',eur(b.open),oc],['k3',eur(b.minR.cash),mc],['k4','%'+nf(C.eqR,1),C.eqR<15?'y':'']].forEach(([k,t,cl])=>{const e=$('#'+k);e.className='kpi'+(cl?' '+cl:'');e.querySelector('b').textContent=t});
+  $('#lead').innerHTML=`Açılışta (${ymL(b.T0+b.B)}) kasada <em>${eur(b.open)}</em> kalıyor. Kasa ${ymL(b.minR.ym)}'te en dibe iniyor: <em class="${b.minR.cash<0?'r':''}">${eur(b.minR.cash)}</em>. ${b.open>0?`Hiç ciro olmasa bu para ${nf(b.runway,1)} ay dayanır.`:'Açılış günü kasa zaten eksi: plan bu haliyle finanse edilmiyor.'}`;
+  draw();
+  const mv=Math.max(1,...b.rows.map(x=>x.vatOut));
+  $('#vatBars').innerHTML=b.rows.map(x=>`<i style="height:${x.vatOut/mv*100}%" title="${ymL(x.ym)}: ${eur(x.vatOut)}"></i>`).join('');
+  $('#vatPeak').textContent=`(en fazla ${eur(b.vatPeak)})`;$('#badDelay').textContent=s.vat.bad;$('#badRampL').textContent='%'+s.badRamp;
+  // sources & uses
+  const srcs=[['Özsermaye',s.fund.equity,'#dcc69b'],['KfW StartGeld',s.fund.kfw,'#adb862'],['SAB Mikrodarlehen',s.fund.sabOn?s.fund.sab:0,'#c3cb74'],['Aile / diğer',s.fund.other,'#80a493']].filter(x=>x[1]>0);
+  const bk=b.bk,uses=[['Kurulum (net, Aufgeld dahil)',bk.capex,'#b8855f'],['Rezerv (harcanan)',bk.buf,'#cf7f6a'],['Kaution (nakit)',bk.kaution,'#8c90b4'],['Ablöse + Makler',bk.abl+bk.makler,'#a084ab'],['Tadilat dönemi kira',bk.rent,'#6f8ea3'],['Yaşam masrafı',bk.living,'#9c7f5e'],['Kredi faizi (tadilat)',bk.loan+bk.aval,'#7f9fb4'],['Bekleyen KDV',bk.vat,'#80a493'],['Açılışta kasa',Math.max(0,b.open),'#dcc69b']].filter(x=>x[1]>0.5);
+  const tot=Math.max(C.fin,uses.reduce((a,x)=>a+x[1],0))||1;
+  $('#su').innerHTML=`<div class="lbl"><span>Kaynaklar</span><b>${eur(C.fin)}</b></div><div class="sb">${srcs.map(([l,v,c])=>`<i style="width:${v/tot*100}%;background:${c}" title="${l}"></i>`).join('')}</div><div class="sl">${srcs.map(([l,v,c])=>`<span><span><i class="dot" style="background:${c}"></i>${l}</span><b>${eur(v)}</b></span>`).join('')}</div>
+    <div class="lbl" style="margin-top:14px"><span>Açılışa kadar kullanım</span><b>${eur(C.fin-b.open)}</b></div><div class="sb">${uses.map(([l,v,c])=>`<i style="width:${v/tot*100}%;background:${c}" title="${l}"></i>`).join('')}</div><div class="sl">${uses.map(([l,v,c])=>`<span><span><i class="dot" style="background:${c}"></i>${l}</span><b>${eur(v)}</b></span>`).join('')}</div>`;
+  $('#al').innerHTML=C.al.map(a=>`<li class="${a.lv}">${a.t}</li>`).join('');
+  $('#sv_rw').textContent=nf(b.runway,1)+' ay';
+  $('#o_rw').innerHTML=R('Açılışta kasa',eur(b.open),oc,1)+R('En dip (baz)',`${eur(b.minR.cash)} · ${ymL(b.minR.ym)}`,mc)+R('En dip (kötü)',`${eur(w.minR.cash)} · ${ymL(w.minR.ym)}`,w.minR.cash<0?'r':w.minR.cash<C.thr?'y':'g')+R('3 aylık sabit gider',eur(C.thr))+R('Sıfır ciroda aylık yakma',eur(b.burn))+R('Runway (sıfır ciro)',nf(b.runway,1)+' ay',b.runway<3?'r':b.runway<6?'y':'g')+R('12. ay sonunda kasa',eur(b.rows[b.H-1].cash))+R('KDV boşluğu (en fazla)',eur(b.vatPeak))+R('Özsermaye oranı','%'+nf(C.eqR,1));
+  $('#sv_tbl').textContent=b.H+' ay';
+  $('#cashTbl').innerHTML=`<thead><tr><th>Ay</th><th>Ciro</th><th>Akış</th><th>KDV bekl.</th><th>Kasa</th><th>Kötü</th></tr></thead><tbody>${b.rows.map((x,i)=>`<tr><td>${ymL(x.ym)}${x.ph==='build'?' · T':''}</td><td>${x.rev?eur(x.rev):'–'}</td><td class="${x.flow<0?'r':''}">${eur(x.flow)}</td><td>${eur(x.vatOut)}</td><td class="${x.cash<0?'r':x.cash<C.thr?'y':'g'}">${eur(x.cash)}</td><td class="${w.rows[i].cash<0?'r':''}">${eur(w.rows[i].cash)}</td></tr>`).join('')}</tbody>`;
+  // capex outputs
+  st.capex.forEach((i,k)=>{const e=$('#ci_'+k);if(!e)return;const a=+i.a||0;if(i.src==='lease'){e.textContent=`Kurulumda 0 €, açılıştan sonra ${eur(+i.lm||0)}/ay gider.`;return}const base=a*(1+(i.src==='auction'?(+i.ag||0)/100:0)),v=['new','auction'].includes(i.src)?base*0.19:0;e.textContent=`Kasadan çıkan ${eur(base+v)}${v?` (KDV ${eur(v)}, geri alınır)`:i.src==='eu'?' (Reverse Charge: KDV beyan edilip aynı anda düşülür)':i.src==='private'?' (KDV yok, geri alınamaz)':''}${i.afa==='gwg'||i.afa==='exp'?' · ilk yıl tamamen gider':i.afa==='stock'?' · stok':''}`});
+  $('#o_capex').innerHTML=R('Kalemler (net)',eur(c.net))+R('Aufgeld',eur(c.ag))+R(`Rezerv %${s.buf}`,eur(c.bufAmt))+R('Toplam yatırım (net)',eur(c.total),'',1)+R('Ödenecek KDV (kalemler)',eur(c.vat))+R('Kasadan çıkan (brüt, rezervsiz)',eur(c.gross))+R('Leasing (açılıştan sonra)',eur(c.lease)+'/ay');
+  const Y=s.afaY;
+  $('#o_afa').innerHTML=R(`Tadilat / yapı (${Y.bau} yıl)`,eur(c.afa.bau/Y.bau)+'/yıl')+R(`Ekipman ${Y.eq5} yıl`,eur(c.afa.eq5/Y.eq5)+'/yıl')+R(`Ekipman ${Y.eq7} yıl`,eur(c.afa.eq7/Y.eq7)+'/yıl')+R(`POS (${Y.pos} yıl)`,eur(c.afa.pos/Y.pos)+'/yıl')+R('Yıllık AfA',eur(c.yearly),'',1)+R('Aylık AfA',eur(c.yearly/12))+R('İlk yıl hemen gider (GWG + açılış giderleri)',eur(c.immediate),'g')+R('Stok (amortisman yok)',eur(c.afa.stock));
+  const tl=$('#o_tl');if(tl)tl.innerHTML=R('Açılış',ymL(b.T0+b.B),'',1)+R('Tadilatta ödenen kira ayı',`${Math.max(0,b.B-s.tl.free)} / ${b.B}`)+R('Yaşam masrafı toplamı',eur(b.bk.living),b.bk.living>s.tl.livingRes?'y':'g');
+  const of=$('#o_fund');if(of){const K=b.K;of.innerHTML=R('Toplam finansman',eur(C.fin),'',1)+R('Özsermaye oranı','%'+nf(C.eqR,1))+R('KfW ödemesiz dönem taksiti',eur(K.rows[0].it)+'/ay')+R('KfW sonra (ilk ay)',K.f<K.n?eur(K.rows[K.f].it+K.rows[K.f].pr)+'/ay':'–')+R('KfW toplam faiz',eur(K.rows.reduce((a,x)=>a+x.it,0)))+(b.S?R('SAB taksit (ödemesiz sonrası)',eur(b.S.rows[b.S.f].it+b.S.rows[b.S.f].pr)+'/ay')+R('SAB toplam faiz',eur(b.S.rows.reduce((a,x)=>a+x.it,0))):'')}
+  // loan tables
+  const sched=schedule(b);
+  const years={};sched.forEach(x=>{const y=Math.floor(x.i/12)+1;const o=years[y]||(years[y]={int:0,pr:0,bal:0,min:1e12,max:0});o.int+=x.int;o.pr+=x.pr;o.bal=x.bal;o.min=Math.min(o.min,x.int+x.pr);o.max=Math.max(o.max,x.int+x.pr)});
+  $('#loanTbl').innerHTML=`<thead><tr><th>Yıl</th><th>Faiz</th><th>Anapara</th><th>Aylık taksit</th><th>Kalan</th></tr></thead><tbody>${Object.entries(years).map(([y,o])=>`<tr><td>${y}. yıl</td><td>${eur(o.int)}</td><td>${eur(o.pr)}</td><td>${Math.round(o.min)===Math.round(o.max)?eur(o.max):eur(o.min)+'–'+kE(o.max)}</td><td>${eur(o.bal)}</td></tr>`).join('')}</tbody>`;
+  $('#loanFull').innerHTML=`<thead><tr><th>Ay</th><th>Faiz</th><th>Anapara</th><th>Toplam</th><th>Kalan</th></tr></thead><tbody>${sched.map(x=>`<tr><td>${ymL(x.ym)}</td><td>${eur(x.int)}</td><td>${eur(x.pr)}</td><td>${eur(x.int+x.pr)}</td><td>${eur(x.bal)}</td></tr>`).join('')}</tbody>`;
+  $('#srcLine').textContent=`Başlangıç: ${s.start.src} · İşletme: ${s.op.src}`;
+  $('#exTxt').value=JSON.stringify(exportObj(),null,2);
+  $('#storeWarn').innerHTML=canStore?'':'<div class="banner">Tarayıcı kaydı kapalı: veriler sayfa kapanınca silinir. Kredi &amp; Veri\'den yedek al.</div>';
+  renderGuideDyn();
+}
+function schedule(b){const n=Math.max(b.K.n,b.S?b.S.n:0),out=[];for(let i=0;i<n;i++){const k=b.K.rows[i]||{it:0,pr:0,bal:0},s=b.S&&b.S.rows[i]||{it:0,pr:0,bal:0};out.push({i,ym:b.T0+i,kInt:k.it,kPr:k.pr,sInt:s.it,sPr:s.pr,int:k.it+s.it,pr:k.pr+s.pr,bal:k.bal+s.bal})}return out}
+
+const fig=$('#fig');
+function draw(){
+  const svg=$('#chart');if(!C||!svg.clientWidth)return;
+  const W=svg.clientWidth,H=svg.clientHeight,b=C.b,w=C.w,n=b.rows.length,narrow=W<520;
+  const mL=narrow?40:52,mR=12,mT=16,mB=28,pw=W-mL-mR,ph=H-mT-mB;
+  const vals=b.rows.map(x=>x.cash).concat(w.rows.map(x=>x.cash),[0,C.thr]);
+  let lo=Math.min(...vals),hi=Math.max(...vals);const pad=(hi-lo)*0.08||1000;lo-=pad;hi+=pad;
+  const X=i=>mL+(n>1?i/(n-1):0.5)*pw,Y=v=>mT+(hi-v)/(hi-lo)*ph;
+  const step=Math.pow(10,Math.floor(Math.log10((hi-lo)/4))),m=(hi-lo)/4/step,st2=(m>5?10:m>2?5:m>1?2:1)*step;
+  let g='';for(let v=Math.ceil(lo/st2)*st2;v<=hi;v+=st2){g+=`<line x1="${mL}" x2="${W-mR}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${mL-6}" y="${Y(v)+4}" text-anchor="end">${kE(v)}</text>`}
+  const bx1=X(0)-pw/(n-1||1)/2,bx2=X(b.B-1)+pw/(n-1||1)/2;
+  g=`<rect x="${Math.max(mL,bx1)}" y="${mT}" width="${Math.max(0,bx2-Math.max(mL,bx1))}" height="${ph}" fill="color-mix(in srgb,var(--ol) 14%,transparent)"/><text x="${Math.max(mL,bx1)+6}" y="${mT+14}" style="fill:var(--ol)">Tadilat</text>`+g;
+  g+=`<line x1="${mL}" x2="${W-mR}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--mute)" stroke-width="1.2"/>`;
+  g+=`<line x1="${mL}" x2="${W-mR}" y1="${Y(C.thr)}" y2="${Y(C.thr)}" stroke="var(--y)" stroke-width="1.2" stroke-dasharray="5 5"/>`;
+  const path=rows=>rows.map((x,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(x.cash).toFixed(1)}`).join(' ');
+  g+=`<path d="${path(b.rows)} L${X(n-1)},${Y(Math.max(lo,0))} L${X(0)},${Y(Math.max(lo,0))}Z" fill="color-mix(in srgb,var(--sand) 10%,transparent)"/>`;
+  g+=`<path d="${path(w.rows)}" fill="none" stroke="var(--r)" stroke-width="2" stroke-dasharray="6 5"/>`;
+  g+=`<path d="${path(b.rows)}" fill="none" stroke="var(--sand)" stroke-width="3" stroke-linejoin="round"/>`;
+  b.rows.forEach((x,i)=>{g+=`<circle cx="${X(i)}" cy="${Y(x.cash)}" r="${narrow?2.5:3.5}" fill="${x.cash<0?'var(--r)':'var(--sand)'}"/>`});
+  const mi=b.rows.indexOf(b.minR),mx=X(mi),my=Y(b.minR.cash),lab=`dip ${eur(b.minR.cash)}`,right=mx<W/2;
+  g+=`<circle cx="${mx}" cy="${my}" r="6" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="${mx+(right?10:-10)}" y="${Math.min(H-mB-6,my+20)}" text-anchor="${right?'start':'end'}" style="fill:var(--ink)">${lab}</text>`;
+  const ox=X(b.B);g+=`<line x1="${ox}" x2="${ox}" y1="${mT}" y2="${H-mB}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 4"/><text x="${ox+5}" y="${mT+14}" style="fill:var(--ink)">Açılış</text>`;
+  const ev=narrow?3:(n>16?2:1);b.rows.forEach((x,i)=>{if(i%ev===0)g+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle">${narrow?MON[x.ym%12]:ymL(x.ym)}</text>`});
+  g+=`<text x="${W-mR}" y="${Y(C.thr)-6}" text-anchor="end" style="fill:var(--y)">3 ay sabit gider</text>`;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=g;
+}
+const ro=new ResizeObserver(()=>draw());ro.observe(fig);
+
+function exportObj(){
+  const c=C,b=c.b,r=x=>Math.round(x),sch=schedule(b);
+  const op12=b.opRows.map(x=>({int:x.int,pr:x.pr}));
+  return {schema:'galapagos.kurulum.v1',module:'kurulum_nakit',exported_at:new Date().toISOString(),
+    lease_month:ymS(b.T0),opening_month:ymS(b.T0+b.B),build_months:b.B,
+    total_investment_net:r(c.c.total),capex_items_net:r(c.c.net),aufgeld:r(c.c.ag),reserve:r(c.c.bufAmt),capex_vat:r(c.c.vat),leasing_monthly:r(c.c.lease),
+    total_financing:r(c.fin),equity:st.fund.equity,equity_ratio_pct:+c.eqR.toFixed(1),
+    loans:[{type:'KfW ERP-Gründerkredit StartGeld',amount:st.fund.kfw,rate_pct:st.fund.kfwRate,years:st.fund.kfwYears,free_years:st.fund.kfwFree}].concat(st.fund.sabOn?[{type:'SAB Mikrodarlehen',amount:st.fund.sab,rate_pct:st.fund.sabRate,years:st.fund.sabYears,free_years:st.fund.sabFree}]:[]),
+    kaution:{amount:st.start.kaution,mode:st.start.kmode==='cash'?'cash':'buergschaft',aval_pct:st.start.aval},
+    cash_at_opening:r(b.open),tiefpunkt:{amount:r(b.minR.cash),month:ymS(b.minR.ym)},tiefpunkt_bad:{amount:r(c.w.minR.cash),month:ymS(c.w.minR.ym)},
+    runway_months_zero_revenue:+b.runway.toFixed(1),monthly_burn_zero_revenue:r(b.burn),safety_line_3m_fixed:r(c.thr),
+    vorsteuer:{peak:r(b.vatPeak),delay_months:st.vat.delay},
+    afa:{yearly:r(c.c.yearly),monthly:r(c.c.yearly/12),first_year_immediate:r(c.c.immediate),basis:{bau:r(c.c.afa.bau),equip_short:r(c.c.afa.eq5),equip_long:r(c.c.afa.eq7),pos:r(c.c.afa.pos),gwg:r(c.c.afa.gwg),expense:r(c.c.afa.exp),stock:r(c.c.afa.stock)},years:st.afaY},
+    loan_schedule:sch.map(x=>({month:ymS(x.ym),kfw_interest:+x.kInt.toFixed(2),kfw_principal:+x.kPr.toFixed(2),sab_interest:+x.sInt.toFixed(2),sab_principal:+x.sPr.toFixed(2),total:+(x.int+x.pr).toFixed(2),balance:r(x.bal)})),
+    monthly_cash:b.rows.map(x=>({month:ymS(x.ym),phase:x.ph,net_revenue:r(x.rev),ebt:r(x.ebt),vat_outstanding:r(x.vatOut),cash:r(x.cash)})),
+    module3_block:{schema:'galapagos.m3.loan_afa.v1',loan_amount:st.fund.kfw+(st.fund.sabOn?st.fund.sab:0),months12:op12.map(x=>({int:+x.int.toFixed(2),pr:+x.pr.toFixed(2)})),monthly_afa:+(c.c.yearly/12).toFixed(2),equipment_basis:r(c.c.afa.bau+c.c.afa.eq5+c.c.afa.eq7+c.c.afa.pos),note:'İlk 12 işletme ayının gerçek faiz/anapara dağılımı (ödemesiz dönem dahil).'}};
+}
+
+let tTimer,undoFn=null;
+function toast(t,undo){$('#toastT').textContent=t;undoFn=undo||null;$('#toastU').hidden=!undo;const el=$('#toast');el.style.display='flex';clearTimeout(tTimer);tTimer=setTimeout(()=>{el.style.display='none';undoFn=null},undo?6000:2600)}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Kopyalandı')}catch(e){toast('Kopyalama engellendi: metni seçip kopyala')}}
+function download(name,text){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('İndirme başlatıldı (engellenirse Kopyala kullan)')}catch(e){toast('İndirme engellendi: Kopyala kullan')}}
+function all(){save();renderOut()}
+function go(tab){const t=['nakit','kurulum','kredi','rehber'].includes(tab)?tab:'nakit';$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+t));$$('nav.tabs a').forEach(a=>{const on=a.dataset.tab===t;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});if(t==='nakit')requestAnimationFrame(draw)}
+
+function importJSON(t){
+  const msg=$('#impMsg'),objs=extractObjects(t),keep=clone(st),done=[];
+  if(!objs.length){msg.textContent='JSON bulunamadı: modül çıktısındaki { … } metninin tamamını yapıştır.';return}
+  objs.forEach(j=>{const r=importOne(j);if(r)done.push(r)});
+  if(!done.length){msg.textContent='Tanınmayan JSON: Modül 1 "Modül 2\'ye aktar" veya Modül 3 "Modül 4 & 5\'e aktar" çıktısını yapıştır.';return}
+  msg.textContent=done.join(' · ');
+  save();renderStatic();renderOut();toast('İçe alındı',()=>{st=keep;save();renderStatic();renderOut()});
+}
+function importOne(j){
+  const msg={set textContent(v){this.v=v},v:''};
+  try{
+    if(j.schema==='galapagos.ciro.v1'){
+      const P=j.plan||{},T=j.target,A=j.assumptions||{};
+      Object.assign(st.op,{rev:T?T.required_monthly_net_revenue:P.net_revenue,cogs:A.cogs_rate_incl_loss_pct??st.op.cogs,card:P.net_revenue?+(P.card_fees/P.net_revenue*100).toFixed(2):st.op.card,staff:P.staff_cost??st.op.staff,rent:P.rent_net??st.op.rent,other:P.other_fixed??st.op.other,ul:P.unternehmerlohn??st.op.ul,kv:P.own_health_insurance??st.op.kv,tax:A.tax_mode==='simple'?A.tax_rate_pct:st.op.tax,idx:Array.isArray(A.season_index)?A.season_index.slice(0,12):st.op.idx,src:`Modül 3 (${T?'hedef':'plan'} ciro)`});
+      msg.textContent=`Modül 3 alındı: hedef ciro ${eur(st.op.rev)}/ay, personel ${eur(st.op.staff)}, kira ${eur(st.op.rent)}, diğer sabit ${eur(st.op.other)}, mevsim endeksi.`;
+    }else if(j.total_seats!=null){
+      const ex=j.extra||{},sc=ex.startup_cash||{};
+      Object.assign(st.start,{kaution:sc.kaution??st.start.kaution,abloese:sc.abloese??st.start.abloese,makler:sc.makler??st.start.makler,warmB:+j.warmmiete||st.start.warmB,warmN:ex.warmmiete_netto??st.start.warmN,sondern:ex.terrace?.sondernutzung_year??st.start.sondern,src:`Modül 1${j.venue_name?' · '+j.venue_name:''}`});
+      msg.textContent=`Modül 1 alındı: Kaution ${eur(st.start.kaution)}, Ablöse ${eur(st.start.abloese)}, Warmmiete ${eur(st.start.warmB)} (net ${eur(st.start.warmN)}), Sondernutzung ${eur(st.start.sondern)}/yıl.`;
+    }else return null;
+    return msg.v;
+  }catch(e){return 'Hata: '+e.message}
+}
+function restore(t){const msg=$('#bkMsg');try{const j=JSON.parse(t);if(j.schema!=='galapagos.kurulum.backup.v1'||!j.state){msg.textContent='Bu bir Modül 4 yedeği değil.';return}const keep=st;st=merge(j.state);save();renderStatic();renderOut();msg.textContent='Geri yüklendi.';toast('Yedek yüklendi',()=>{st=keep;save();renderStatic();renderOut()})}catch(e){msg.textContent='JSON okunamadı: '+e.message}}
+
+const STRUCT=/^(capex\.\d+\.src|tl\.build|fund\.sabOn)$/;
+document.addEventListener('input',e=>{
+  const el=e.target;if(!el.dataset.k)return;
+  const k=el.dataset.k;let v;
+  if(el.dataset.t==='b')v=el.checked;else if(el.dataset.t==='s')v=el.value;else{v=el.type==='range'?parseFloat(el.value):parseNum(el.value,!isBig(k));if(!Number.isFinite(v))return;v=clampK(k,v)}
+  setP(st,k,v);
+  $$(`[data-k="${k}"]`).forEach(o=>{if(o!==el&&o.type!=='checkbox')o.value=o.type==='range'?v:(o.classList.contains('num')?fmtIn(v):v);if(o.type==='range')paint(o)});
+  if(STRUCT.test(k)){save();renderStatic();renderOut();return}
+  all();
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.km){st.start.kmode=d.km;save();renderStatic();renderOut();return}
+  if(d.rm!=null){const i=+d.rm,it=st.capex[i];st.capex.splice(i,1);save();renderStatic();renderOut();toast(`"${it.n}" silindi`,()=>{st.capex.splice(i,0,it);save();renderStatic();renderOut()});return}
+  switch(b.id){
+    case 'addItem':st.capex.push({n:'Yeni kalem',a:0,src:'new',ag:0,lm:0,afa:'eq5',m:1});save();renderStatic();renderOut();break;
+    case 'exCopy':copyText($('#exTxt').value);break;
+    case 'exDl':download('modul4-kurulum-nakit.json',$('#exTxt').value);break;
+    case 'impIn':importJSON($('#impTxt').value);break;
+    case 'bkOut':$('#bkTxt').value=JSON.stringify({schema:'galapagos.kurulum.backup.v1',exported_at:new Date().toISOString(),state:st},null,2);$('#bkMsg').textContent='Yedek hazır.';break;
+    case 'bkCopy':if(!$('#bkTxt').value)$('#bkOut').click();copyText($('#bkTxt').value);break;
+    case 'bkDl':if(!$('#bkTxt').value)$('#bkOut').click();download(`galapagos-modul4-yedek-${new Date().toISOString().slice(0,10)}.json`,$('#bkTxt').value);break;
+    case 'bkIn':restore($('#bkTxt').value);break;
+    case 'wipe':if(b.dataset.arm){const keep=st;st=defaults();save();renderStatic();renderOut();delete b.dataset.arm;b.textContent='Varsayılana sıfırla';toast('Sıfırlandı',()=>{st=keep;save();renderStatic();renderOut()})}else{b.dataset.arm='1';b.textContent='Emin misin? Tekrar dokun';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.textContent='Varsayılana sıfırla'}},4000)}break;
+    case 'toastU':if(undoFn){undoFn();undoFn=null;$('#toast').style.display='none'}break;
+  }
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.chk){st.chk[el.dataset.chk]=el.checked;if(!el.checked)delete st.chk[el.dataset.chk];save();guideProgress();return}
+  if(el.classList.contains('num')&&el.type==='text'&&el.dataset.k)el.value=fmtIn(getP(st,el.dataset.k));
+});
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[data-g]');if(!a)return;
+  e.preventDefault();location.hash='rehber';go('rehber');
+  const d=document.getElementById('g_'+a.dataset.g);if(d){d.open=true;setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'start'}),60)}
+});
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>{$('#impTxt').value=t;importJSON(t)});e.target.value=''});
+$('#bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(restore);e.target.value=''});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+load();renderStatic();renderOut();go(location.hash.slice(1));
+}
+</script>
+<script>/* Galapagos veri köprüsü */
+GX.register('m4',{ta:'#impTxt',btn:'#impIn',msg:'#impMsg',tab:'kredi'});
+</script>
+</body>
+</html>

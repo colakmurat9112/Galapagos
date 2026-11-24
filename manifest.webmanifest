@@ -1,0 +1,21 @@
+{
+  "name": "Galapagos · Bar fizibilite",
+  "short_name": "Galapagos",
+  "description": "Galapagos Cocktailbar, Chemnitz: mekân, personel, ciro, kurulum, vergi ve karar modülleri.",
+  "lang": "tr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1411",
+  "theme_color": "#0f1411",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Karar panosu", "url": "./m6-karar.html", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Mekân analizi", "url": "./m1-mekan.html", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}

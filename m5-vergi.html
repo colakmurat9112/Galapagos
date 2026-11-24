@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galapagos Vergi & Şirket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work tool with a bar handbook's warmth, same family as Modül 1–4
+   IDEA the Steuerberater's year-end sheet: the same profit poured into three company shapes, and the Finanzamt's calendar beside it
+   PICTURE stacked bars of where each euro of profit goes per company type; a 48-month bar timeline of tax payments with the reserve account line
+   COLOUR deep smoke-green night ground, beige ink, olive lead, sand for money kept, coral for tax, amber alarms
+   TYPE Fraunces 600 display + DM Sans text
+   LAYOUT phone: sticky KPI strip, comparison card, threshold, alarms; tabs for calendar, GoBD, settings, guide */
+
+:root{color-scheme:dark;--bg:#0f1411;--p:#171f1a;--p2:#1f2922;--line:#304036;--ink:#f1e8d7;--mute:#aab4a5;--ol:#adb862;--sm:#80a493;--sand:#dcc69b;--ok:#95c67f;--y:#ebb94d;--r:#ec6c52;--disp:'Fraunces',Georgia,'Times New Roman',serif;--txt:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--txt);overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+header.top{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 4px}
+h1{font:600 clamp(28px,5vw,40px)/1.05 var(--disp);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2,h3{font:600 20px/1.2 var(--disp);margin:0 0 8px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 0}
+main{max-width:1240px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.view{display:none}
+.view.on{display:block}
+.kpis{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0 8px;border-bottom:1px solid var(--line);margin-top:6px}
+.kpi b{display:block;font:600 clamp(18px,5.2vw,30px)/1.1 var(--disp);white-space:nowrap}
+.kpi span{display:block;font-size:13px;line-height:1.2;color:var(--mute)}
+.kpi.y b{color:var(--y)}
+.kpi.r b{color:var(--r)}
+.kpi.g b{color:var(--ok)}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:78px}}
+.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.lead{font:600 clamp(20px,4vw,27px)/1.2 var(--disp);margin:4px 0 8px;text-wrap:balance}
+.lead em{font-style:normal;color:var(--sand)}
+.lead em.r{color:var(--r)}
+.fig{position:relative;height:300px;margin-top:6px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.fig text{font:13px var(--txt);fill:var(--mute);paint-order:stroke;stroke:var(--p);stroke-width:4px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute);margin-top:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;flex:none}
+.vs{display:flex;align-items:flex-end;gap:2px;height:44px;margin-top:6px}
+.vs i{flex:1;background:var(--sm);border-radius:2px 2px 0 0;opacity:.8}
+.su{margin-top:8px}
+.su .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.sb{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--line)}
+.sb i{display:block;height:100%}
+.sl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:4px 14px;font-size:14px;margin-top:8px}
+.sl span{display:flex;justify-content:space-between;gap:8px}
+.sl b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.al{list-style:none;margin:0;padding:0}
+.al li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.al li:first-child{border-top:0}
+.al li::before{content:'';width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mute)}
+.al li.r::before{background:var(--r)}
+.al li.y::before{background:var(--y)}
+.al li.i::before{background:var(--sm)}
+.al li.ok::before{background:var(--ok)}
+details.sec{background:var(--p);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+details.sec>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 19px/1.2 var(--disp);min-height:54px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'+';font:400 22px var(--txt);color:var(--mute);flex:none}
+details.sec[open]>summary::after{content:'–'}
+.sv{font:500 14px var(--txt);color:var(--sand);white-space:nowrap;margin-left:auto}
+.in{padding:0 14px 14px}
+.fld{padding:10px 0;border-top:1px solid var(--line)}
+.fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fh label{font-size:15px}
+.nu{display:flex;align-items:center;gap:6px;flex:none}
+.nu em{font-style:normal;color:var(--mute);font-size:14px;min-width:2.4em;white-space:nowrap}
+input.num{width:6.6em;font:500 16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;text-align:right;min-height:44px;font-variant-numeric:tabular-nums}
+input[type=text],input[type=month],textarea,select{width:100%;font:16px var(--txt);background:var(--p2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input[type=month]{width:auto;min-width:10em}
+textarea{min-height:90px;resize:vertical}
+textarea.code{font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;min-height:150px}
+label.lb{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ol);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:4px 0 0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--ol) var(--f,50%),var(--line) var(--f,50%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--sand);border:3px solid var(--bg);margin-top:-11px;box-shadow:0 0 0 1px var(--ol)}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--ol)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--sand);border:3px solid var(--bg)}
+.hint{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);min-height:54px}
+.sw{appearance:none;-webkit-appearance:none;width:52px;height:30px;border-radius:30px;background:var(--line);position:relative;flex:none;cursor:pointer;margin:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.sw:checked{background:var(--ol)}
+.sw:checked::after{transform:translateX(22px)}
+.out{margin-top:8px;background:var(--p2);border-radius:10px;padding:4px 12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-top:1px dashed var(--line);font-size:15px}
+.row:first-child{border-top:0}
+.row b{white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.row.big b{font:600 20px var(--disp);color:var(--sand)}
+.row b.y{color:var(--y)}
+.row b.r{color:var(--r)}
+.row b.g{color:var(--ok)}
+.btn{min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--p2);color:var(--ink);font:500 15px var(--txt);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--ol);color:#141a10;border-color:var(--ol)}
+.btn.dan{color:var(--r)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.seg button{min-height:44px;padding:0 14px;background:var(--p2);color:var(--mute);border:0;border-left:1px solid var(--line);font:500 15px var(--txt);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--ol);color:#141a10}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th,.t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t th:first-child,.t td:first-child{text-align:left;color:var(--mute);position:sticky;left:0;background:var(--p)}
+.t thead th{font:600 15px var(--disp);color:var(--ink)}
+.t td.r{color:var(--r)}
+.t td.y{color:var(--y)}
+.t td.g{color:var(--ok)}
+.it{border-left:4px solid var(--ol)}
+.it .top{display:flex;gap:8px;align-items:center}
+.it .top input[type=text]{flex:1}
+.ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:0 10px}
+.ig label{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+.ig input.num{width:100%}
+.rp{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.5em,1fr));gap:8px}
+.rp label{display:flex;flex-direction:column;font-size:14px;color:var(--mute);gap:4px}
+.rp input.num{width:100%}
+.guide{max-width:760px}
+.guide h3{margin-top:18px}
+.guide dt{font-weight:700;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.src{font-size:14px;color:var(--sand);margin:4px 0}
+.banner{background:#3a2a14;color:var(--sand);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--p);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--mute);text-decoration:none;font-size:13px;min-height:58px}
+nav.tabs a.on{color:var(--sand)}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:15px;display:none;gap:12px;align-items:center;z-index:20;max-width:calc(100% - 32px)}
+#toast button{background:transparent;border:0;color:#3d5a2a;font:700 15px var(--txt);cursor:pointer;min-height:36px}
+@media(max-width:600px){.t{font-size:13px}.t th,.t td{padding:6px 5px}.fig{height:260px}}
+@media(prefers-reduced-motion:reduce){.sw::after{transition:none}}
+
+nav.tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+nav.tabs a{font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--mute);font:500 14px var(--txt);cursor:pointer}
+.chip.on{background:var(--p2);color:var(--ink);border-color:var(--ol)}
+.cb{margin-top:10px}
+.cb .h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px;margin:12px 0 4px}
+.cb .h b{font:600 18px var(--disp);white-space:nowrap}
+.cb .h small{color:var(--mute);font-size:13px}
+.cb .h.best b{color:var(--ok)}
+.ck{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.ck input{width:24px;height:24px;margin-top:2px;accent-color:var(--ol);flex:none}
+.ck span{font-size:15px}
+.ck small{display:block;color:var(--mute);font-size:13px}
+.prog{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
+.prog i{display:block;height:100%;background:var(--ol)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(14em,1fr));gap:0 14px}
+.osec h4{font:600 16px var(--disp);color:var(--sand);margin:16px 0 6px}
+.osec p,.osec li{font-size:15px}
+.osec ul,.osec ol{padding-left:20px;margin:6px 0}
+.osec li{margin:4px 0}
+.osec a{color:var(--sand)}
+.stand{display:inline-block;font:500 12px var(--txt);color:var(--y);border:1px solid var(--y);border-radius:8px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.glink{display:inline-flex;align-items:center;min-height:40px;color:var(--sand);font-size:14px;text-decoration:none;margin:6px 12px 0 0}
+.glink::after{content:' →'}
+.myth td{white-space:normal!important;text-align:left!important;vertical-align:top;font-size:13px}
+.myth td:first-child{min-width:8em;color:var(--ink)!important}
+.ck.flash{background:color-mix(in srgb,var(--ol) 25%,transparent);border-radius:8px}
+.rl{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));gap:8px;margin-top:8px}
+.rl div{background:var(--p2);border-radius:10px;padding:10px}
+.rl b{display:block;font:600 20px var(--disp);white-space:nowrap}
+.rl span{font-size:13px;color:var(--mute)}
+</style>
+<meta name="gx-module" content="m5">
+<meta name="theme-color" content="#0f1411">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Galapagos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="shared/shell.css">
+<script src="shared/core.js"></script>
+<script src="shared/shell.js" defer></script>
+</head>
+<body>
+<header class="top"><h1>Vergi &amp; Şirket Kalkanı</h1><p class="sub">Galapagos · Modül 5 · Einzelunternehmen, UG, GmbH ve Finanzamt takvimi</p></header>
+<main>
+  <section class="view" id="v-kiyas">
+    <div id="storeWarn"></div>
+    <div class="kpis" aria-live="polite">
+      <div class="kpi" id="k1"><b>–</b><span>Seçili tür</span></div>
+      <div class="kpi" id="k2"><b>–</b><span>Efektif vergi (3. yıl)</span></div>
+      <div class="kpi" id="k3"><b>–</b><span>Aylık Rücklage (2. yıl)</span></div>
+      <div class="kpi" id="k4"><b>–</b><span>En büyük tek ödeme</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Aynı kâr, üç şirket türü</h2>
+          <div class="chips" id="yChips"></div>
+          <div class="fh" style="flex-wrap:wrap;margin-top:4px"><span class="note" style="margin:0">Kâr kaynağı (Modül 3)</span><div class="seg" role="group" aria-label="Kâr kaynağı"><button type="button" data-base="target">Hedef</button><button type="button" data-base="plan">Plan</button></div></div>
+          <p class="lead" id="lead"></p>
+          <div class="cb" id="bars"></div>
+          <div class="leg" id="barLeg"></div>
+          <div class="scroll" style="margin-top:12px"><table class="t" id="cmpTbl"></table></div>
+          <p class="note">"Tam dağıtım eşdeğeri" = cebe giren + şirkette kalan paranın ileride %26,375 Abgeltungsteuer ile çekilseydi değeri. Şirket türlerini bu satırla kıyasla.</p>
+        </div>
+        <div class="card">
+          <h2>Seçimin</h2>
+          <div class="fh" style="flex-wrap:wrap"><span>Takvim ve Rücklage bu türe göre</span><div class="seg" role="group" aria-label="Şirket türü"><button type="button" data-sel="ez">Einzel</button><button type="button" data-sel="ug">UG</button><button type="button" data-sel="gmbh">GmbH</button></div></div>
+          <div class="tog"><label for="b_sw">3. yılda GmbH'ye geç<span class="hint" style="display:block">1–2. yıl Einzelunternehmen (ilk yıl zararı/iadesi ortak beyanda), 3. yıldan GmbH. Kuruluş + dönüşüm maliyeti eklenir.</span></label><input type="checkbox" class="sw" id="b_sw" data-k="sw" data-t="b"></div>
+          <div class="out" id="o_sel"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Alarmlar</h3><ul class="al" id="al"></ul></div>
+        <div class="card"><h3>GmbH hangi kârda kazandırır?</h3><div class="out" id="o_thr"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-takvim">
+    <div class="grid">
+      <div>
+        <div class="card" style="margin-top:12px">
+          <h2>Finanzamt takvimi</h2>
+          <p class="lead" id="lead2"></p>
+          <div class="fh" style="flex-wrap:wrap"><div class="seg" role="group" aria-label="Süre"><button type="button" data-mo="36">36 ay</button><button type="button" data-mo="48">48 ay</button></div><label class="note" style="display:flex;gap:8px;align-items:center;margin:0">KDV'yi göster<input type="checkbox" class="sw" data-k="showUst" data-t="b"></label></div>
+          <div class="fig" id="fig"><svg id="chart" role="img" aria-label="Aylık vergi ödemeleri ve Rücklage hesabı"></svg></div>
+          <div class="leg"><span><i class="dot" style="background:#cf7f6a"></i>Gelir/Kurumlar vergisi</span><span><i class="dot" style="background:#b8855f"></i>Gewerbesteuer</span><span><i class="dot" style="background:#8c90b4"></i>GKV farkı</span><span><i class="dot" style="background:#80a493"></i>KDV</span><span><i class="dot" style="background:var(--ol)"></i>Rücklage hesabı</span><span><i class="dot" style="background:var(--r)"></i>Ayırmazsan açık</span></div>
+        </div>
+        <div class="card"><h2>Her ay ayrılacak para (Steuer-Rücklage)</h2><p class="note">Üç ayrı hesap. Vergi kısmına %<span id="safL"></span> güvenlik payı dahil.</p><div id="rlCards"></div></div>
+        <details class="sec"><summary>Tüm ödemeler<span class="sv" id="sv_ev"></span></summary><div class="in"><div class="scroll"><table class="t" id="evTbl"></table></div></div></details>
+      </div>
+      <div class="side">
+        <div class="card"><h3>Şok anatomisi</h3><div class="out" id="o_shock"></div></div>
+        <div class="card"><h3>Sağlık sigortası</h3><div class="out" id="o_ins"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-gobd">
+    <div class="card" style="margin-top:12px"><h2>GoBD &amp; Operasyon</h2><p class="note">Gün sonu, kasa, banka, Finanzamt ve maaş akışı: adım adım. Almanca terimler <b>kalın</b>; dairede ve bankada bu kelimeyi kullan. Kontrol listeleri bu tarayıcıda saklanır.</p><div class="prog"><i id="opProg"></i></div><p class="note" id="opPct"></p></div>
+    <div id="opsBox"></div>
+    <div class="card"><h2>GoBD &amp; kasa kontrol listesi</h2><p class="note">Habersiz kasa denetiminde (Kassen-Nachschau) ve Betriebsprüfung'da ilk bakılan şeyler. İşaretlerin bu tarayıcıda saklanır.</p><div class="prog"><i id="gProg"></i></div><p class="note" id="gPct"></p></div>
+    <div id="gobd"></div>
+  </section>
+
+  <section class="view" id="v-ayar">
+    <div class="grid">
+      <div id="setForm" style="margin-top:12px"></div>
+      <div class="side">
+        <div class="card" style="margin-top:12px">
+          <h2>Modül 3 &amp; 4'ten al</h2>
+          <p class="src" id="srcLine"></p>
+          <label class="lb" for="impTxt">JSON'u yapıştır (Modül 3 "Modül 4 &amp; 5'e aktar" veya Modül 4 "Modül 5 &amp; 6'ya aktar")</label>
+          <textarea class="code" id="impTxt" spellcheck="false"></textarea>
+          <div class="btns"><button class="btn pri" type="button" id="impIn">İçe al</button><label class="btn" for="impFile">Dosyadan al</label><input type="file" id="impFile" accept=".json,application/json" hidden></div>
+          <p class="note" id="impMsg"></p>
+        </div>
+        <details class="sec" open><summary>Modül 6'ya aktar<span class="sv">JSON</span></summary><div class="in"><div class="btns"><button class="btn pri" type="button" id="exCopy">Kopyala</button><button class="btn" type="button" id="exDl">İndir (.json)</button></div><textarea class="code" id="exTxt" readonly spellcheck="false" style="margin-top:10px"></textarea></div></details>
+        <div class="card">
+          <h2>Yedekle</h2>
+          <div class="btns"><button class="btn" type="button" id="bkOut">Yedek oluştur</button><button class="btn" type="button" id="bkCopy">Kopyala</button><button class="btn" type="button" id="bkDl">İndir (.json)</button></div>
+          <label class="lb" for="bkTxt">Modül 5 yedek JSON</label>
+          <textarea class="code" id="bkTxt" spellcheck="false"></textarea>
+          <div class="btns"><button class="btn pri" type="button" id="bkIn">Metinden geri yükle</button><label class="btn" for="bkFile">Dosyadan geri yükle</label><input type="file" id="bkFile" accept=".json,application/json" hidden><button class="btn dan" type="button" id="wipe">Varsayılana sıfırla</button></div>
+          <p class="note" id="bkMsg"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-rehber">
+    <div class="card guide" style="margin-top:12px">
+      <h2>Operasyon rehberleri (kısa özet)</h2>
+      <ul>
+        <li><b>Gün sonu:</b> Z-Bon → terminal kapanışı → sayım → bahşiş ve giderler → sabit Wechselgeld → kalan para ya Geldtransit ya Privatentnahme, ayrı kayıt. Hesaplayıcı protokolü hazırlar. <a class="glink" href="#gobd" data-og="gs">Aç</a></li>
+        <li><b>Banka &amp; Finanzamt:</b> üç Rücklage hesabı, her pazartesi geçen haftanın cirosundan yüzdeyle aktarım; USt-VA, Vorauszahlung, Anpassungsantrag takvimi. <a class="glink" href="#gobd" data-og="bf">Aç</a></li>
+        <li><b>Maaş:</b> ayın 1'i (yedek 10'u), 3 gün önce para hazır; geciktirme ve "çift kod" neden kaybettirir. <a class="glink" href="#gobd" data-og="lohn">Aç</a></li>
+        <li><b>Büyütme:</b> KDV senin değil, Vorsteuer için doğru fatura, GWG, aylık BWA, Rücklage'a dokunma. <a class="glink" href="#gobd" data-og="grow">Aç</a></li>
+      </ul>
+    </div>
+    <div class="card guide">
+      <h2>Nasıl kullanılır &amp; ne işe yarar?</h2>
+      <p>İki soruya cevap verir: "Aynı kârla Einzelunternehmen mi, UG mi, GmbH mi cebime daha çok para bırakır?" ve "Finanzamt'ın 2. yıl şokuna yakalanmamak için her ay kenara ne kadar koymalıyım?" Rakamlar Modül 3 ve 4'ten gelir; eşinin geliri ve sigorta seçimin sonucu değiştirir.</p>
+      <h3>Dört adımda</h3>
+      <ol>
+        <li><b>Veriyi al:</b> Ayarlar → Modül 4 JSON'u (1. yıl kârı ve ayları) ve Modül 3 JSON'u (hedef ve plan kârı).</li>
+        <li><b>Hane bilgisini gir:</b> eşinin geliri, statüsü, ortak beyan, çocuk planı.</li>
+        <li><b>Karşılaştır'a bak:</b> 1., 2., 3. yıl ve 3 yıl toplamı; GmbH eşiği; 3. yılda geçiş anahtarı.</li>
+        <li><b>Takvim'e bak:</b> şok hangi ay geliyor, her ay hangi hesaba ne kadar ayırmalısın. GoBD listesini düzenli işaretle.</li>
+      </ol>
+      <h3>Metrikler ne demek?</h3>
+      <dl>
+        <dt>Einkommensteuer (gelir vergisi)</dt><dd>Einzelunternehmen'de bar kârının tamamı senin kişisel gelirin sayılır ve artan oranlı tarifeyle vergilenir (2026 tarifesi: 12.348 € vergisiz, %14'ten başlayıp %42'ye çıkar). Eşinle ortak beyanda (Ehegattensplitting) iki gelir toplanıp ikiye bölünür; gelir farkı büyükse vergi düşer. Uygulama sadece barın haneye eklediği vergiyi gösterir.</dd>
+        <dt>Gewerbesteuer</dt><dd>Belediyenin ticari kâr vergisi: kâr × %3,5 × Hebesatz (Chemnitz %450). Einzelunternehmen'de 24.500 € muaftır ve büyük kısmı gelir vergisinden düşülür; %400'ü aşan kısım gerçek ek yüktür. UG/GmbH'de muafiyet ve mahsup yoktur: kârın %15,75'i.</dd>
+        <dt>Körperschaftsteuer (kurumlar vergisi)</dt><dd>UG/GmbH'nin kârına: 2027'ye kadar %15, sonra her yıl 1 puan düşerek 2029'da %13, 2032'den itibaren %10. Üstüne %5,5 Soli.</dd>
+        <dt>Geschäftsführer maaşı</dt><dd>UG/GmbH'de kendine maaş verirsin; şirket için gider, senin için maaş geliri. Çok yüksek veya sözleşmesizse Finanzamt fazlasını gizli kâr dağıtımı (vGA) sayar.</dd>
+        <dt>Abgeltungsteuer ve Teileinkünfteverfahren</dt><dd>Şirketten kâr payı çekince ya sabit %25 + Soli (%26,375) ödersin ya da başvuruyla payın %60'ı kişisel oranınla vergilenir. Uygulama ikisini hesaplayıp ucuz olanı işaretler.</dd>
+        <dt>UG zorunlu yedeği</dt><dd>UG yıllık kârının %25'ini dağıtamaz, Stammkapital 25.000 €'ya ulaşana kadar yedeğe koyar.</dd>
+        <dt>EÜR ve bilanço</dt><dd>Einzelunternehmen basit gelir-gider hesabıyla (EÜR) başlar. 80.000 € kâr veya 800.000 € ciro aşılır ve Finanzamt bildirirse bilanço zorunlu olur. UG/GmbH her zaman bilanço tutar; Steuerberater farkı burada ek gider olarak eklenir (Modül 3'teki 300 €/ay zaten içeride).</dd>
+        <dt>Vorauszahlung (peşin vergi)</dt><dd>Finanzamt yıl içinde çeyreklik peşin ister: gelir/kurumlar vergisi 10 Mart, Haziran, Eylül, Aralık; Gewerbesteuer 15 Şubat, Mayıs, Ağustos, Kasım. İlk yıl kuruluş formundaki (Fragebogen) kâr tahminine göre belirlenir.</dd>
+        <dt>Nachzahlung ve 2. yıl şoku</dt><dd>Yılın gerçek vergisi Bescheid ile kesinleşir (burada yıl sonundan 15 ay sonra). Peşinler düşük kaldıysa fark tek seferde istenir; aynı anda sonraki yılların peşinleri geriye dönük yükseltilir ve sağlık sigortası da farkını ister. Bu üçü aynı ay üst üste biner.</dd>
+        <dt>Steuer-Rücklage</dt><dd>Her ay ayrı ve dokunulmaz bir hesaba aktarılan para: KDV, gelir/kurumlar + Gewerbesteuer ve GKV farkı. Takvim grafiğindeki yeşil çizgi bu hesabın bakiyesidir; sıfırın altına inmemeli.</dd>
+        <dt>KDV (USt-Voranmeldung)</dt><dd>Misafirden aldığın KDV'den ödediğin KDV düşülür, fark bir sonraki ayın 10'unda ödenir. Dauerfristverlängerung ile bir ay ertelenir; karşılığında yıllık KDV'nin 1/11'i bir kere peşin bağlanır. Kasadaki KDV senin paran değil.</dd>
+        <dt>GKV ve Beitragsbemessungsgrenze</dt><dd>Gönüllü GKV'de prim kârına göre: en az 1.318,33 €/ay gelir üzerinden, en fazla 5.812,50 €/ay (tavan) üzerinden (2026). Önce tahminle geçici, vergi kararı gelince kesin hesaplanır; aradaki fark geriye dönük istenir. Çocuk ve gelirsiz eş ücretsiz aile sigortasına girer.</dd>
+        <dt>PKV</dt><dd>Özel sigorta gelire değil yaşa ve sağlığa göre fiyatlanır; gençken ucuz, her çocuk ayrı prim. GKV'ye dönüş ileride çok zor.</dd>
+        <dt>Efektif vergi oranı</dt><dd>Tüm vergiler (kişisel + şirket + kâr payı) ÷ bar kârı.</dd>
+        <dt>GmbH eşiği</dt><dd>Bar kârının hangi seviyesinden sonra GmbH'nin (tam dağıtım eşdeğeriyle) Einzelunternehmen'den fazla bıraktığı.</dd>
+      </dl>
+      <h3>Sınırlar</h3>
+      <p>Bu bir karar destek aracıdır, vergi danışmanlığı değildir. 2026 tarifesi ve sigorta değerleri kullanılır; Lohnsteuer kesintisi, kilise vergisinin ayrıntıları, çocuk vergi avantajları ve §34a gibi seçenekler basitleştirilmiştir. Şirket türü kararını bir Steuerberater ile kesinleştir.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sekmeler">
+  <a href="#kiyas" data-tab="kiyas"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Karşılaştır</a>
+  <a href="#takvim" data-tab="takvim"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Takvim</a>
+  <a href="#gobd" data-tab="gobd"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>GoBD &amp; Ops</a>
+  <a href="#ayar" data-tab="ayar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Ayarlar</a>
+  <a href="#rehber" data-tab="rehber"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg>Rehber</a>
+</nav>
+<div id="toast" role="status"><span id="toastT"></span><button type="button" id="toastU" hidden>Geri al</button></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const SKEY='galapagos_m5_v1';
+let canStore=true;
+const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const TN={ez:'Einzelunternehmen',ug:'UG',gmbh:'GmbH',sw:'Einzel → GmbH (3. yıl)'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=(n,d=0)=>(Number.isFinite(n)?n:0).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=n=>(n<0?'−':'')+nf(Math.abs(Math.round(n)))+' €';
+const kE=n=>(n<0?'−':'')+nf(Math.abs(n)/1000,Math.abs(n)<10000?1:0)+'k';
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,p,v)=>{const ks=p.split('.');const l=ks.pop();ks.reduce((a,k)=>a[k],o)[l]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const GOBD=[['Günlük',[['tse','Her satış TSE\'li kasadan fişli','Fiş verme zorunluluğu (Belegausgabepflicht); fişsiz satış = tahmin riski'],['zbon','Günlük kapanış (Z-Bon) alındı ve saklandı','Tarih sırası kesintisiz olmalı'],['sturz','Kasa sayımı yapıldı, fark kayda geçti','Sayım protokolü imzalı'],['trink','Bahşiş ayrı kayıt','Kartlı bahşiş POS\'tan çalışana aktarım listesi'],['ikram','İkram ve personel içkisi POS\'ta kayıtlı','"0 €" veya ikram tuşuyla'],['beleg','Gider fişleri tarihli ve kasa defterinde','Selgros, nakit alımlar'],['zeit','Personel saatleri kayıtlı','Başlangıç, bitiş, süre (Minijob dahil)']]],
+  ['Haftalık',[['diff','Kasa farklarının nedeni not edildi',''],['inv','Spirits sayımı / pour cost kontrolü','Sapma büyükse Richtsatz riski'],['bank','Bankaya yatırma (Geldtransit) kayıtlı','Kasa ↔ banka mutabakatı'],['scan','Faturalar GoBD uyumlu arşive yüklendi','Değiştirilemez, aranabilir']]],
+  ['Aylık',[['usta','KDV beyanı (USt-VA) zamanında','10\'una kadar, Dauerfrist varsa bir ay sonra'],['rl','Steuer-Rücklage transferleri yapıldı','KDV, vergi, GKV: üç ayrı hesap'],['lohn','Bordro ve Minijob-Zentrale bildirimleri',''],['entn','Kendi tüketimin (Sachentnahme) kaydı','Yıllık götürü tutarlar veya gerçek kayıt'],['richt','Brüt kâr marjı sektör aralığında','Sapma = Betriebsprüfung sorusu'],['vd','Kasa ayarı değiştiyse Verfahrensdokumentation güncel','Tuş, ürün, fiyat değişiklikleri']]],
+  ['Yıllık',[['elster','Kasa ve TSE ELSTER\'e bildirildi / güncel','Yeni kasa, TSE değişimi, kasa satışı'],['vdy','Verfahrensdokumentation gözden geçirildi',''],['jinv','31.12 envanteri yapıldı',''],['arch','Belgeler yasal süreyle (8–10 yıl) saklanıyor',''],['vz','Peşin vergi tutarları gerçek kârla uyumlu','Değilse Finanzamt\'a Anpassungsantrag'],['gkvb','Vergi kararı GKV\'ye iletildi','Geç kalırsa tavan prim riski']]]];
+
+function defaults(){return {
+  yr:{start:2029,open:6,insM:9,salM:7},base:'target',
+  m3:{tEbt:12672,tRev:29381,pEbt:18770,pRev:37425,idx:[70,75,90,95,110,110,110,110,105,100,100,125],src:'manuel (Modül 3 varsayılanı)'},
+  y1:{ebt:49849,rev:170557,months:[0,0,0,0,0,12928,17776,22623,24680,26443,29381,36726],src:'manuel (Modül 4 varsayılanı)'},
+  y2pct:85,y3pct:100,
+  sp:{inc:48000,status:'ang',joint:true,church:false,childOn:false,childYear:2031},
+  co:{sal:48000,distr:50,ugCap:1000,gmbhCap:25000,fUG:800,fGmbH:1500,stbE:2000,stbB:4500,umw:2000,sparer:2000},
+  ins:{mode:'gkv',kv:14.6,zus:2.9,pv:3.6,pvC:0.6,min:1318.33,bbg:5812.5,pkv:480,pkvSb:1000,pkvChild:180,rur:300},
+  tax:{heb:450,est:40000,lag:15,safety:10,ust:12.5,dfv:true,months:48},
+  sel:'ez',sw:false,yv:1,showUst:false,chk:{},
+  ops:{chk:{},rlY:1,weekRev:0,netPay:3000,svTax:1324,wechsel:200,de:{date:'',zTotal:0,zCash:0,zCard:0,term:0,start:200,tips:0,exp:0,counted:0,transit:0,priv:0}}};}
+let st=null;
+function merge(x){const d=defaults();x=x||{};const o=Object.assign(d,x);['yr','m3','y1','sp','co','ins','tax'].forEach(k=>o[k]=Object.assign(defaults()[k],x[k]||{}));o.chk=x.chk||{};const dd=defaults().ops,xo=x.ops||{};o.ops=Object.assign(dd,xo,{chk:xo.chk||{},de:Object.assign(dd.de,xo.de||{})});return o}
+function load(){let raw=null;try{raw=localStorage.getItem(SKEY)}catch(e){canStore=false}try{st=merge(raw?JSON.parse(raw):null)}catch(e){st=defaults()}}
+function save(){GX.dirty();try{localStorage.setItem(SKEY,JSON.stringify(st));canStore=true}catch(e){canStore=false}}
+
+// ---------- tax engine ----------
+const kstR=y=>y<=2027?15:y>=2032?10:15-(y-2027);
+function estT(x){x=Math.floor(Math.max(0,x));if(x<=12348)return 0;if(x<=17799){const y=(x-12348)/1e4;return (914.51*y+1400)*y}if(x<=69878){const z=(x-17799)/1e4;return (173.10*z+2397)*z+1034.87}if(x<=277825)return 0.42*x-11135.63;return 0.45*x-19470.38}
+const soliF=(e,j)=>{const FG=j?40700:20350;return e>FG?Math.min(0.055*e,0.119*(e-FG)):0};
+function hh(zSelf,credit=0){const s=st.sp,j=s.joint,z=j?zSelf+s.inc:zSelf;let e=j?2*estT(z/2):estT(z);e=Math.max(0,e-credit);return {e,s:soliF(e,j),k:s.church?e*0.09:0}}
+function pers(zSelf,credit=0){const a=hh(zSelf,credit),b=hh(0);return {est:a.e-b.e,soli:a.s-b.s,kist:a.k-b.k,tot:(a.e+a.s+a.k)-(b.e+b.s+b.k)}}
+const child=y=>st.sp.childOn&&y>=st.sp.childYear;
+function gkvPrem(income,months,y){const i=st.ins,base=Math.min(i.bbg,Math.max(i.min,income/12));return base*(i.kv+i.zus+i.pv+(child(y)?0:i.pvC))/100*months}
+function insY(income,months,y){const i=st.ins;if(i.mode==='pkv'){const prem=(i.pkv+(child(y)?i.pkvChild:0))*months;return {cost:prem+i.pkvSb*months/12,ded:prem*0.8,prem,gkv:false}}const g=gkvPrem(income,months,y);return {cost:g,ded:g*0.98,prem:g,gkv:true}}
+function yearData(yi){
+  if(yi===0)return {G:+st.y1.ebt,rev:+st.y1.rev,months:st.y1.months.map(Number)};
+  const pct=(yi===1?st.y2pct:st.y3pct)/100,e=(st.base==='plan'?st.m3.pEbt:st.m3.tEbt)*12*pct,r=(st.base==='plan'?st.m3.pRev:st.m3.tRev)*12*pct,si=st.m3.idx.reduce((a,x)=>a+(+x||0),0)||12;
+  return {G:e,rev:r,months:st.m3.idx.map(x=>r*(+x||0)/si)};
+}
+function ez(yi,G,rev,ctx){
+  const y=st.yr.start+yi,stbX=ctx.bil?st.co.stbB-st.co.stbE:0,Gp=G-stbX,mo=yi===0?st.yr.insM:12;
+  const ins=insY(Gp,mo,y),rur=st.ins.rur*mo,z=Gp-ins.ded-rur;
+  const ertrag=Math.max(0,Math.floor((Gp-24500)/100)*100),mb=ertrag*0.035,gst=mb*st.tax.heb/100;
+  const pre=pers(z),credit=Math.min(4*mb,gst,Math.max(0,pre.est)),p=pers(z,credit);
+  const tax=p.tot+gst,pocket=Gp-tax-ins.cost-rur;
+  return {t:'ez',yi,y,G,rev,stbX,found:0,Gp,ins,rur,gst,credit,p,inc:p.tot,kst:0,div:0,tax,pocket,ret:0,res:0,eq:pocket,kvInc:Gp,mo,bilNext:ctx.bil||G>80000||rev>800000,ctx:{bil:ctx.bil||G>80000||rev>800000,cf:0,res:0}};
+}
+function corp(k,yi,G,rev,ctx){
+  const y=st.yr.start+yi,co=st.co,salM=yi===0?st.yr.salM:12,sal=co.sal*salM/12;
+  const found=ctx.first?(k==='ug'?co.fUG:co.fGmbH)+(ctx.umw?co.umw:0):0,stbX=co.stbB-co.stbE;
+  const P=G-sal-stbX-found,used=Math.min(ctx.cf||0,Math.max(0,P)),Pt=Math.max(0,P-used),cf=(ctx.cf||0)-used+Math.max(0,-P);
+  const gst=Pt*0.035*st.tax.heb/100,ks=Pt*kstR(y)/100*1.055,N=P>0?P-ks-gst:P;
+  let res=0;if(k==='ug'&&N>0)res=Math.min(N*0.25,Math.max(0,25000-co.ugCap-(ctx.res||0)));
+  const dist=Math.max(0,N-res),D=dist*co.distr/100,ret=dist-D;
+  const mo=yi===0?st.yr.insM:12,ins=insY(sal+D,mo,y),rur=st.ins.rur*mo;
+  const z=Math.max(0,sal-1230)-ins.ded-rur,pB=pers(z);
+  const ag=Math.max(0,D-co.sparer)*(0.25*1.055+(st.sp.church?0.0225:0)),tev=pers(z+0.6*D).tot-pB.tot,useTEV=tev<ag,divTax=useTEV?tev:ag;
+  const tax=pB.tot+divTax+ks+gst,pocket=sal+D-pB.tot-divTax-ins.cost-rur;
+  return {t:k,yi,y,G,rev,stbX,found,P,Pt,sal,kst:ks,gst,N,res,D,ret,ins,rur,p:pB,inc:pB.tot,div:divTax,ag,tev,useTEV,tax,pocket,eq:pocket+(ret+res)*(1-0.26375),kvInc:sal+D,mo,cf,ctx:{bil:true,cf,res:(ctx.res||0)+res}};
+}
+function runSeq(seq){let ctx={bil:false,cf:0,res:0};return seq.map((t,yi)=>{const d=yearData(Math.min(yi,2));const G=d.G,rev=d.rev;const r=t==='ez'?ez(yi,G,rev,ctx):corp(t,yi,G,rev,Object.assign({},ctx,{first:yi===0||seq[yi-1]!==t,umw:yi>0&&seq[yi-1]!==t}));ctx=r.ctx;return r})}
+const SEQ={ez:['ez','ez','ez','ez'],ug:['ug','ug','ug','ug'],gmbh:['gmbh','gmbh','gmbh','gmbh'],sw:['ez','ez','gmbh','gmbh']};
+
+// ---------- timeline ----------
+function timeline(seq,R){
+  const N=st.tax.months,lag=Math.round(st.tax.lag),openT=st.yr.open-1,startT=openT+2,ny=Math.ceil(N/12);
+  const rows=Array.from({length:N},(_,t)=>({t,inc:0,gst:0,gkv:0,ust:0,dep:{tax:0,gkv:0,ust:0},ev:[]}));
+  const add=(t,k,v,lab,sur)=>{if(t<N&&t>=0&&Math.abs(v)>0.5){rows[t][k]+=v;rows[t].ev.push({k,v,lab,sur:!!sur&&v>0})}};
+  const estR=t=>t==='ez'?ez(1,st.tax.est,0,{bil:false}):corp(t,1,st.tax.est,0,{cf:0,res:0,first:false});
+  const kinds=[['inc','Gelir/Kurumlar',[2,5,8,11],r=>r.t==='ez'?r.inc:r.kst+(r.useTEV?r.div:0),e=>e.t==='ez'?e.inc:e.kst],['gst','Gewerbesteuer',[1,4,7,10],r=>r.gst,e=>e.gst]];
+  kinds.forEach(([k,lab,due,fa,fe])=>{
+    const A=R.slice(0,ny).map(fa),E=seq.slice(0,ny).map(t=>fe(estR(t))),paid=new Array(ny).fill(0);let known=null;
+    for(let t=0;t<N;t++){const y=Math.floor(t/12),m=t%12;
+      for(let b=0;b<ny;b++)if(12*b+11+lag===t){const nz=A[b]-paid[b];add(t+1,k,nz,`${lab} ${st.yr.start+b} farkı (Bescheid)`,true);paid[b]+=nz;known=A[b];const yp=Math.floor((t+1)/12)-1;if(yp>b&&yp<ny){const ex=Math.max(0,known-paid[yp]);if(ex>0){add(t+1,k,ex,`${lab} ${st.yr.start+yp} geriye dönük peşin`,true);paid[yp]+=ex}}}
+      if(due.includes(m)&&t>=startT&&y<ny){const base=known!=null&&seq[y]===seq[Math.max(0,y-1)]?known:E[y];const amt=Math.max(0,base)/4;add(t,k,amt,`${lab} peşin (${MON[m]})`);paid[y]+=amt}}
+  });
+  // dividends (Abgeltung withheld at payout, July next year)
+  R.slice(0,ny).forEach((r,y)=>{if(r.t!=='ez'&&!r.useTEV&&r.div>0)add(12*(y+1)+6,'inc',r.div,`Kâr payı vergisi ${st.yr.start+y}`,false)});
+  // GKV
+  const gkvInfo={prov:[],act:[],nach:[]};
+  if(st.ins.mode==='gkv'){
+    const estInc=seq[0]==='ez'?st.tax.est:st.co.sal;let basis=estInc;const provPaid=new Array(ny).fill(0);
+    const insStart=12-st.yr.insM;
+    for(let t=0;t<N;t++){const y=Math.floor(t/12);
+      for(let b=0;b<ny;b++)if(12*b+11+lag===t){const a=R[b].ins.prem,nz=a-provPaid[b];add(t+2,'gkv',nz,`GKV ${st.yr.start+b} kesin hesap farkı`,true);gkvInfo.nach.push({y:st.yr.start+b,v:nz,t:t+2});basis=R[b].kvInc}
+      if(t>=insStart&&y<ny){const p=gkvPrem(basis,1,st.yr.start+y);provPaid[y]+=p}}
+    gkvInfo.prov=provPaid;gkvInfo.act=R.slice(0,ny).map(r=>r.ins.prem);
+  }
+  // USt
+  for(let y=0;y<ny;y++){const d=yearData(Math.min(y,2)),annual=d.rev*st.tax.ust/100;let first=true;
+    d.months.forEach((rv,m)=>{const t=12*y+m,v=rv*st.tax.ust/100;if(!v)return;rows[t].dep.ust+=v;
+      if(st.tax.dfv&&first){const svz=annual/11;add(t+1,'ust',svz,`KDV Sondervorauszahlung ${st.yr.start+y}`);add(12*(y+1)+1,'ust',-svz,`Sondervorauszahlung ${st.yr.start+y} mahsubu`);first=false}
+      add(t+(st.tax.dfv?2:1),'ust',v,`KDV ${MON[m]} ${st.yr.start+y}`)})}
+  // deposits
+  for(let y=0;y<ny;y++){const d=yearData(Math.min(y,2)),act=d.months.filter(x=>x>0).length||12,r=R[y];
+    const taxY=(r.t==='ez'?r.inc:r.kst+r.div)+r.gst,gk=st.ins.mode==='gkv'?Math.max(0,(gkvInfo.act[y]||0)-(gkvInfo.prov[y]||0)):0;
+    d.months.forEach((rv,m)=>{if(!rv)return;const t=12*y+m;if(t>=N)return;rows[t].dep.tax+=Math.max(0,taxY)/act*(1+st.tax.safety/100);rows[t].dep.gkv+=gk/act})}
+  let bal=0,naive=0,minBal=Infinity,minT=0,shock={v:0,t:0};
+  rows.forEach(r=>{const out=r.inc+r.gst+r.gkv+r.ust,dep=r.dep.tax+r.dep.gkv+r.dep.ust;bal+=dep-out;r.bal=bal;if(bal<minBal){minBal=bal;minT=r.t}
+    const sur=r.ev.filter(e=>e.sur).reduce((a,e)=>a+e.v,0);naive-=sur;r.naive=naive;const nonU=r.inc+r.gst+r.gkv;if(nonU>shock.v)shock={v:nonU,t:r.t}});
+  return {rows,N,minBal,minT,shock,gkvInfo,ny};
+}
+
+function calc(){
+  const s=st,al=[],A=(lv,t)=>al.push({lv,t});
+  const res={ez:runSeq(SEQ.ez),ug:runSeq(SEQ.ug),gmbh:runSeq(SEQ.gmbh),sw:runSeq(SEQ.sw)};
+  const tot=k=>{const r=res[k].slice(0,3);const f=x=>r.reduce((a,q)=>a+q[x],0);return {pocket:f('pocket'),ret:f('ret')+f('res'),eq:f('eq'),tax:f('tax'),ins:r.reduce((a,q)=>a+q.ins.cost,0),found:f('found'),stb:f('stbX'),G:f('G')}};
+  const T={ez:tot('ez'),ug:tot('ug'),gmbh:tot('gmbh'),sw:tot('sw')};
+  const selK=s.sw?'sw':s.sel,seq=SEQ[selK],R=res[selK],TL=timeline(seq,R);
+  // threshold
+  let thr=null;for(let G=Math.ceil((s.co.sal+5000)/2500)*2500;G<=400000;G+=2500){const a=ez(2,G,0,{bil:G>80000}),b=corp('gmbh',2,G,0,{cf:0,res:0,first:false});if(b.eq>=a.eq){thr=G;break}}
+  const r3=R[2],eff=r3.G>0?r3.tax/r3.G*100:0;
+  // monthly reserve per year
+  const rl=[0,1,2].map(y=>{const rows=TL.rows.slice(12*y,12*y+12),act=rows.filter(r=>r.dep.ust>0).length||12;const f=k=>rows.reduce((a,r)=>a+r.dep[k],0)/act;return {tax:f('tax'),gkv:f('gkv'),ust:f('ust'),act}});
+  // alarms
+  const best3=Object.entries({ez:T.ez.eq,ug:T.ug.eq,gmbh:T.gmbh.eq,sw:T.sw.eq}).sort((a,b)=>b[1]-a[1])[0];
+  A(best3[0]===selK?'ok':'y',`3 yıl toplamında en çok bırakan: ${TN[best3[0]]} (${eur(best3[1])}, tam dağıtım eşdeğeri). Seçimin: ${TN[selK]} (${eur(T[selK].eq)}).`);
+  if(TL.minBal<0)A('r',`Rücklage hesabı ${MON[TL.minT%12]} ${s.yr.start+Math.floor(TL.minT/12)}'de ${eur(TL.minBal)}'ya iniyor: güvenlik payını artır veya peşinleri yükselttir.`);
+  const sh=TL.rows[TL.shock.t],shSur=sh?sh.ev.filter(e=>e.sur).reduce((a,e)=>a+e.v,0):0;
+  if(TL.shock.v>0)A(shSur>5000?'r':'y',`En büyük tek ödeme: ${eur(TL.shock.v)} (${MON[TL.shock.t%12]} ${s.yr.start+Math.floor(TL.shock.t/12)}). Bunun ${eur(shSur)}'su beklenmedik fark ve geriye dönük peşin.`);
+  const g2=yearData(1).G;if(s.tax.est<g2*0.6)A('y',`Kuruluş formundaki kâr tahmini (${eur(s.tax.est)}) 2. yıl kârının (${eur(g2)}) çok altında: peşinler düşük kalır, fark 2 yıl sonra tek seferde gelir. Finanzamt'a gönüllü yükseltme (Anpassungsantrag) iste.`);
+  [0,1,2].forEach(y=>{const d=yearData(y);if(d.G>80000||d.rev>800000){A('i',`${s.yr.start+y}: kâr ${eur(d.G)}, Einzelunternehmen için 80.000 € sınırının üstünde. Finanzamt bildiriminden sonraki yıl bilanço zorunlu (+${eur(s.co.stbB-s.co.stbE)}/yıl Steuerberater).`);return}});
+  const ez1=res.ez[0];if(ez1.G<0)A('ok',`1. yıl zararı ${eur(ez1.G)}: Einzelunternehmen'de eşinin maaşıyla mahsup → yaklaşık ${eur(-ez1.inc)} vergi iadesi. UG/GmbH'de bu zarar şirkette kilitli kalır.`);
+  else if(s.sp.joint)A('i',`Ortak beyan: 1. yıl kârı eşinin geliriyle birlikte vergilenir; Einzelunternehmen'de 1. yılın barı haneye ${eur(ez1.inc)} gelir vergisi ekliyor.`);
+  A('i',`Kurumlar vergisi: ${s.yr.start} %${kstR(s.yr.start)}, ${s.yr.start+1} %${kstR(s.yr.start+1)}, ${s.yr.start+2} %${kstR(s.yr.start+2)}; 2032'den itibaren %10. Chemnitz Gewerbesteuer UG/GmbH için kârın %${nf(3.5*s.tax.heb/100,2)}'i.`);
+  if(thr!=null)A(yearData(2).G>=thr?'y':'i',`GmbH eşiği: yıllık bar kârı ${eur(thr)} üstünde GmbH daha çok bırakıyor. 3. yıl kârın ${eur(yearData(2).G)}.`);
+  if(st.ins.mode==='gkv'){TL.gkvInfo.nach.forEach(n=>{if(n.v>500&&n.t<TL.N)A('y',`GKV ${n.y} farkı: ${eur(n.v)}, ${MON[n.t%12]} ${s.yr.start+Math.floor(n.t/12)}'de geriye dönük istenir.`)});if(R[2].kvInc/12>=s.ins.bbg)A('i',`3. yılda gelirin GKV tavanının (${eur(s.ins.bbg)}/ay) üstünde: azami prim ≈ ${eur(gkvPrem(1e9,1,s.yr.start+2))}/ay.`)}
+  if(selK!=='ez'){const rc=R[2];if(rc.sal>rc.G*0.8)A('y',`Genel müdür maaşı (${eur(rc.sal)}) kârın büyük kısmını alıyor: Finanzamt maaşın "uygun" olup olmadığını sorgular (vGA).`);A('i',`Kâr payı: ${rc.useTEV?'Teileinkünfteverfahren':'Abgeltungsteuer'} daha ucuz (${eur(rc.ag)} vs ${eur(rc.tev)}).`);if(R.some(r=>r.res>0))A('i',`UG zorunlu yedeği 3 yılda ${eur(R.slice(0,3).reduce((a,r)=>a+r.res,0))}: dağıtılamaz.`)}
+  if(s.sp.status==='beamt')A('i','Eşin memur (Beihilfe + PKV): çocuk GKV\'de senin üzerinden ücretsiz sigortalanabilir, ancak eşinin geliri yüksek ve GKV sınırının üstündeyse çocuk PKV\'ye gider.');
+  if(s.tax.dfv)A('i',`Dauerfristverlängerung: her yıl yıllık KDV'nin 1/11'i (${s.yr.start+1}: ≈ ${eur(yearData(1).rev*s.tax.ust/100/11)}) peşin bağlanır, yıl sonunda mahsup edilir.`);
+  const ord={r:0,y:1,ok:2,i:3};al.sort((a,b)=>ord[a.lv]-ord[b.lv]);
+  return {res,T,selK,R,TL,thr,eff,rl,al};
+}
+
+/* ---------- Güvenli sayı (Modül 1–4 ile aynı fonksiyon) ---------- */
+const BIGK=new Set(['m3.tEbt','m3.pEbt','m3.tRev','m3.pRev','y1.ebt','y1.rev','sp.inc','co.sal','co.ugCap','co.gmbhCap','co.fUG','co.fGmbH','co.stbE','co.stbB','co.umw','co.sparer','ins.min','ins.bbg','ins.pkv','ins.pkvSb','ins.pkvChild','ins.rur','tax.est','tax.heb','ops.netPay','ops.svTax','ops.weekRev','ops.wechsel']);
+const isBig=k=>BIGK.has(k)||/^y1\.months\.\d+$/.test(k)||/^ops\.de\.(?!date)/.test(k);
+function hard(k){
+  if(/^(y1\.ebt|m3\.tEbt|m3\.pEbt)$/.test(k))return [-1e7,1e7];
+  if(k==='yr.start')return [2026,2040];
+  if(k==='yr.open')return [1,12];
+  if(k==='yr.insM'||k==='yr.salM')return [0,12];
+  if(k==='sp.childYear')return [2026,2060];
+  if(k==='y2pct'||k==='y3pct')return [0,300];
+  if(/^ins\.(kv|zus|pv|pvC)$/.test(k))return [0,30];
+  if(k==='tax.heb')return [0,900];
+  if(k==='tax.lag')return [0,36];
+  if(k==='tax.months')return [1,120];
+  if(/^(co\.distr|tax\.safety|tax\.ust)$/.test(k))return [0,100];
+  return [0,1e9];
+}
+const clampK=(k,v)=>{const [a,b]=hard(k);return Math.min(b,Math.max(a,v))};
+const num=v=>{const x=parseNum(v,true);return Number.isFinite(x)?x:null};
+function extractObjects(t){
+  const s=String(t||''),out=[];let depth=0,start=-1,inStr=false,bs=false;
+  for(let i=0;i<s.length;i++){const ch=s[i];
+    if(inStr){if(bs)bs=false;else if(ch==='\\')bs=true;else if(ch==='"')inStr=false;continue}
+    if(ch==='"'){if(depth>0)inStr=true;continue}
+    if(ch==='{'){if(depth===0)start=i;depth++}
+    else if(ch==='}'&&depth>0){depth--;if(depth===0&&start>-1){try{out.push(JSON.parse(s.slice(start,i+1)))}catch(e){}start=-1}}}
+  return out;
+}
+
+/* ---------- GoBD & Operasyon rehberi ---------- */
+const DE=(t,a)=>`<b>${t}</b>${a?` (${a})`:''}`;
+const LNK=(u,t)=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
+const STAND='<span class="stand">Stand: Kasım 2026 · değişebilir</span>';
+const GL=id=>{const it=GOBD.flatMap(([,x])=>x).find(x=>x[0]===id);return `<a class="glink" href="#gobd" data-gk="${id}">GoBD: ${it?it[1]:id}</a>`};
+const FN=(k,label,unit,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="${k}"><em>${unit}</em></span></div>${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const OPS=[
+ {id:'gs',t:'1 · Gün sonu & kasa çıkışı',body:()=>`
+  <h4>Sıra (her gece aynı)</h4>
+  <ol>
+   <li>Son misafir çıktı → kasada ${DE('Tagesabschluss','gün kapanışı')} → ${DE('Z-Bon','numaralı gün sonu raporu')}. Numara kesintisiz ilerler; Z-Bon asla silinmez, kâğıt veya PDF arşive.</li>
+   <li>Kart terminalinde ${DE('Kassenschnitt','terminal gün kapanışı')}. Toplamı Z-Bon'daki kart satırıyla karşılaştır.</li>
+   <li>${DE('Kassensturz','nakit sayımı')}: banknot ve bozuk para ayrı, ${DE('Zählprotokoll','sayım tutanağı')} imzalı.</li>
+   <li>${DE('Trinkgeld','bahşiş')}: kartla gelen bahşiş POS'ta ayrı tuşta. Personele nakit ödenirse imzalı ${DE('Auszahlungsbeleg','ödeme fişi')}. Ayrı tuş yoksa bahşiş KDV'li ciro gibi görünür.</li>
+   <li>Kasadan nakit ödenen gider (ör. buz, limon): fişi kasaya, POS'ta ${DE('Auszahlung','kasadan çıkış')} olarak gir.</li>
+   <li>${DE('Wechselgeld','değişim kasası')}: her gece aynı sabit tutar kalır.</li>
+   <li>Kalan nakit ya ${DE('Geldtransit','bankaya yatırılacak para')} ya ${DE('Privatentnahme','senin çektiğin para')}. İkisi ayrı kayıt, ayrı zarf; bankanın ${DE('Einzahlungsbeleg','yatırma dekontu')} Geldtransit kaydına eklenir.</li>
+   <li>Fark çıkarsa sebebiyle birlikte not et; "düzeltip" sıfırlamaya çalışma. Her gün sıfır fark Finanzamt'a da şüpheli görünür.</li>
+  </ol>
+  <h4>Gün sonu hesaplayıcısı</h4>
+  <div>${FN('ops.de.zTotal','Z-Bon toplam (brüt)','€')}${FN('ops.de.zCash','Z-Bon: nakit','€')}${FN('ops.de.zCard','Z-Bon: kart','€')}${FN('ops.de.term','Terminal Kassenschnitt','€','Boş bırakılabilir')}${FN('ops.wechsel','Hedef Wechselgeld (sabit)','€')}${FN('ops.de.start','Başlangıç Wechselgeld','€')}${FN('ops.de.tips','Kartlı bahşiş (nakit ödenen)','€')}${FN('ops.de.exp','Kasadan ödenen gider','€')}${FN('ops.de.counted','Sayılan nakit (çekimden önce)','€')}${FN('ops.de.transit','Geldtransit (bankaya)','€')}${FN('ops.de.priv','Privatentnahme','€')}</div>
+  <div class="fld"><div class="fh"><label for="d_date">Tarih</label><input id="d_date" type="date" data-k="ops.de.date" data-t="s" style="width:auto"></div></div>
+  <div id="deOut"></div>
+  <label class="lb" for="deTxt">Protokol (arşiv için, Almanca)</label>
+  <textarea class="code" id="deTxt" readonly rows="9" wrap="off" style="overflow-x:auto;white-space:pre"></textarea>
+  <div class="btns"><button class="btn pri" type="button" id="deCopy">Protokolü kopyala</button><button class="btn" type="button" id="deNew">Yeni gün (sıfırla)</button></div>
+  <h4>Bahşiş, ikram, kendi tüketimin</h4>
+  <ul>
+   <li>Misafirin çalışana gönüllü verdiği bahşiş çalışan için vergisiz ve asgari ücrete sayılmaz. <b>Sahibin aldığı bahşiş işletme geliridir.</b></li>
+   <li>İkram ve personel içkisi POS'ta "0 €" veya ayrı tuşla. Kayıtsız ikram, envanterde "kayıp" olur ve ${DE('Rohgewinnaufschlag','brüt kâr oranı')} kontrolünde soru getirir.</li>
+   <li>Kendi tüketimin ${DE('unentgeltliche Wertabgabe','işletmeden kendine mal çekişi')}: BMF her yıl gastronomi için götürü tutarlar yayımlar; ya onu ya gerçek kaydı kullan.</li>
+  </ul>
+  ${GL('zbon')}${GL('sturz')}${GL('trink')}`,
+  checks:[['o1','POS\'ta ayrı tuşlar: Trinkgeld, Auszahlung, Geldtransit, Privatentnahme, ikram/personel'],['o2','Sabit Wechselgeld tutarı belirlendi'],['o3','Zählprotokoll şablonu kasada'],['o4','Geldtransit zarfı + banka dekontu arşivleniyor'],['o5','Bahşiş dağıtım kuralı (Tronc) yazılı ve ekiple paylaşıldı']]},
+ {id:'bf',t:'2 · Banka & Finanzamt akışı',body:()=>`
+  <h4>Hesap yapısı</h4>
+  <ul>
+   <li>İşletme ${DE('Girokonto','vadesiz hesap')}: ciro girer, giderler çıkar. Özel harcama bu hesaptan yapılmaz.</li>
+   <li>Üç ayrı ${DE('Tagesgeld / Unterkonto','alt hesap')}: <b>KDV</b>, <b>Gelir + Gewerbesteuer</b>, <b>GKV farkı</b>. Bu üç hesaba dokunulmaz; Finanzamt ve Krankenkasse dışında para çıkmaz.</li>
+  </ul>
+  <h4>Her pazartesi aktarım (önceki haftanın net cirosundan)</h4>
+  <div class="chips" id="rlYChips"></div>
+  ${FN('ops.weekRev','Geçen haftanın net cirosu (KDV hariç)','€','Boşsa seçili yılın ortalama haftası kullanılır.')}
+  <div id="rlWeek"></div>
+  <h4>Takvim</h4>
+  <ul>
+   <li>${DE('Umsatzsteuer-Voranmeldung (USt-VA)','KDV beyanı')}: ELSTER'den, izleyen ayın 10'una kadar. ${DE('Dauerfristverlängerung','1 ay uzatma')} varsa bir ay sonra; karşılığında yıllık KDV'nin 1/11'i peşin bağlanır.</li>
+   <li>${DE('Einkommensteuer-Vorauszahlung','gelir vergisi peşini')}: 10 Mart / Haziran / Eylül / Aralık. ${DE('Gewerbesteuer-Vorauszahlung','')}: 15 Şubat / Mayıs / Ağustos / Kasım. İlk tutarlar ${DE('Fragebogen','vergi kayıt formu')}'daki tahminine göre belirlenir.</li>
+   <li>${DE('Anpassungsantrag','peşin uyarlama talebi')}: kâr tahminden yüksekse peşinleri <b>kendin artırt</b>; 2. yıl şoku ve ${DE('Nachzahlungszinsen','gecikme faizi')} küçülür. Kâr düşükse ${DE('BWA','aylık mali özet')} ile düşürt. Dilekçe serbest biçimli, ELSTER'den.</li>
+   <li>${DE('Lohnsteuer-Anmeldung','bordro vergisi beyanı')}: izleyen ayın 10'u. ${DE('Sozialversicherungsbeiträge','sigorta primleri')} ve Minijob-Zentrale: o ayın sondan üçüncü banka iş günü (tahmini tutar).</li>
+   <li>Vergi kararı (${DE('Einkommensteuerbescheid','')}) gelince hemen Krankenkasse'ye gönder; geç kalırsan geçici olarak tavan prim (~1.261 €/ay) kesilir.</li>
+  </ul>
+  <h4>Numaralar ve kayıtlar (sıra)</h4>
+  <ol>
+   <li>${DE('Gewerbeanmeldung','işletme kaydı')} → 1 ay içinde ELSTER'de ${DE('Fragebogen zur steuerlichen Erfassung','')}.</li>
+   <li>${DE('Steuernummer','vergi numarası')} birkaç hafta sürer; formda ${DE('USt-IdNr','AB KDV numarası')} kutusunu işaretle (BZSt verir).</li>
+   <li>TSE'li kasa: alındıktan sonra 1 ay içinde ELSTER'den bildirim.</li>
+  </ol>
+  <h4>Değişen kurallar ${STAND}</h4>
+  <ul>
+   <li><b>Kasa zorunluluğu (2. Kassengesetz, taslak):</b> yıllık ciro 100.000 € üstü ve nakit ciro 12.000 € ve üstü ise TSE'li elektronik kasa zorunlu; kâğıt fiş yerine dijital fiş (QR / e-posta) 2028'den itibaren planlanıyor. Kasa alırken dijital fiş desteğini sor. ${LNK('https://www.bundesfinanzministerium.de','BMF')} · ${LNK('https://www.ihk.de/chemnitz','IHK Chemnitz')}</li>
+   <li><b>E-Rechnung:</b> e-fatura almak 2025'ten beri herkes için zorunlu; ${DE('XRechnung / ZUGFeRD','e-fatura formatları')} okuyabilen bir program kullan. Şirketlere kestiğin faturada (etkinlik, firma doğum günü) e-fatura kesmek 2028'den itibaren zorunlu. Misafire satış ve 250 €'ya kadar ${DE('Kleinbetragsrechnung','küçük tutarlı fatura')} muaf. ${LNK('https://www.bundesfinanzministerium.de','BMF FAQ E-Rechnung')}</li>
+   <li><b>Kurucular için üç ayda bir KDV beyanı istisnası</b> 2026 sonunda bitiyor; uzatılmazsa 2029'da aylık beyan. ${LNK('https://www.elster.de','ELSTER')}</li>
+  </ul>
+  ${GL('usta')}${GL('rl')}${GL('vz')}${GL('elster')}`,
+  checks:[['o6','3 Rücklage alt hesabı açıldı'],['o7','Pazartesi aktarımı için hatırlatıcı / Dauerauftrag kuruldu'],['o8','ELSTER hesabı (Unternehmenskonto) hazır'],['o9','Vergi takvimi telefona işlendi (USt-VA, Vorauszahlung, Lohnsteuer, SV)'],['o10','E-fatura alabilen program / e-posta kutusu hazır'],['o11','Kasa dijital fiş verebiliyor (Kassengesetz taslağı)']]},
+ {id:'lohn',t:'3 · Maaş zamanlaması & "geciktirme / çift kod" çürükleri',body:()=>`
+  <h4>Aylık maaş takvimi</h4>
+  <div class="two">${FN('ops.netPay','Aylık net maaşlar toplamı','€','Çalışanlara yatan net tutar.')}${FN('ops.svTax','SV primleri + Lohnsteuer + Minijob götürü','€','Modül 2: işveren toplamı − net maaşlar.')}</div>
+  <div id="payCal"></div>
+  <h4>Yasal çerçeve</h4>
+  <ul>
+   <li>Asgari ücret en geç çalışılan ayı izleyen ayın <b>son banka iş günü</b> ödenmiş olmalı (${DE('§ 2 MiLoG','')}). Ayın 1'i (yedek 10'u) düzeni hem yasal hem ekip için güven verir.</li>
+   <li>Fazla saatler ancak yazılı ${DE('Arbeitszeitkonto','çalışma saati hesabı')} ile ertelenebilir: aylık en fazla sözleşme saatinin %50'si, 12 ay içinde denkleştirme.</li>
+   <li>Gastronomide başlangıç, bitiş ve süre kaydı (${DE('Arbeitszeitnachweis','')}) çalışılan günden sonraki 7. günün sonuna kadar yazılmalı ve 2 yıl saklanmalı; eksik kayda 30.000 €'ya kadar ceza.</li>
+   <li>${DE('Sofortmeldung','anlık işe giriş bildirimi')}: gastronomide en geç işe başladığı an. Çalışan kimliğini yanında taşımalı.</li>
+   <li>${DE('Nachweisgesetz','')}: temel çalışma şartları yazılı ve imzalı verilir (Minijob dahil).</li>
+  </ul>
+  <h4>Çürük taktikler ve gerçek bedeli</h4>
+  <table class="t myth"><thead><tr><th>Taktik</th><th>Neden kaybettirir</th></tr></thead><tbody>
+   <tr><td>"Maaşı ayın 15'ine çekip parayı çalıştırırım"</td><td id="mythGain"></td></tr>
+   <tr><td>"Minijob'a kayıtlı, fazla saatleri elden öderim" (çift kod)</td><td>${DE('Schwarzarbeit','kayıt dışı çalıştırma')}. Zoll'un ${DE('FKS','kaçak işçilik birimi')} birimi barları sık denetler. Sonuç: Minijob statüsü düşer, tüm saatler için geriye dönük tam sigorta primi (kasıtta 30 yıla kadar), aylık %1 ${DE('Säumniszuschlag','gecikme zammı')} ve ${DE('§ 266a StGB','sigorta primini kaçırma suçu')}. Kazada çalışan sigortasız kalır, fatura sana kalır.</td></tr>
+   <tr><td>"Saat kaydı tutmasam da olur"</td><td>Kayıt yoksa Zoll çalışanın beyanını esas alır; asgari ücret farkı + prim + ceza. Kayıt seni korur.</td></tr>
+   <tr><td>"Bahşişi maaşın parçası sayarım"</td><td>Bahşiş asgari ücrete sayılmaz; asgari ücret bahşişten bağımsız ödenir.</td></tr>
+   <tr><td>"Kayıtsız satışla vergiden kaçarım"</td><td>${DE('Kassen-Nachschau','habersiz kasa denetimi')} ve Betriebsprüfung'da mal alımı ↔ ciro oranı (${DE('Richtsatz','sektör ortalaması')}) tutmazsa Finanzamt cironu <b>tahmin eder</b> (${DE('Schätzung','')}). Tahmin her zaman yüksek olur; üstüne vergi kaçakçılığı.</td></tr>
+  </tbody></table>
+  <h4>Ekibi elde tutmanın kuralları</h4>
+  <ul>
+   <li>Maaş her ay <b>aynı gün</b>, bir gün bile kaymadan. Gastronomide personel bulmak zor; bir kez geç yatan maaşın güveni aylarca geri gelmez.</li>
+   <li>Vardiya planı en az 2 hafta önceden; değişiklik yazılı.</li>
+   <li>Bordro (${DE('Lohnabrechnung','')}) anlaşılır; bahşiş dağıtımı şeffaf ve yazılı.</li>
+   <li>Werkstudent'lerin sınav dönemlerini planda koru; Minijob sınırını her ay kontrol et (Modül 2 alarmları).</li>
+   <li>Personel içkisi ve yemek kuralı baştan yazılı.</li>
+  </ul>
+  ${GL('zeit')}${GL('lohn')}`,
+  checks:[['o12','Maaş günü ayın 1\'i, yedek 10\'u: sözleşmelere yazıldı'],['o13','Arbeitszeitnachweis sistemi (kâğıt / uygulama) kuruldu'],['o14','Sofortmeldung süreci: işe başlamadan önce'],['o15','Yazılı sözleşmeler (Nachweisgesetz) imzalı'],['o16','Lohnbüro / Steuerberater ile bordro takvimi netleşti']]},
+ {id:'grow',t:'4 · Batırmadan büyütme: finans & vergi taktikleri',body:()=>`
+  <h4>KDV senin paran değil</h4>
+  <ul>
+   <li>100 € brüt içecek satışında 15,97 € KDV (%19); 100 € brüt yemek satışında 6,54 € KDV (%7). Kasadaki brüt para "ciro" değil, içinde Finanzamt'ın payı var.</li>
+   <li>${DE('Vorsteuer','indirilecek KDV')} ancak doğru faturayla düşülür: adın/firman ve adres, numara, net tutar, oran, KDV. Selgros, Metro gibi toptancılarda müşteri kartı işletme adına olsun. 250 €'ya kadar ${DE('Kleinbetragsrechnung','')} basitleştirilmiş.</li>
+  </ul>
+  <h4>Belge ve amortisman disiplini</h4>
+  <ul>
+   <li>${DE('GWG','düşük değerli varlık')}: net 800 €'ya kadar bir parça alındığı yıl tamamen gider; ikinci el de olur. Bardak, küçük ekipman, sandalye gibi alımlarda faturayı parça başı ayrı iste.</li>
+   <li>Büyük alımlar ${DE('AfA','amortisman')} ile yıllara yayılır (Modül 4).</li>
+   <li>Faturaları her hafta GoBD uyumlu arşive yükle; Steuerberater'a her ayın 10'una kadar teslim et. Karşılığında aylık ${DE('BWA','mali özet')} gelir: Anpassungsantrag, banka görüşmesi ve fiyat kararı bununla verilir.</li>
+  </ul>
+  <h4>Nakit ve kredi dengesi</h4>
+  <ul>
+   <li>Rücklage hesabına dokunma. Dokunma ihtiyacı doğduysa fiyat veya gider yapısı yanlış; önce onu düzelt.</li>
+   <li>Kendine ${DE('Privatentnahme','çekim')} her ay aynı tutar (Unternehmerlohn), kasadan rastgele değil.</li>
+   <li>${DE('Kontokorrent / Dispo','hesap kredisi')} sadece köprü; kalıcı finansman değil (faizi yüksek).</li>
+   <li>Yeni yatırım (Barleiter, ikinci mekân, büyük ekipman) için şart: 3 aylık sabit gider kadar nakit + dolu Rücklage + PK % hedefte + KfW anapara dönemi başlamış ve rahat ödeniyor.</li>
+  </ul>`,
+  checks:[['o17','İşletme ve özel hesap tamamen ayrı'],['o18','Toptancı müşteri kartları işletme adına'],['o19','Haftalık fatura arşivi + aylık Steuerberater teslimi'],['o20','Aylık BWA okunuyor (kâr, PK %, mal %)'],['o21','Sabit aylık Privatentnahme tutarı belirlendi']]}
+];
+const OCHK=OPS.reduce((a,g)=>a+g.checks.length,0);
+function renderOpsStatic(){
+  const box=$('#opsBox');if(!box)return;
+  const open=$$('details.osec[open]',box).map(d=>d.id);
+  box.innerHTML=OPS.map(g=>`<details class="sec osec" id="o_${g.id}"><summary>${g.t}<span class="sv" id="osv_${g.id}"></span></summary><div class="in">${g.body()}<h4>Kontrol listesi</h4>${g.checks.map(([id,t])=>`<label class="ck"><input type="checkbox" data-ochk="${id}"${st.ops.chk[id]?' checked':''}><span>${t}</span></label>`).join('')}</div></details>`).join('');
+  fillInputs(box);
+  open.forEach(id=>{const d=document.getElementById(id);if(d)d.open=true});
+  opsProgress();
+}
+function opsProgress(){
+  const done=OPS.flatMap(g=>g.checks).filter(([id])=>st.ops.chk[id]).length,pct=OCHK?done/OCHK*100:0;
+  const p=$('#opProg');if(p)p.style.width=pct+'%';
+  const t=$('#opPct');if(t)t.textContent=`Operasyon: %${nf(pct)} tamam (${done}/${OCHK})`;
+  OPS.forEach(g=>{const e=$('#osv_'+g.id);if(e)e.textContent=`${g.checks.filter(([id])=>st.ops.chk[id]).length}/${g.checks.length}`});
+}
+const lastBankDay=(y,m)=>{let d=new Date(y,m+1,0);while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()-1);return d};
+const bankDayBack=(d,n)=>{d=new Date(d);while(n>0){d.setDate(d.getDate()-1);if(d.getDay()!==0&&d.getDay()!==6)n--}return d};
+const dS=d=>d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
+function deCalc(){
+  const d=st.ops.de,n=k=>+d[k]||0;
+  const soll=n('start')+n('zCash')-n('tips')-n('exp'),diff=n('counted')-soll,end=n('counted')-n('transit')-n('priv');
+  const zSplit=n('zCash')+n('zCard'),zGap=n('zTotal')?n('zTotal')-zSplit:0,tGap=n('term')?n('term')-n('zCard'):0;
+  return {soll,diff,end,zGap,tGap,n};
+}
+function renderOpsDyn(){
+  if(!C)return;const s=st,o=s.ops;
+  // gün sonu
+  const D=deCalc(),out=$('#deOut');
+  if(out){
+    const W=+s.ops.wechsel||0;
+    out.innerHTML=`<div class="out">${R_('Olması gereken nakit (Soll)',eur2(D.soll))}${R_('Sayılan nakit (Ist)',eur2(D.n('counted')))}${R_('Kasa farkı',(D.diff>0?'+':'')+eur2(D.diff),Math.abs(D.diff)<0.005?'g':Math.abs(D.diff)<=5?'y':'r',1)}${D.n('zTotal')?R_('Z-Bon toplam − (nakit + kart)',eur2(D.zGap),Math.abs(D.zGap)<0.01?'g':'y'):''}${D.n('term')?R_('Terminal − Z-Bon kart',eur2(D.tGap),Math.abs(D.tGap)<0.01?'g':'r'):''}${R_('Çekimlerden sonra kasada kalan',eur2(D.end),Math.abs(D.end-W)<0.01?'g':'y')}${R_('Hedef Wechselgeld',eur2(W))}</div>
+    ${Math.abs(D.end-W)>=0.01?`<p class="note">Kasada ${eur2(D.end)} kalıyor, hedef ${eur2(W)}. Geldtransit'i ${eur2(D.end-W>0?D.end-W:0)} artır${D.end<W?' veya Wechselgeld\'i bankadan tamamla':''}.</p>`:''}
+    ${Math.abs(D.diff)>=0.005?`<p class="note">Fark sıfır değil: sebebini protokole yaz (yanlış para üstü, kayıtsız ikram, iade). Farkı silme veya kasaya "uydurma" kayıt girme.</p>`:''}`;
+    const L=(a,b)=>`${a.padEnd(30,' ')}${b}`;
+    const dt=o.de.date?new Date(o.de.date+'T12:00').toLocaleDateString('de-DE'):new Date().toLocaleDateString('de-DE');
+    $('#deTxt').value=[`Kassenbericht / Tagesabschluss – ${dt}`,`Galapagos Cocktailbar`,'-'.repeat(44),
+      L('Z-Bon Gesamt (brutto):',eur2(D.n('zTotal'))),L('  davon bar:',eur2(D.n('zCash'))),L('  davon Karte:',eur2(D.n('zCard'))),L('Kartenterminal Kassenschnitt:',D.n('term')?eur2(D.n('term')):'–'),
+      L('Anfangsbestand Wechselgeld:',eur2(D.n('start'))),L('Trinkgeld-Auszahlung (Karte):',eur2(D.n('tips'))),L('Barausgaben lt. Beleg:',eur2(D.n('exp'))),
+      L('Soll-Bestand:',eur2(D.soll)),L('Ist-Bestand (gezählt):',eur2(D.n('counted'))),L('Kassendifferenz:',(D.diff>0?'+':'')+eur2(D.diff)),
+      L('Geldtransit an Bank:',eur2(D.n('transit'))),L('Privatentnahme:',eur2(D.n('priv'))),L('Endbestand (Wechselgeld):',eur2(D.end)),
+      '-'.repeat(44),'Begründung Differenz: ____________________','Gezählt von: ____________  Unterschrift: ____________'].join('\n');
+  }
+  // haftalık rücklage
+  const yi=Math.min(2,Math.max(0,+o.rlY||0)),rl=C.rl[yi],yd=yearData(yi),mRev=yd.rev/Math.max(1,rl.act);
+  const pc=k=>mRev>0?rl[k]/mRev*100:0,wk=+o.weekRev>0?+o.weekRev:mRev/W_;
+  const ch=$('#rlYChips');if(ch)ch.innerHTML=[0,1,2].map(i=>`<button type="button" class="chip${i===yi?' on':''}" data-rly="${i}" aria-pressed="${i===yi}">${s.yr.start+i}</button>`).join('');
+  const rw=$('#rlWeek');
+  if(rw){const rows=[['KDV hesabı','ust'],['Gelir + Gewerbesteuer hesabı','tax'],['GKV farkı hesabı','gkv']];const tot=rows.reduce((a,[,k])=>a+wk*pc(k)/100,0);
+    rw.innerHTML=`<div class="out">${R_('Esas alınan haftalık net ciro',eur(wk)+(+o.weekRev>0?'':' (ortalama)'))}${rows.map(([l,k])=>R_(`${l} · %${nf(pc(k),1)}`,eur(wk*pc(k)/100))).join('')}${R_('Pazartesi toplam aktarım',eur(tot),'',1)}${R_('Aylık karşılığı (Modül 5 önerisi)',eur(rl.ust+rl.tax+rl.gkv))}</div>
+    <p class="note">Yüzdeler ${s.yr.start+yi} yılının Rücklage önerisinden ve o yılın ortalama aylık net cirosundan (${eur(mRev)}) hesaplanır. Ciro düşük bir haftada tutar da düşer; KDV oranı ciroyla birlikte hareket eder.</p>`}
+  // maaş takvimi
+  const pc2=$('#payCal');
+  if(pc2){const now=new Date(),y=now.getFullYear(),m=now.getMonth()+1,first=new Date(y,m,1),tenth=new Date(y,m,10),ready=new Date(first);ready.setDate(ready.getDate()-3);
+    const sv=bankDayBack(lastBankDay(y,m-1),2),net=+o.netPay||0,svt=+o.svTax||0;
+    pc2.innerHTML=`<div class="out">${R_(`${dS(sv)} · SV primleri + Minijob (sondan 3. banka günü)`,eur(svt*0.8)+' ≈')}${R_(`${dS(ready)} · hesapta hazır olmalı (maaştan 3 gün önce)`,eur(net),'',1)}${R_(`${dS(first)} · net maaşlar (önceki ay için)`,eur(net))}${R_(`${dS(tenth)} · yedek maaş günü / Lohnsteuer + USt-VA`,eur(svt*0.2)+' + KDV')}${R_('Ay toplamı personel nakit çıkışı',eur(net+svt))}</div>
+    <p class="note">SV ve Lohnsteuer bölüşümü yaklaşık (%80 / %20); kesin tutar bordrodan gelir. Ayın son haftasında hem SV hem maaş çıktığı için o hafta hesapta en az ${eur(net+svt*0.8)} olsun.</p>`;
+    const g=$('#mythGain');if(g){const gain=net*0.03*14/365;g.innerHTML=`14 gün geciktirmenin faiz kazancı (%3 faizle) ≈ <b>${eur2(gain)}</b>/ay. Karşılığında: iyi bartender'ı kaybetme riski, maaş geç yatınca ekip motivasyonu ve son banka gününü kaçırırsan asgari ücret ihlali (Zoll cezası). Değmez.`}}
+}
+const W_=52/12;
+const eur2=n=>(n<0?'−':'')+(Math.abs(n)||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+
+// ---------- UI ----------
+const F=(k,label,min,max,step,unit,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="fld"><div class="fh"><label for="n_${id}">${label}</label><span class="nu"><input id="n_${id}" class="num" type="text" inputmode="decimal" autocomplete="off" data-k="${k}"><em>${unit}</em></span></div>${max!=null?`<input id="r_${id}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label}">`:''}${hint?`<p class="hint">${hint}</p>`:''}</div>`};
+const TG=(k,label,hint='')=>{const id=k.replace(/\W/g,'_');return `<div class="tog"><label for="b_${id}">${label}${hint?`<span class="hint" style="display:block">${hint}</span>`:''}</label><input type="checkbox" class="sw" id="b_${id}" data-k="${k}" data-t="b"></div>`};
+const SEG=(k,opts,label)=>`<div class="fld"><div class="fh"><span>${label}</span><div class="seg" role="group" aria-label="${label}">${opts.map(([v,l])=>`<button type="button" data-seg="${k}" data-v="${v}">${l}</button>`).join('')}</div></div></div>`;
+const R_=(l,v,cls='',big)=>`<div class="row${big?' big':''}"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+const SEC=(t,body,open)=>`<details class="sec"${open?' open':''}><summary>${t}<span class="sv"></span></summary><div class="in">${body}</div></details>`;
+function paint(r){const p=(r.value-r.min)/(r.max-r.min)*100;r.style.setProperty('--f',Math.max(0,Math.min(100,p))+'%')}
+function fillInputs(root){$$('[data-k]',root).forEach(el=>{const v=getP(st,el.dataset.k);if(el.dataset.t==='b')el.checked=!!v;else el.value=el.classList.contains('num')?fmtIn(v):(v??'')});$$('input[type=range]',root).forEach(paint)}
+function segs(){$$('[data-seg]').forEach(b=>{const on=String(getP(st,b.dataset.seg))===b.dataset.v;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+
+function renderStatic(){
+  $('#setForm').innerHTML=SEC('Kâr ve yıllar',F('yr.start','1. vergi yılı',2027,2033,1,'')+F('yr.open','Açılış ayı',1,12,1,'. ay')+F('y1.ebt','1. yıl vergi öncesi kâr',-100000,300000,500,'€','Modül 4\'ten: açılış öncesi giderler + ramp-up, AfA dahil.')+F('y1.rev','1. yıl net ciro',0,1000000,1000,'€')+F('m3.tEbt','Modül 3 hedef EBT',0,60000,50,'€/ay')+F('m3.pEbt','Modül 3 plan EBT',0,60000,50,'€/ay')+F('m3.tRev','Modül 3 hedef ciro',0,100000,100,'€/ay')+F('m3.pRev','Modül 3 plan ciro',0,100000,100,'€/ay')+F('y2pct','2. yıl = Modül 3 ×',30,130,5,'%')+F('y3pct','3. yıl = Modül 3 ×',30,130,5,'%')+F('yr.insM','1. yıl serbest çalışılan ay',1,12,1,'ay','Sigorta ve Rürup için.')+F('yr.salM','1. yıl GF maaşı ödenen ay',1,12,1,'ay'),true)+
+    SEC('Hane: eşin',SEG('sp.status',[['ang','Sözleşmeli · GKV'],['beamt','Memur · Beihilfe+PKV']],'Statü')+F('sp.inc','Eşinin vergiye tabi yıllık geliri',0,150000,500,'€')+TG('sp.joint','Ortak beyan (Zusammenveranlagung)','Ehegattensplitting')+TG('sp.church','Kilise vergisi (Saksonya %9)')+TG('sp.childOn','Çocuk planı')+(st.sp.childOn?F('sp.childYear','Çocuk yılı',2027,2040,1,''):''),true)+
+    SEC('UG / GmbH',F('co.sal','Genel müdür maaşı',0,150000,1000,'€/yıl')+F('co.distr','Kalan kârın dağıtılan kısmı',0,100,5,'%')+F('co.ugCap','UG Stammkapital',1,24999,100,'€')+F('co.gmbhCap','GmbH Stammkapital',25000,100000,1000,'€','Yarısı kuruluşta ödenir; kasadan bağlanır.')+F('co.fUG','UG kuruluş',0,5000,50,'€')+F('co.fGmbH','GmbH kuruluş',0,5000,50,'€')+F('co.umw','Einzel → GmbH dönüşüm maliyeti',0,10000,100,'€')+F('co.stbE','Steuerberater EÜR',0,10000,100,'€/yıl')+F('co.stbB','Steuerberater bilanço',0,15000,100,'€/yıl')+F('co.sparer','Sparer-Pauschbetrag',0,2000,1000,'€'))+
+    SEC('Sağlık sigortası &amp; emeklilik',SEG('ins.mode',[['gkv','GKV (gönüllü)'],['pkv','PKV']],'Sigorta')+(st.ins.mode==='gkv'?F('ins.kv','GKV genel oran (Krankengeld\'li)',14,15,0.1,'%')+F('ins.zus','Ek prim (ortalama)',0,5,0.05,'%')+F('ins.pv','Bakım sigortası',0,6,0.1,'%')+F('ins.pvC','Çocuksuz ek bakım primi',0,1,0.05,'%')+F('ins.min','Asgari prim tabanı',0,3000,10,'€/ay')+F('ins.bbg','Tavan (BBG)',3000,9000,10,'€/ay'):F('ins.pkv','PKV primi',100,1500,10,'€/ay')+F('ins.pkvSb','Muafiyet (Selbstbehalt)',0,5000,100,'€/yıl','En kötü durum: tamamı kullanılır.')+F('ins.pkvChild','Çocuk başı ek prim',0,500,10,'€/ay'))+F('ins.rur','Rürup / emeklilik',0,2000,10,'€/ay','Vergiden düşülür.'))+
+    SEC('Vergi takvimi &amp; Rücklage',F('tax.heb','Gewerbesteuer çarpanı',200,600,10,'%')+F('tax.est','Kuruluş formunda kâr tahmini',0,200000,1000,'€','İlk peşinler buna göre.')+F('tax.lag','Vergi kararı gecikmesi',6,24,1,'ay','Yıl sonundan sonra.')+F('tax.safety','Rücklage güvenlik payı',0,50,1,'%')+F('tax.ust','KDV ödeme yükü (net cironun)',0,19,0.5,'%','Alınan KDV − ödenen KDV.')+TG('tax.dfv','Dauerfristverlängerung','KDV bir ay sonra; yıllık KDV\'nin 1/11\'i peşin.'),true);
+  fillInputs($('#setForm'));
+  $('#gobd').innerHTML=GOBD.map(([g,items])=>`<div class="card"><div class="fh"><h3 style="margin:0">${g}</h3><button class="btn" type="button" data-greset="${g}">Sıfırla</button></div><div class="prog"><i id="gp_${g}"></i></div>${items.map(([id,l,h])=>`<label class="ck"><input type="checkbox" data-chk="${id}"${st.chk[id]?' checked':''}><span>${l}${h?`<small>${h}</small>`:''}</span></label>`).join('')}</div>`).join('');
+  segs();
+  renderOpsStatic();
+}
+
+const BC=[['pocket','Cebe giren','#dcc69b'],['keep','Şirkette kalan','#adb862'],['tax','Vergiler','#cf7f6a'],['ins','Sigorta + emeklilik','#8c90b4'],['acc','Ekstra muhasebe + kuruluş','#6f8ea3']];
+let C=null;
+function renderOut(){
+  C=calc();const s=st;
+  $('#k1').querySelector('b').textContent=s.sw?'Einzel→GmbH':TN[s.sel].replace('Einzelunternehmen','Einzel');
+  [['k2','%'+nf(C.eff,1),C.eff>45?'y':''],['k3',eur(C.rl[1].tax+C.rl[1].gkv+C.rl[1].ust),''],['k4',eur(C.TL.shock.v),C.TL.shock.v>20000?'r':'']].forEach(([k,t,c])=>{const e=$('#'+k);e.className='kpi'+(c?' '+c:'');e.querySelector('b').textContent=t});
+  $('#yChips').innerHTML=[0,1,2,3].map(i=>`<button type="button" class="chip${s.yv===i?' on':''}" data-yv="${i}" aria-pressed="${s.yv===i}">${i<3?`${i+1}. yıl (${s.yr.start+i})`:'3 yıl toplam'}</button>`).join('');
+  const keys=s.yv===3?['ez','ug','gmbh','sw']:['ez','ug','gmbh'];
+  const view=keys.map(k=>{if(s.yv===3){const t=C.T[k];return {k,G:t.G,pocket:t.pocket,keep:t.ret,tax:t.tax,ins:t.ins,acc:t.found+t.stb,eq:t.eq}}const r=C.res[k][s.yv];return {k,G:r.G,pocket:r.pocket,keep:r.ret+r.res,tax:r.tax,ins:r.ins.cost+r.rur,acc:r.found+r.stbX,eq:r.eq,r}});
+  const best=view.reduce((a,b)=>b.eq>a.eq?b:a),G=view[0].G,mx=Math.max(...view.map(v=>v.pocket+v.keep+v.tax+v.ins+v.acc),Math.abs(G),1);
+  const ez0=view.find(v=>v.k==='ez');
+  $('#lead').innerHTML=`${s.yv===3?'3 yılda':`${s.yr.start+s.yv}'de`} ${eur(G)} bar kârıyla en çok bırakan <em>${TN[best.k]}</em>: ${eur(best.eq)}${best.k!=='ez'?`, Einzelunternehmen'den ${eur(best.eq-ez0.eq)} fazla`:''}.`;
+  $('#bars').innerHTML=view.map(v=>`<div class="h${v===best?' best':''}"><span>${TN[v.k]}</span><b>${eur(v.eq)} <small>eşdeğer</small></b></div><div class="sb">${BC.map(([c,l,col])=>v[c]>0?`<i style="width:${v[c]/mx*100}%;background:${col}" title="${l}: ${eur(v[c])}"></i>`:'').join('')}</div>`).join('');
+  $('#barLeg').innerHTML=BC.map(([c,l,col])=>`<span><i class="dot" style="background:${col}"></i>${l}</span>`).join('');
+  const rowsC=s.yv===3?[['Bar kârı',v=>eur(v.G)],['Cebe giren',v=>eur(v.pocket)],['Şirkette kalan',v=>eur(v.keep)],['Vergiler',v=>eur(v.tax)],['Sigorta + emeklilik',v=>eur(v.ins)],['Muhasebe + kuruluş',v=>eur(v.acc)],['Tam dağıtım eşdeğeri',v=>eur(v.eq),v=>v===best?'g':'']]:
+   [['Bar kârı (EBT)',v=>eur(v.G)],['GF maaşı',v=>v.r.sal?eur(v.r.sal):'–'],['Ekstra muhasebe + kuruluş',v=>eur(v.acc)],['Gelir vergisi + Soli (+KiSt)',v=>eur(v.r.inc)],['Gewerbesteuer',v=>eur(v.r.gst)+(v.r.credit?` (mahsup ${kE(v.r.credit)})`:'')],['Kurumlar vergisi + Soli',v=>v.r.kst?eur(v.r.kst):'–'],['Kâr payı vergisi',v=>v.r.t==='ez'?'–':`${eur(v.r.div)} ${v.r.useTEV?'TEV':'AbgSt'}`],['Sigorta + emeklilik',v=>eur(v.ins)],['Cebe giren',v=>eur(v.pocket)],['Şirkette kalan',v=>eur(v.keep)],['Efektif vergi',v=>v.G>0?'%'+nf(v.tax/v.G*100,1):'–'],['Tam dağıtım eşdeğeri',v=>eur(v.eq),v=>v===best?'g':''],['Cebe giren / ay',v=>eur(v.pocket/(v.r.mo||12))]];
+  $('#cmpTbl').innerHTML=`<thead><tr><th></th>${view.map(v=>`<th>${TN[v.k].replace('Einzelunternehmen','Einzel').replace(' (3. yıl)','')}</th>`).join('')}</tr></thead><tbody>${rowsC.map(([l,f,c])=>`<tr><td>${l}</td>${view.map(v=>`<td class="${c?c(v):''}">${f(v)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  const Rr=C.R;
+  $('#o_sel').innerHTML=Rr.slice(0,3).map(r=>R_(`${r.y} · ${TN[r.t].replace('Einzelunternehmen','Einzel')} cebe<small style="display:block;color:var(--mute);font-size:13px">vergi ${eur(r.tax)}</small>`,eur(r.pocket))).join('')+R_('3 yıl tam dağıtım eşdeğeri',eur(C.T[C.selK].eq),'',1)+(s.sw?R_('Hep Einzel kalsaydın',eur(C.T.ez.eq))+R_('Fark',eur(C.T.sw.eq-C.T.ez.eq),C.T.sw.eq>=C.T.ez.eq?'g':'r'):'');
+  $('#o_thr').innerHTML=C.thr!=null?R_('GmbH eşiği (yıllık kâr)',eur(C.thr),'',1)+[60000,100000,150000,200000].map(g=>{const a=ez(2,g,0,{bil:g>80000}),b=corp('gmbh',2,g,0,{cf:0,res:0,first:false});return R_(`${kE(g)} kârda GmbH − Einzel`,eur(b.eq-a.eq),b.eq>a.eq?'g':'r')}).join('')+`<p class="note">3. yıl koşullarıyla (KSt %${kstR(s.yr.start+2)}, GF maaşı ${eur(s.co.sal)}, dağıtım %${s.co.distr}).</p>`:R_('GmbH eşiği','400.000 €\'ya kadar yok');
+  $('#al').innerHTML=C.al.map(a=>`<li class="${a.lv}">${a.t}</li>`).join('');
+  // timeline
+  const TL=C.TL,shR=TL.rows[TL.shock.t];
+  $('#lead2').innerHTML=`${TN[C.selK]}: en büyük tek ödeme <em>${eur(TL.shock.v)}</em>, ${MON[TL.shock.t%12]} ${s.yr.start+Math.floor(TL.shock.t/12)}. ${TL.minBal>=0?'Önerilen Rücklage ile hesap hiç eksiye düşmüyor.':`Önerilen Rücklage bile ${eur(TL.minBal)}'ya iniyor.`}`;
+  draw();
+  $('#safL').textContent=s.tax.safety;
+  $('#rlCards').innerHTML=C.rl.map((r,y)=>`<p class="note" style="margin-top:12px"><b style="color:var(--ink)">${s.yr.start+y}</b> · ${r.act} ay ciro</p><div class="rl"><div><span>KDV hesabı</span><b>${eur(r.ust)}</b></div><div><span>Vergi hesabı</span><b>${eur(r.tax)}</b></div><div><span>GKV farkı</span><b>${eur(r.gkv)}</b></div><div><span>Toplam / ay</span><b style="color:var(--sand)">${eur(r.ust+r.tax+r.gkv)}</b></div></div>`).join('');
+  const evs=[];TL.rows.forEach(r=>r.ev.forEach(e=>{if(s.showUst||e.k!=='ust')evs.push(Object.assign({t:r.t},e))}));
+  $('#sv_ev').textContent=evs.length+' kalem';
+  $('#evTbl').innerHTML=`<thead><tr><th>Ay</th><th>Kalem</th><th>Tutar</th></tr></thead><tbody>${evs.map(e=>`<tr><td>${MON[e.t%12]} ${String(s.yr.start+Math.floor(e.t/12)).slice(2)}</td><td style="text-align:left;white-space:normal">${e.lab}</td><td class="${e.v<0?'g':e.sur?'r':''}">${eur(e.v)}</td></tr>`).join('')}</tbody>`;
+  $('#o_shock').innerHTML=(shR?shR.ev.filter(e=>e.k!=='ust').map(e=>R_(e.lab,eur(e.v),e.sur?'r':'')).join(''):'')+R_(`${MON[TL.shock.t%12]} ${s.yr.start+Math.floor(TL.shock.t/12)} toplam`,eur(TL.shock.v),'r',1)+R_('Rücklage hesabı o ay',eur(shR?shR.bal:0),shR&&shR.bal<0?'r':'g')+R_('Ayırmasaydın açık (birikmiş)',eur(shR?shR.naive:0),'r');
+  const r2=C.R[1],pk=(s.ins.pkv+(child(s.yr.start+2)?s.ins.pkvChild:0))*12+s.ins.pkvSb,gk=gkvPrem(C.R[2].kvInc,12,s.yr.start+2);
+  $('#o_ins').innerHTML=R_('Mod',s.ins.mode==='gkv'?'GKV gönüllü':'PKV')+[0,1,2].map(y=>R_(`${s.yr.start+y} prim`,eur(C.R[y].ins.prem)+(TL.gkvInfo.prov[y]!=null&&s.ins.mode==='gkv'?` (geçici ${kE(TL.gkvInfo.prov[y])})`:''))).join('')+R_(`3. yıl GKV olsaydı`,eur(gk)+'/yıl')+R_(`3. yıl PKV olsaydı`,eur(pk)+'/yıl')+R_('Fark (PKV − GKV)',eur(pk-gk),pk<gk?'g':'r')+`<p class="note">Çocuk ve gelirsiz eş GKV'de ücretsiz aile sigortasına girer; PKV'de her kişi ayrı prim.</p>`;
+  // gobd
+  const allIds=GOBD.flatMap(([,it])=>it.map(x=>x[0])),done=allIds.filter(i=>st.chk[i]).length;
+  $('#gProg').style.width=done/allIds.length*100+'%';$('#gPct').textContent=`%${nf(done/allIds.length*100)} tamam (${done}/${allIds.length})`;
+  GOBD.forEach(([g,it])=>{const d=it.filter(x=>st.chk[x[0]]).length,e=$('#gp_'+g);if(e)e.style.width=d/it.length*100+'%'});
+  $('#srcLine').textContent=`1. yıl: ${s.y1.src} · 2–3. yıl: ${s.m3.src}`;
+  $('#exTxt').value=JSON.stringify(exportObj(),null,2);
+  segs();
+  const sw=$('#b_sw');if(sw)sw.checked=!!st.sw;$$('[data-k="showUst"]').forEach(x=>x.checked=!!st.showUst);$$('[data-mo]').forEach(b=>b.classList.toggle('on',+b.dataset.mo===st.tax.months));$$('[data-sel]').forEach(b=>b.classList.toggle('on',!st.sw&&b.dataset.sel===st.sel));$$('[data-base]').forEach(b=>b.classList.toggle('on',b.dataset.base===st.base));
+  $('#storeWarn').innerHTML=canStore?'':'<div class="banner">Tarayıcı kaydı kapalı: veriler sayfa kapanınca silinir. Ayarlar\'dan yedek al.</div>';
+  renderOpsDyn();
+}
+
+const fig=$('#fig');
+function draw(){
+  const svg=$('#chart');if(!C||!svg.clientWidth)return;
+  const TL=C.TL,rows=TL.rows,n=rows.length,W=svg.clientWidth,H=svg.clientHeight,narrow=W<520,su=st.showUst;
+  const mL=narrow?40:52,mR=10,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
+  const stackTop=r=>Math.max(0,r.inc)+Math.max(0,r.gst)+Math.max(0,r.gkv)+(su?Math.max(0,r.ust):0),stackBot=r=>Math.min(0,r.inc)+Math.min(0,r.gst)+Math.min(0,r.gkv)+(su?Math.min(0,r.ust):0);
+  const vals=rows.flatMap(r=>[stackTop(r),stackBot(r),r.bal,r.naive]).concat([0]);
+  let lo=Math.min(...vals),hi=Math.max(...vals);const pad=(hi-lo)*0.06||1000;lo-=pad;hi+=pad;
+  const bw=pw/n,X=i=>mL+bw*(i+0.5),Y=v=>mT+(hi-v)/(hi-lo)*ph;
+  const step=Math.pow(10,Math.floor(Math.log10((hi-lo)/4))),m=(hi-lo)/4/step,s2=(m>5?10:m>2?5:m>1?2:1)*step;
+  let g='';for(let v=Math.ceil(lo/s2)*s2;v<=hi;v+=s2)g+=`<line x1="${mL}" x2="${W-mR}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${mL-6}" y="${Y(v)+4}" text-anchor="end">${kE(v)}</text>`;
+  for(let y=1;y<Math.ceil(n/12);y++){const x=mL+bw*12*y;g+=`<line x1="${x}" x2="${x}" y1="${mT}" y2="${H-mB}" stroke="var(--line)" stroke-dasharray="2 4"/>`}
+  const cols=[['inc','#cf7f6a'],['gst','#b8855f'],['gkv','#8c90b4']].concat(su?[['ust','#80a493']]:[]);
+  rows.forEach((r,i)=>{let up=0,dn=0;cols.forEach(([k,c])=>{const v=r[k];if(!v)return;if(v>0){g+=`<rect x="${X(i)-bw*0.38}" y="${Y(up+v)}" width="${bw*0.76}" height="${Math.max(0.5,Y(up)-Y(up+v))}" fill="${c}"/>`;up+=v}else{g+=`<rect x="${X(i)-bw*0.38}" y="${Y(dn)}" width="${bw*0.76}" height="${Math.max(0.5,Y(dn+v)-Y(dn))}" fill="${c}" opacity=".55"/>`;dn+=v}})});
+  g+=`<line x1="${mL}" x2="${W-mR}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--mute)"/>`;
+  const path=k=>rows.map((r,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(r[k]).toFixed(1)}`).join(' ');
+  g+=`<path d="${path('naive')}" fill="none" stroke="var(--r)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path('bal')}" fill="none" stroke="var(--ol)" stroke-width="2.5"/>`;
+  const sx=X(TL.shock.t),sy=Y(stackTop(rows[TL.shock.t])),right=sx<W/2;
+  g+=`<text x="${sx+(right?8:-8)}" y="${Math.max(mT+12,sy-6)}" text-anchor="${right?'start':'end'}" style="fill:var(--ink)">şok ${eur(TL.shock.v)}</text>`;
+  const ev=narrow?12:6;rows.forEach((r,i)=>{if(i%ev===0)g+=`<text x="${X(i)}" y="${H-8}" text-anchor="${i===0?'start':'middle'}">${narrow?st.yr.start+i/12:MON[i%12]+(i%12===0?' '+String(st.yr.start+i/12).slice(2):'')}</text>`});
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=g;
+}
+const ro=new ResizeObserver(()=>draw());ro.observe(fig);
+
+function exportObj(){
+  const c=C,s=st,R=c.R,r=x=>Math.round(x),sh=c.TL.rows[c.TL.shock.t];
+  return {schema:'galapagos.vergi.v1',module:'vergi_sirket',exported_at:new Date().toISOString(),
+    selected_company_type:c.selK==='sw'?'einzel_then_gmbh':c.selK,first_tax_year:s.yr.start,profit_base:s.base,
+    effective_tax_rate_pct_y3:+c.eff.toFixed(1),
+    steuer_ruecklage_monthly:c.rl.map((x,y)=>({year:s.yr.start+y,ust:r(x.ust),income_trade_tax:r(x.tax),gkv:r(x.gkv),total:r(x.ust+x.tax+x.gkv)})),
+    biggest_single_payment:{amount:r(c.TL.shock.v),month:`${s.yr.start+Math.floor(c.TL.shock.t/12)}-${String(c.TL.shock.t%12+1).padStart(2,'0')}`,items:sh?sh.ev.filter(e=>e.k!=='ust').map(e=>({label:e.lab,amount:r(e.v),surprise:e.sur})):[]},
+    reserve_account_min:r(c.TL.minBal),
+    health_insurance:{mode:s.ins.mode,yearly:R.slice(0,3).map(x=>({year:x.y,premium:r(x.ins.prem)}))},
+    years:R.slice(0,3).map(x=>({year:x.y,type:x.t,ebt:r(x.G),taxes_total:r(x.tax),income_tax:r(x.inc),trade_tax:r(x.gst),corporate_tax:r(x.kst),dividend_tax:r(x.div),insurance:r(x.ins.cost),pension:r(x.rur),net_to_owner:r(x.pocket),net_to_owner_monthly:r(x.pocket/12),retained_in_company:r(x.ret+x.res),full_distribution_equivalent:r(x.eq)})),
+    comparison_3y:Object.fromEntries(Object.entries(c.T).map(([k,v])=>[k==='sw'?'einzel_then_gmbh':k,{net_to_owner:r(v.pocket),retained:r(v.ret),taxes:r(v.tax),full_distribution_equivalent:r(v.eq)}])),
+    gmbh_break_even_profit:c.thr,
+    tax_calendar:c.TL.rows.map(x=>({month:`${s.yr.start+Math.floor(x.t/12)}-${String(x.t%12+1).padStart(2,'0')}`,income_or_corporate_tax:r(x.inc),trade_tax:r(x.gst),gkv_adjustment:r(x.gkv),ust:r(x.ust),reserve_balance:r(x.bal),gap_without_reserve:r(x.naive)})),
+    assumptions:{spouse_income:s.sp.inc,joint:s.sp.joint,church:s.sp.church,gf_salary:s.co.sal,distribution_pct:s.co.distr,hebesatz:s.tax.heb,fragebogen_estimate:s.tax.est,bescheid_lag_months:s.tax.lag,safety_pct:s.tax.safety,ust_burden_pct:s.tax.ust,dauerfrist:s.tax.dfv,kst_rates:[0,1,2].map(i=>({year:s.yr.start+i,rate:kstR(s.yr.start+i)}))}};
+}
+
+let tTimer,undoFn=null;
+function toast(t,undo){$('#toastT').textContent=t;undoFn=undo||null;$('#toastU').hidden=!undo;const el=$('#toast');el.style.display='flex';clearTimeout(tTimer);tTimer=setTimeout(()=>{el.style.display='none';undoFn=null},undo?6000:2600)}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Kopyalandı')}catch(e){toast('Kopyalama engellendi: metni seçip kopyala')}}
+function download(name,text){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('İndirme başlatıldı (engellenirse Kopyala kullan)')}catch(e){toast('İndirme engellendi: Kopyala kullan')}}
+function all(){save();renderOut()}
+function go(tab){const t=['kiyas','takvim','gobd','ayar','rehber'].includes(tab)?tab:'kiyas';$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+t));$$('nav.tabs a').forEach(a=>{const on=a.dataset.tab===t;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});if(t==='takvim')requestAnimationFrame(draw)}
+
+function importJSON(t){
+  const objs=extractObjects(t),keep=clone(st),done=[];
+  if(!objs.length){$('#impMsg').textContent='JSON bulunamadı: modül çıktısındaki { … } metninin tamamını yapıştır.';return}
+  objs.forEach(j=>{const r=importOne(j);if(r)done.push(r)});
+  if(!done.length){$('#impMsg').textContent='Tanınmayan JSON: Modül 3 veya Modül 4 çıktısını yapıştır.';return}
+  $('#impMsg').textContent=done.join(' · ');
+  save();renderStatic();renderOut();toast('İçe alındı',()=>{st=keep;save();renderStatic();renderOut()});
+}
+function importOne(j){
+  const msg={set textContent(v){this.v=v},v:''};
+  try{
+    if(j.schema==='galapagos.kurulum.v1'){
+      const om=String(j.opening_month||'').split('-').map(Number),y=om[0]||st.yr.start;
+      const rows=(j.monthly_cash||[]).filter(x=>String(x.month).startsWith(String(y)));
+      const months=new Array(12).fill(0);rows.forEach(x=>{const m=+String(x.month).split('-')[1]-1;months[m]=+x.net_revenue||0});
+      Object.assign(st.y1,{ebt:rows.reduce((a,x)=>a+(+x.ebt||0),0),rev:months.reduce((a,x)=>a+x,0),months,src:`Modül 4 (${y})`});
+      st.yr.start=y;st.yr.open=om[1]||st.yr.open;
+      msg.textContent=`Modül 4 alındı: ${y} vergi öncesi kâr ${eur(st.y1.ebt)}, net ciro ${eur(st.y1.rev)}, açılış ${MON[st.yr.open-1]} ${y}.`;
+    }else if(j.schema==='galapagos.ciro.v1'){
+      const T=j.target,P=j.plan||{};
+      Object.assign(st.m3,{tEbt:T?T.ebt:P.ebt,tRev:T?T.net_revenue:P.net_revenue,pEbt:P.ebt??st.m3.pEbt,pRev:P.net_revenue??st.m3.pRev,idx:Array.isArray(j.assumptions?.season_index)?j.assumptions.season_index.slice(0,12):st.m3.idx,src:'Modül 3'});
+      msg.textContent=`Modül 3 alındı: hedef EBT ${eur(st.m3.tEbt)}/ay, plan EBT ${eur(st.m3.pEbt)}/ay.`;
+    }else return null;
+    return msg.v;
+  }catch(e){return 'Hata: '+e.message}
+}
+function restore(t){const msg=$('#bkMsg');try{const j=JSON.parse(t);if(j.schema!=='galapagos.vergi.backup.v1'||!j.state){msg.textContent='Bu bir Modül 5 yedeği değil.';return}const keep=st;st=merge(j.state);save();renderStatic();renderOut();msg.textContent='Geri yüklendi.';toast('Yedek yüklendi',()=>{st=keep;save();renderStatic();renderOut()})}catch(e){msg.textContent='JSON okunamadı: '+e.message}}
+
+const STRUCT=/^(sp\.childOn|ins\.mode)$/;
+document.addEventListener('change',e=>{const el=e.target;if(el.classList&&el.classList.contains('num')&&el.type==='text'&&el.dataset.k)el.value=fmtIn(getP(st,el.dataset.k))});
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[data-gk],a[data-og]');if(!a)return;
+  e.preventDefault();location.hash='gobd';go('gobd');
+  if(a.dataset.og){const d=document.getElementById('o_'+a.dataset.og);if(d){d.open=true;setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'start'}),60)}return}
+  const i=document.querySelector(`[data-chk="${a.dataset.gk}"]`);if(i){const l=i.closest('.ck');setTimeout(()=>{l.scrollIntoView({behavior:'smooth',block:'center'});l.classList.add('flash');setTimeout(()=>l.classList.remove('flash'),1800)},60)}
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.chk){st.chk[el.dataset.chk]=el.checked;all();return}
+  if(el.dataset.ochk){if(el.checked)st.ops.chk[el.dataset.ochk]=true;else delete st.ops.chk[el.dataset.ochk];save();opsProgress();return}
+  if(!el.dataset.k)return;
+  const k=el.dataset.k;let v;
+  if(el.dataset.t==='b')v=el.checked;else if(el.dataset.t==='s')v=el.value;else{v=el.type==='range'?parseFloat(el.value):parseNum(el.value,!isBig(k));if(!Number.isFinite(v))return;v=clampK(k,v)}
+  setP(st,k,v);
+  $$(`[data-k="${k}"]`).forEach(o=>{if(o!==el){if(o.type==='checkbox')o.checked=!!v;else o.value=o.type==='range'?v:(o.classList.contains('num')?fmtIn(v):v)}if(o.type==='range')paint(o)});
+  if(STRUCT.test(k)){save();renderStatic();renderOut();return}
+  all();
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.yv!=null){st.yv=+d.yv;all();return}
+  if(d.base){st.base=d.base;all();return}
+  if(d.sel){st.sel=d.sel;st.sw=false;const cb=$('#b_sw');if(cb)cb.checked=false;all();return}
+  if(d.mo){st.tax.months=+d.mo;all();return}
+  if(d.seg){setP(st,d.seg,d.v);save();renderStatic();renderOut();return}
+  if(d.rly!=null){st.ops.rlY=+d.rly;all();return}
+  if(d.greset){const g=GOBD.find(x=>x[0]===d.greset);g[1].forEach(([id])=>delete st.chk[id]);save();renderStatic();renderOut();return}
+  switch(b.id){
+    case 'exCopy':copyText($('#exTxt').value);break;
+    case 'deCopy':copyText($('#deTxt').value);break;
+    case 'deNew':{const keep=clone(st.ops.de);Object.keys(st.ops.de).forEach(k=>st.ops.de[k]=0);st.ops.de.start=+st.ops.wechsel||0;const t=new Date();st.ops.de.date=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;save();renderOpsStatic();renderOut();$('#o_gs').open=true;toast('Yeni gün',()=>{st.ops.de=keep;save();renderOpsStatic();renderOut();$('#o_gs').open=true});break}
+    case 'exDl':download('modul5-vergi-sirket.json',$('#exTxt').value);break;
+    case 'impIn':importJSON($('#impTxt').value);break;
+    case 'bkOut':$('#bkTxt').value=JSON.stringify({schema:'galapagos.vergi.backup.v1',exported_at:new Date().toISOString(),state:st},null,2);$('#bkMsg').textContent='Yedek hazır.';break;
+    case 'bkCopy':if(!$('#bkTxt').value)$('#bkOut').click();copyText($('#bkTxt').value);break;
+    case 'bkDl':if(!$('#bkTxt').value)$('#bkOut').click();download(`galapagos-modul5-yedek-${new Date().toISOString().slice(0,10)}.json`,$('#bkTxt').value);break;
+    case 'bkIn':restore($('#bkTxt').value);break;
+    case 'wipe':if(b.dataset.arm){const keep=st;st=defaults();save();renderStatic();renderOut();delete b.dataset.arm;b.textContent='Varsayılana sıfırla';toast('Sıfırlandı',()=>{st=keep;save();renderStatic();renderOut()})}else{b.dataset.arm='1';b.textContent='Emin misin? Tekrar dokun';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.textContent='Varsayılana sıfırla'}},4000)}break;
+    case 'toastU':if(undoFn){undoFn();undoFn=null;$('#toast').style.display='none'}break;
+  }
+});
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>{$('#impTxt').value=t;importJSON(t)});e.target.value=''});
+$('#bkFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(restore);e.target.value=''});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+load();renderStatic();renderOut();go(location.hash.slice(1));
+}
+</script>
+<script>/* Galapagos veri köprüsü */
+GX.register('m5',{ta:'#impTxt',btn:'#impIn',msg:'#impMsg',tab:'ayar'});
+</script>
+</body>
+</html>
